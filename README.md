@@ -39,7 +39,13 @@ npm run serve-dev
 ```shell
 docker pull mariannaaa/resume_fastapi:1.2
 
-docker run -it -p 8000:8000 mariannaaa/resume_fastapi:1.2
+docker run -itd -p 8000:8000 mariannaaa/resume_fastapi:1.2
+
+docker exec -it <CONTAINER ID> /bin/bash
+
+cd FastApi
+
+python script.py
 ```
 
 - 本地运行需要进行如下操作
@@ -89,6 +95,12 @@ async def get_docx_content(file):
     stripped_lines = [line.strip('\t').replace('\t', ' ') for line in lines]
     new_list = [x for x in stripped_lines if x.strip() != '']
     return new_list
+```
+
+如果使用`Express`需要在该模块下执行
+
+```shell
+node app.js
 ```
 
 ### 项目构建
