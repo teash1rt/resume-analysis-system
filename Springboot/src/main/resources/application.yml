@@ -1,0 +1,41 @@
+spring:
+  profiles:
+    active: dev
+  main:
+    banner-mode: off
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+  task:
+    execution:
+      pool:
+        max-size: 10
+        core-size: 8
+        keep-alive: 5s
+        queue-capacity: 1000
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  mail:
+    host: ${mail.host}
+    username: ${mail.username}
+    password: ${mail.password}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            port: 465
+          ssl:
+            enable: true
+  thymeleaf:
+    cache: false
+
+
+server:
+  port: 4080
+  reactive:
+    session:
+      cookie:
+        name: resume_sys

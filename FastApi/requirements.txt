@@ -1,0 +1,10 @@
+PyJWT==2.7.0
+numpy==1.23.4
+torch==2.1.0.dev20230526+cu121
+fastapi==0.95.1
+transformers==4.28.0
+httpx==0.24.1
+docx2txt==0.8
+pdfminer.six==20221105
+python-multipart==0.0.6
+uvicorn==0.22.0

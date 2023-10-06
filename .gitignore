@@ -1,0 +1,11 @@
+**/dist
+**/secrets.txt
+**/node_modules
+**/.idea
+**/.vscode
+**/target
+**/Springboot.iml
+**.pt
+**/__pycache__
+**/static/
+**/bert-roberta

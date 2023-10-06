@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${mysql.url.prod}
+    username: ${mysql.username.prod}
+    password: ${mysql.password.prod}
+  redis:
+    host: ${redis.host.prod}
+    port: ${redis.port.prod}
+    password: ${redis.password.prod}
+    database: 0
+    timeout: 500
+  data:
+    mongodb:
+      host: ${mongodb.host.prod}
+      port: ${mongodb.port.prod}
+      database: ${mongodb.database.prod}
+      username: ${mongodb.username.prod}
+      password: ${mongodb.password.prod}
+
+address: ${address.prod}

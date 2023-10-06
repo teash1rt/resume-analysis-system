@@ -1,0 +1,38 @@
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+    <title>Element Plus demo</title>
+    <style>
+        .app {
+            width: 30vw;
+            margin: 1vh auto;
+            padding: 2vh 2vw;
+        }
+
+        .topic {
+            font: 700 35px '';
+            text-align: center;
+            background-image: -webkit-linear-gradient(84deg, #43b375, #3e5df7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2vh;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+    <div class="topic">
+        <span>简历解析系统</span>
+    </div>
+    <hr>
+    <br>
+    <span style="font-size: 18px;">您的验证码为：</span>
+    <span style="font-weight: 700; font-size: 18px;" th:text="${verify_code}"></span>
+    <br>
+    <span style="margin-top: 2vh;font-size: 16px;">验证码有效时长为10分钟</span>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/resume_system
+    username: root
+    password: 123456
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+  data:
+    mongodb:
+      host: ${mongodb.host.dev}
+      port: ${mongodb.port.dev}
+      database: ${mongodb.database.dev}
+      username: ${mongodb.username.dev}
+      password: ${mongodb.password.dev}
+
+address: ${address.dev}

@@ -1,0 +1,73 @@
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+    <title>Element Plus demo</title>
+    <style>
+        .app {
+            width: 40vw;
+            margin: 1vh auto;
+            padding: 2vh 2vw;
+        }
+
+        .topic {
+            font: 700 35px '';
+            text-align: center;
+            background-image: -webkit-linear-gradient(84deg, #43b375, #3e5df7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2vh;
+        }
+
+        li {
+            margin-top: 2vh;
+            font-size: 18px;
+        }
+
+        .a {
+            width: 6vw;
+            margin: 2vh auto;
+            text-align: center;
+            display: block;
+            height: 24px;
+            padding: 12px;
+            border-radius: 10px;
+            letter-spacing: 3px;
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+        }
+
+        .a:hover {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+    <div class="topic">
+        <span>简历解析系统</span>
+    </div>
+    <hr>
+    <h2>您收到一份新的申请！</h2>
+    <ul>
+        <li>申请邮箱&nbsp;&nbsp;&nbsp;
+            <!--这里有个绝世巨坑：email 会被识别成链接从而成为 a 标签作为最后的渲染结果，尽管原本写在 span 里-->
+            <span th:text="${email}"/>
+        </li>
+        <li>申请性质&nbsp;&nbsp;&nbsp;
+            <span th:text="${purpose}"/>
+        </li>
+        <li>申请信息&nbsp;&nbsp;&nbsp;
+            <span th:text="${description}"/>
+        </li>
+    </ul>
+    <div style="display: flex">
+        <a class="a" style="background: rgb(255,94,107);" th:href="${refuse_url}">拒绝</a>
+        <a class="a" style="background: rgb(25,164,42)" th:href="${accept_url}">接受</a>
+    </div>
+</div>
+
+</body>
+
+</html>

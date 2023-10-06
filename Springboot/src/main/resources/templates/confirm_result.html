@@ -1,0 +1,40 @@
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+    <title>Confirm Result</title>
+    <style>
+        .app {
+            width: 30vw;
+            margin: 1vh auto;
+            padding: 2vh 2vw;
+        }
+
+        .topic {
+            font: 700 35px '';
+            background-image: -webkit-linear-gradient(84deg, #43b375, #3e5df7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2vh;
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+    <div class="topic">
+        <span>简历解析系统</span>
+    </div>
+    <hr>
+    <h2 th:if="${status eq 'accept'}">您已同意该申请</h2>
+    <h2 th:if="${status eq 'refuse'}">您已拒绝该申请</h2>
+    <h2 th:if="${status eq 'error'}">该申请已被处理</h2>
+</div>
+</body>
+
+</html>

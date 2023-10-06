@@ -1,0 +1,49 @@
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+    <title>Element Plus demo</title>
+    <style>
+        .app {
+            width: 30vw;
+            margin: 1vh auto;
+            padding: 2vh 2vw;
+        }
+
+        .topic {
+            font: 700 35px '';
+            background-image: -webkit-linear-gradient(84deg, #43b375, #3e5df7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2vh;
+            text-align: center;
+        }
+
+        .content {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 2vh;
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+    <div class="topic">
+        <span>简历解析系统</span>
+    </div>
+    <hr>
+    <br>
+    <div class="content" th:if="${status eq 'accept'}">
+        恭喜你已经升级为高级权限！
+    </div>
+    <span th:if="${status eq 'accept'}">欢迎再次登录网站体验简历数据展示，可视化等更多功能</span>
+    <div class="content" th:if="${status eq 'refuse'}">
+        很抱歉，您的申请被拒绝
+    </div>
+    <span th:if="${status eq 'refuse'}">原因可能是您的申请信息不符合相关条件</span>
+    <span th:if="${status eq 'refuse'}">您可以完善相关信息稍后再次申请，如有特殊需求请通过首页联系我们</span>
+</div>
+</body>
+
+</html>
