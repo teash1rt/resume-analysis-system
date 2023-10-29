@@ -1,6 +1,10 @@
 const { defineConfig } = require('@vue/cli-service')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+
 module.exports = defineConfig({
     transpileDependencies: true,
     devServer: {
@@ -36,6 +40,12 @@ module.exports = defineConfig({
                 threshold: 10240,
                 deleteOriginalAssets: false,
                 minRatio: 0.8
+            }),
+            AutoImport({
+                resolvers: [ElementPlusResolver()]
+            }),
+            Components({
+                resolvers: [ElementPlusResolver()]
             })
         ]
     }

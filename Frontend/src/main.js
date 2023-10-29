@@ -2,8 +2,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import pinia from '@/stores/store'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import { InfoStore } from '@/stores/InfoStore'
 import * as echarts from 'echarts'
 
@@ -27,7 +25,7 @@ window.ResizeObserver = class ResizeObserver extends _ResizeObserver {
     }
 }
 
-const app = createApp(App).use(router).use(pinia).use(ElementPlus)
+const app = createApp(App).use(router).use(pinia)
 
 const infoStore = InfoStore()
 infoStore.update_info()
