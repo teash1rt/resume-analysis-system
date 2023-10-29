@@ -34,7 +34,7 @@ npm run serve-dev
 
 ##### FastAPI
 
-- 推荐通过`docker`进行部署（）
+- 推荐通过`docker`进行部署（建议使用 x86+ubuntu20.04 配置，其他配置暂未做运行测试）
 
 ```shell
 docker pull mariannaaa/resume_fastapi:1.2
@@ -69,15 +69,15 @@ python script.py
 
 ##### Express
 
-`Express`中使用了`mammoth`来解析`docx`文件，可以作为`docx2txt`的替代品使用，在某些情况下`mammoth`的解析结果更加准确
+`Express`中使用了`mammoth`来解析`docx`文件，可以作为`docx2txt`的替代品使用。在某些情况下`mammoth`的解析结果更加准确，具体体现在实际测试中`docx2txt`会重复读取两次内容
 
-你可以在`FastApi/document.py`中选择使用哪种作为解析工具
+你可以在`FastApi/document.py`中自行选择其一作为解析工具
 
 ```py
 # import httpx
 import docx2txt
 
-# 获取 docx 文件内容
+# 方法A 向Express发送请求，通过js库mammoth获取内容
 # async def get_docx_content(file):
 #     # url = 'http://127.0.0.1:3010/analysis-docx-file/'
 #     async with httpx.AsyncClient() as client:
@@ -87,7 +87,7 @@ import docx2txt
 #         else:
 #             raise Exception
 
-
+# 方法B 通过python库docx2txt获取内容
 async def get_docx_content(file):
     with io.BytesIO(await file.read()) as stream:
         text = docx2txt.process(stream)
