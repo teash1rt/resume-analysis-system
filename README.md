@@ -163,3 +163,7 @@ PyTorch+BERT
 - 数据可视化
 
 ![](assets/result3.png)
+
+- 数据列表
+
+![](assets/result4.png)
