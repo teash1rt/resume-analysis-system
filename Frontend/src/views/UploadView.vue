@@ -32,10 +32,10 @@
                     :show-file-list="show_file_list"
                     :before-remove="beforeRemove">
                     <template #trigger>
-                        <button class="status0_button" v-if="status === 0">点击上传</button>
+                        <button class="status0-btn" v-if="status === 0">点击上传</button>
                     </template>
-                    <button class="status1_button" @click="upload_to_analysis" v-if="status === 1">确认上传</button>
-                    <button class="status2_button" v-if="status === 2">上传准备</button>
+                    <button class="status1-btn" @click="upload_to_analysis" v-if="status === 1">确认上传</button>
+                    <button class="status2-btn" v-if="status === 2">上传准备</button>
                 </el-upload>
             </div>
         </div>
@@ -82,25 +82,27 @@
                         <span v-for="e in data.tag.ability" :key="e">
                             <el-tag class="ml-2">{{ e }}</el-tag>
                         </span>
-                        <el-tag
-                            v-for="tag in dynamicTags"
-                            :key="tag"
-                            class="ml-2"
-                            closable
-                            :disable-transitions="false"
-                            type="info"
-                            @close="handleClose(tag)">
-                            {{ tag }}
-                        </el-tag>
-                        <el-input
-                            v-if="inputVisible"
-                            ref="InputRef"
-                            v-model="inputValue"
-                            class="custom-tag-input"
-                            size="small"
-                            @keyup.enter="handleInputConfirm"
-                            @blur="handleInputConfirm" />
-                        <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput"> + 自定义标签 </el-button>
+                        <span>
+                            <el-tag
+                                v-for="tag in dynamicTags"
+                                :key="tag"
+                                class="ml-2"
+                                closable
+                                :disable-transitions="false"
+                                type="info"
+                                @close="handleClose(tag)">
+                                {{ tag }}
+                            </el-tag>
+                            <el-input
+                                v-if="inputVisible"
+                                ref="InputRef"
+                                v-model="inputValue"
+                                class="custom-tag-input"
+                                size="small"
+                                @keyup.enter="handleInputConfirm"
+                                @blur="handleInputConfirm" />
+                            <el-button v-else class="custom-tag-btn" size="small" @click="showInput">+ 自定义标签</el-button>
+                        </span>
                     </div>
                 </div>
                 <el-divider />
@@ -169,8 +171,8 @@
                 </div>
             </div>
             <div class="btn-group">
-                <el-button type="error" plain @click="cancel_upload">取消上传</el-button>
-                <el-button type="success" plain @click="upload_to_database" style="float: right">确认上传</el-button>'
+                <el-button type="default" plain @click="cancel_upload">取消上传</el-button>
+                <el-button type="success" plain @click="upload_to_database">确认上传</el-button>
             </div>
         </el-dialog>
     </div>
@@ -471,16 +473,21 @@ const cut_sentence = sentence => {
     font-size: 2rem;
 }
 
-.status0_button,
-.status1_button {
-    position: relative;
+.status0-btn,
+.status1-btn,
+.status2-btn {
     margin-top: 6vh;
-    padding: 2vh 3vw;
+    padding: 20px 60px;
     font-size: 1.6rem;
-    border: #fff;
     color: #fff;
-    background: linear-gradient(90deg, #755bea, #ff72c0);
     border-radius: 20px;
+    position: relative;
+    border: transparent;
+}
+
+.status0-btn,
+.status1-btn {
+    background: linear-gradient(90deg, #755bea, #ff72c0);
     cursor: pointer;
 
     &:hover {
@@ -495,16 +502,8 @@ const cut_sentence = sentence => {
     width: 10vw;
 }
 
-.status2_button {
+.status2-btn {
     cursor: not-allowed;
-    position: relative;
-    margin-top: 6vh;
-    padding: 2vh 3vw;
-    font-size: 1.6rem;
-    text-transform: uppercase;
-    color: #ffffff;
-    border-radius: 20px;
-    border-color: transparent;
     background: linear-gradient(90deg, #f9d923, #cb49ff, #ff6666, #f9d923);
     background-size: 400%;
     animation: glow 30s linear forwards;
@@ -542,9 +541,10 @@ const cut_sentence = sentence => {
     color: black;
 }
 
-.tag span {
-    margin-right: 0.3vw;
-    margin-bottom: 0.8vh;
+.tag {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3vw;
 }
 
 .custom-tag-input {
@@ -552,6 +552,8 @@ const cut_sentence = sentence => {
 }
 
 .btn-group {
+    display: flex;
+    justify-content: space-between;
     width: 95%;
     margin: 1vh auto;
 }

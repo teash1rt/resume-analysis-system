@@ -292,9 +292,9 @@ const submit_apply = () => {
     width: 100%;
     display: flex;
     align-items: center;
-    margin: 1vh;
-    padding: 2vh;
-    height: 5vh;
+    margin: 10px;
+    padding: 20px;
+    height: 35px;
 }
 
 .field {

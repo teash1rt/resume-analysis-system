@@ -139,18 +139,19 @@ const submitUpload = () => {
     font-size: 2.4rem;
 }
 
-.before-waiting-btn {
-    cursor: pointer;
+.before-waiting-btn,
+.on-waiting-btn {
     position: relative;
-    padding: 1.6vh 2.1vw;
+    padding: 18px 50px;
     font-size: 28px;
-    text-transform: uppercase;
     color: #ffffff;
-    background: rgb(31, 169, 142);
-    border: 3px solid rgba(255, 255, 255, 0.2);
     border-radius: 18px;
     margin-top: 4vh;
-
+    border-color: transparent;
+}
+.before-waiting-btn {
+    cursor: pointer;
+    background: rgb(31, 169, 142);
     &:hover {
         z-index: 1;
         border-color: transparent;
@@ -161,6 +162,13 @@ const submitUpload = () => {
     }
 }
 
+.on-waiting-btn {
+    cursor: not-allowed;
+    background: linear-gradient(90deg, #f9d923, #00a19d, #0c87b7, #cb49ff, #ff6666, #f9d923);
+    background-size: 400%;
+    animation: glow 30s linear forwards;
+}
+
 @keyframes glow {
     from {
         background-position: 0%;
@@ -169,20 +177,5 @@ const submitUpload = () => {
     to {
         background-position: 400%;
     }
-}
-
-.on-waiting-btn {
-    cursor: not-allowed;
-    position: relative;
-    padding: 1.6vh 2.1vw;
-    font-size: 28px;
-    text-transform: uppercase;
-    color: #ffffff;
-    border-radius: 28px;
-    margin-top: 4vh;
-    border-color: transparent;
-    background: linear-gradient(90deg, #f9d923, #00a19d, #0c87b7, #cb49ff, #ff6666, #f9d923);
-    background-size: 400%;
-    animation: glow 30s linear forwards;
 }
 </style>

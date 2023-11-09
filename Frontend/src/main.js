@@ -4,21 +4,21 @@ import router from './router'
 import pinia from '@/stores/store'
 import { InfoStore } from '@/stores/InfoStore'
 import * as echarts from 'echarts'
+import 'element-plus/es/components/notification/style/css'
 
 const debounce = (fn, delay, ...value) => {
     let timer = null
     return () => {
-        const context = this
         const args = value
         clearTimeout(timer)
         timer = setTimeout(function () {
-            fn.apply(context, args)
+            fn.apply(this, args)
         }, delay)
     }
 }
 
-const _ResizeObserver = window.ResizeObserver
-window.ResizeObserver = class ResizeObserver extends _ResizeObserver {
+const resize_observer = window.ResizeObserver
+window.ResizeObserver = class ResizeObserver extends resize_observer {
     constructor(callback) {
         callback = debounce(callback, 16)
         super(callback)
