@@ -38,7 +38,7 @@ public class ResumeFavoriteServiceImpl implements ResumeFavoriteService {
         QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
         resumeFavoriteQueryWrapper.eq("uid", uid).eq("rid", rid);
         resumeFavoriteMapper.delete(resumeFavoriteQueryWrapper);
-        return R.error("取消收藏成功");
+        return R.success("取消收藏成功");
     }
 
     @Override

@@ -477,7 +477,8 @@ const cut_sentence = sentence => {
 .status1-btn,
 .status2-btn {
     margin-top: 6vh;
-    padding: 20px 60px;
+    width: 170px;
+    height: 60px;
     font-size: 1.6rem;
     color: #fff;
     border-radius: 20px;

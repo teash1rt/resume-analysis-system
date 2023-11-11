@@ -188,18 +188,24 @@ const content_show = e => {
     return content
 }
 
-// FIXME
+// 防抖
+let timer = null
 const change_favorite_status = (idx, rid) => {
     tmp_favorite[idx] = !tmp_favorite[idx]
-    if (tmp_favorite[idx]) {
-        req1.post('/req1/resume/add-favorite/', {
-            rid: rid
-        }).catch(() => {})
-    } else {
-        req1.post('/req1/resume/cancel-favorite/', {
-            rid: rid
-        }).catch(() => {})
+    if (timer) {
+        clearTimeout(timer)
     }
+    timer = setTimeout(() => {
+        if (tmp_favorite[idx]) {
+            req1.post('/req1/resume/add-favorite/', {
+                rid: rid
+            }).catch(() => {})
+        } else {
+            req1.post('/req1/resume/cancel-favorite/', {
+                rid: rid
+            }).catch(() => {})
+        }
+    }, 750)
 }
 
 const data = ref('')
