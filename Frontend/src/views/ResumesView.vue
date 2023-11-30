@@ -4,7 +4,7 @@
             <div class="card-header">
                 <span class="topic">
                     简历数据中心
-                    <router-link :to="{ name: 'visualizationview' }" href="#" class="btn6">数据可视化</router-link>
+                    <router-link :to="{ name: 'visualizationview' }" href="#" class="btn">数据可视化</router-link>
                 </span>
                 <el-dropdown :hide-on-click="false">
                     <span class="el-dropdown-link">
@@ -103,7 +103,7 @@
                 </el-row>
             </el-card>
         </div>
-        <div class="example-pagination-block">
+        <div class="pagination-block">
             <el-pagination
                 background
                 layout="prev, pager, next"
@@ -190,12 +190,14 @@ const content_show = e => {
 
 // 防抖
 let timer = null
+let lastIdx = null
 const change_favorite_status = (idx, rid) => {
     tmp_favorite[idx] = !tmp_favorite[idx]
-    if (timer) {
+    if (timer && idx === lastIdx) {
         clearTimeout(timer)
     }
     timer = setTimeout(() => {
+        lastIdx = idx
         if (tmp_favorite[idx]) {
             req1.post('/req1/resume/add-favorite/', {
                 rid: rid
@@ -253,9 +255,9 @@ const download_resume = rid => {
     align-items: center;
 }
 
-.btn6,
-.btn6:link,
-.btn6:visited {
+.btn,
+.btn:link,
+.btn:visited {
     margin-left: 1.5vw;
     padding: 13px 0;
     color: #393939;
@@ -263,13 +265,6 @@ const download_resume = rid => {
     font-size: 1.4rem;
     letter-spacing: 1px;
     transition: all 0.2s ease-in-out;
-
-    &:hover {
-        background: #717171;
-        border: 1px solid #959595;
-        color: #fefefe;
-        border-radius: 30px;
-    }
 }
 
 .box-card {
@@ -277,9 +272,10 @@ const download_resume = rid => {
     margin: 11vh auto;
     height: 82vh;
     min-width: 800px;
+    overflow: auto;
 }
 
-.example-pagination-block {
+.pagination-block {
     display: block;
     position: absolute;
     bottom: 1vh;
