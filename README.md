@@ -6,10 +6,10 @@
 
 ```
 ├─Assets	相关图片
-├─Express	后端，用于word转txt
+├─Express	后端，用于word转文本
 ├─FastApi	 后端，用于封装模型
 ├─Frontend	前端
-├─SpringBoot	后端，用于用户管理
+├─SpringBoot	后端，用于用户和简历数据管理
 ├─Sql	数据库建表
 ├─Train	模型训练
 │  └─classfication	分类器
@@ -52,7 +52,7 @@ python script.py
 
 1. 下载模型到`FastApi/models`目录下
 
-   链接：https://pan.baidu.com/s/1pRfDXOTXKtjZ5AFQJmH81w?pwd=883h ，提取码：883h
+   链接：https://pan.baidu.com/s/1PBm4K4neaL1efhre8DgGaw?pwd=zjsw 提取码：zjsw 
 
 2. 在`FastApi`目录下建立`secrets.txt`
 
