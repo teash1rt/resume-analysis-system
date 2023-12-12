@@ -95,8 +95,7 @@ const get_avatar = () => {
             if (res.data !== '') {
                 url.value = convert_to_url(res.data)
             } else {
-                url.value =
-                    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202103%2F23%2F20210323142845_bf6a9.thumb.1000_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1688290726&t=9d91c8a22f032305954b6b556b7dadc7'
+                url.value = require('../../assets/avatar.webp')
             }
         })
         .catch(() => {})
