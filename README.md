@@ -52,7 +52,25 @@ python script.py
 
 1. 下载模型到`FastApi/models`目录下
 
-   链接：https://pan.baidu.com/s/1PBm4K4neaL1efhre8DgGaw?pwd=zjsw 提取码：zjsw 
+   模型链接：https://www.codewithgpu.com/m/resume-analysis-system-module
+
+   注意下载后需要移动调整下目录结构，调整结果如下图所示
+
+   ```
+   ├─models 这里的models路径为FastApi/models
+   │  │  Job.pt
+   │  │  Ner.pt
+   │  │  Roberta.pt
+   │  │
+   │  └─bert-roberta
+   │          added_tokens.json
+   │          config.json
+   │          pytorch_model.bin
+   │          special_tokens_map.json
+   │          tokenizer.json
+   │          tokenizer_config.json
+   │          vocab.txt
+   ```
 
 2. 在`FastApi`目录下建立`secrets.txt`
 
