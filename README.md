@@ -2,6 +2,8 @@
 
 基于自然语言处理技术的前后端分离项目，支持对多种格式的简历文件进行关键信息的提取，分析和数据可视化
 
+> 有问题看 issues
+
 ### 目录说明
 
 ```
@@ -34,7 +36,7 @@ npm run serve-dev
 
 ##### FastAPI
 
-- 推荐通过`docker`进行部署（建议使用 x86+ubuntu20.04 配置，其他配置暂未做运行测试）
+-   推荐通过`docker`进行部署（建议使用 x86+ubuntu20.04 配置，其他配置暂未做运行测试）
 
 ```shell
 docker pull mariannaaa/resume_fastapi:1.2
@@ -48,38 +50,22 @@ cd FastApi
 python script.py
 ```
 
-- 本地运行需要进行如下操作
+-   本地运行需要进行如下操作
 
 1. 下载模型到`FastApi/models`目录下
 
-   模型链接：https://www.codewithgpu.com/m/resume-analysis-system-module
+    > 原来的链接模型文件损坏，现在只能用百度网盘，但是隔一段时间就会失效 :(，可以通过 issues 解决一下
 
-   注意下载后需要移动调整下目录结构，调整结果如下图所示
-
-   ```
-   ├─models 这里的models路径为FastApi/models
-   │  │  Job.pt
-   │  │  Ner.pt
-   │  │  Roberta.pt
-   │  │
-   │  └─bert-roberta
-   │          added_tokens.json
-   │          config.json
-   │          pytorch_model.bin
-   │          special_tokens_map.json
-   │          tokenizer.json
-   │          tokenizer_config.json
-   │          vocab.txt
-   ```
+    链接：https://pan.baidu.com/s/1F896LjLFOnlK6RYx1Jj5ng?pwd=e5io 提取码：e5io
 
 2. 在`FastApi`目录下建立`secrets.txt`
 
-   ```txt
-   [key]
-   jwt_key=XXX
-   ```
+    ```txt
+    [key]
+    jwt_key=XXX
+    ```
 
-   其中 XXX 为自定义的`jwt`密钥
+    其中 XXX 为自定义的`jwt`密钥
 
 ##### Spring Boot
 
@@ -131,21 +117,21 @@ PyTorch+BERT
 
 #### 前端
 
-- Vue3
-- Element Plus
-- ECharts
+-   Vue3
+-   Element Plus
+-   ECharts
 
 #### 后端
 
-- Spring Boot
-- FastAPI
-- Express
+-   Spring Boot
+-   FastAPI
+-   Express
 
 #### 数据库
 
-- MySQL
-- MongoDB
-- Redis
+-   MySQL
+-   MongoDB
+-   Redis
 
 ### 项目架构
 
@@ -157,31 +143,31 @@ PyTorch+BERT
 
 1. 项目的主要业务为简历解析，支持`docx`，`pdf`，`txt`格式简历的输入并进行关键信息的提取，提取的维度包括：
 
-- 姓名，生日，年龄，电话，邮箱，毕业院校（全部），最高学历，住址
-- 求职意向，工作/项目经历，获得奖项，个人能力，岗位匹配
-- 简历标签：学历标签，工作标签，能力标签，工作年限
+-   姓名，生日，年龄，电话，邮箱，毕业院校（全部），最高学历，住址
+-   求职意向，工作/项目经历，获得奖项，个人能力，岗位匹配
+-   简历标签：学历标签，工作标签，能力标签，工作年限
 
 2. 在该业务的基础上，我们使用权限管理系统对其进行封装。整体分为四个权限：游客，普通用户，高级权限，超级管理员。其中游客是未登录用户，用户注册后初始权限默认为普通用户，可以通过邮件申请并经过超级管理员的审核升级为高级权限。在本项目的设计理念中，普通用户和高级权限分别对应求职者和招聘者：
 
-- 普通用户可以借助项目中的模块对自己的简历进行分析，补充并上传，从而实现投递简历的过程
-- 高级权限可以查看所有普通用户上传的简历，并支持查看摘要，收藏和下载简历等操作，实现了帮助招聘者更好的处理和管理简历的过程。高级权限还可以查看简历的可视化信息，目前支持的可视化维度有：学历信息统计，来源地信息统计，工作经历信息统计，能够有助于招聘者更好的了解求职者和简历信息的整体情况
+-   普通用户可以借助项目中的模块对自己的简历进行分析，补充并上传，从而实现投递简历的过程
+-   高级权限可以查看所有普通用户上传的简历，并支持查看摘要，收藏和下载简历等操作，实现了帮助招聘者更好的处理和管理简历的过程。高级权限还可以查看简历的可视化信息，目前支持的可视化维度有：学历信息统计，来源地信息统计，工作经历信息统计，能够有助于招聘者更好的了解求职者和简历信息的整体情况
 
 ![](assets/function.png)
 
 ### 项目截图
 
-- 简历解析
+-   简历解析
 
 ![](assets/result1.png)
 
-- 简历上传
+-   简历上传
 
 ![](assets/result2.png)
 
-- 数据可视化
+-   数据可视化
 
 ![](assets/result3.png)
 
-- 数据列表
+-   数据列表
 
 ![](assets/result4.png)
