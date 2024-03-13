@@ -3,10 +3,8 @@
     "version": "1.2.0",
     "private": true,
     "scripts": {
-        "serve-dev": "vue-cli-service serve --mode development",
-        "serve-prod": "vue-cli-service serve --mode production",
-        "build-dev": "vue-cli-service build --mode development --report",
-        "build-prod": "vue-cli-service build --mode production",
+        "dev": "vue-cli-service serve",
+        "build": "vue-cli-service build --report",
         "format": "prettier --write  \"src/**/*.js\" \"src/**/*.vue\"",
         "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix"
     },

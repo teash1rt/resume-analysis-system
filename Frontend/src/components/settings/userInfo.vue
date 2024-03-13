@@ -135,6 +135,7 @@ import { req1 } from '@/utils/request'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { SHA256Encrypt } from '@/utils/encrypt'
+import { userApi } from '@/api'
 
 const infoStore = InfoStore()
 const permission = infoStore.type == 0 ? '普通用户' : '高级权限'
@@ -157,52 +158,48 @@ const edit_email = () => {
     to_change_email.value = true
 }
 
-const change_username = () => {
-    req1.post('/req1/user/change-username/', {
-        new_username: username_data.value
-    })
-        .then(() => {
-            req1.get(`/req1/user/get-info/`)
-                .then(() => {
-                    ElNotification({
-                        title: '用户名更改成功',
-                        type: 'success'
-                    })
-                    infoStore.update_info()
-                    to_change_username.value = false
-                })
-                .catch(() => {})
+const change_username = async () => {
+    try {
+        await userApi.changeUsername({ new_username: username_data.value })
+        await userApi.getUserInfo()
+        ElNotification({
+            title: '用户名更改成功',
+            type: 'success'
         })
-        .catch(() => {})
+        infoStore.update_info()
+        to_change_username.value = false
+    } catch (err) {
+        //
+    }
 }
 
-const change_email = () => {
-    req1.post('/req1/user/change-email/', {
-        new_email: email_data.value
-    })
-        .then(() => {
-            logout()
-        })
-        .catch(() => {})
+const change_email = async () => {
+    try {
+        await userApi.changeEmail({ new_email: email_data.value })
+        logout()
+    } catch (err) {
+        //
+    }
 }
 
 const old_password = ref('')
 const new_password = ref('')
 const to_change_password = ref(false)
 
-const change_password = () => {
-    req1.post('/req1/user/change-password/', {
-        old_password: SHA256Encrypt(old_password.value),
-        new_password: SHA256Encrypt(new_password.value)
-    })
-        .then(() => {
-            to_change_password.value = false
-            ElNotification({
-                title: '密码更改成功',
-                type: 'success'
-            })
+const change_password = async () => {
+    try {
+        await userApi.changePassword({
+            old_password: SHA256Encrypt(old_password.value),
+            new_password: SHA256Encrypt(new_password.value)
         })
-        .catch(() => {})
+        to_change_password.value = false
+        ElNotification({
+            title: '密码更改成功',
+            type: 'success'
+        })
+    } catch (err) {
+        //
+    }
 }
 
 // 控制申请弹窗

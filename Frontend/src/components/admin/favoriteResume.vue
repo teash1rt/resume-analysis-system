@@ -37,7 +37,7 @@
 
 <script setup>
 import { ref, onMounted, reactive, toRaw } from 'vue'
-import { req1 } from '@/utils/request'
+import { resumeApi } from '@/api'
 import resumeData from '@/components/common/resumeData.vue'
 
 const count = ref(0)
@@ -46,17 +46,20 @@ const data = reactive([])
 // 记录data下标和rid的映射关系
 const mp = new Map()
 
-onMounted(() => {
-    req1.get(`/req1/resume/get-favorite/`).then(res => {
-        count.value = res.data.length
-        res.data.map((item, idx) => {
-            item.summaryInfo = JSON.parse(item.summaryInfo)
-            item.detailInfo = JSON.parse(item.detailInfo)
-            mp.set(item.rid, idx)
-            return item
-        })
-        Object.assign(data, res.data)
+const getFavoriteResume = async () => {
+    const res = await resumeApi.getFavoriteResume()
+    count.value = res.data.length
+    res.data.map((item, idx) => {
+        item.summaryInfo = JSON.parse(item.summaryInfo)
+        item.detailInfo = JSON.parse(item.detailInfo)
+        mp.set(item.rid, idx)
+        return item
     })
+    Object.assign(data, res.data)
+}
+
+onMounted(() => {
+    getFavoriteResume()
 })
 
 const load = () => {
@@ -72,13 +75,12 @@ const preview_resume = rid => {
 
 const cancel_favorite = rid => {
     data.splice(data[mp.get(rid)], 1)
-    req1.post('/req1/resume/cancel-favorite/', {
-        rid: rid
-    }).catch(() => {})
+    resumeApi.cancelFavoriteResume(rid)
 }
 
-const download_resume = rid => {
-    req1.get(`/req1/resume/download/${rid}/`).then(res => {
+const download_resume = async rid => {
+    try {
+        const res = await resumeApi.downloadResume({ rid })
         const binaryData = atob(res.data.data)
         const uint8Array = new Uint8Array(binaryData.length)
         for (let i = 0; i < binaryData.length; i++) {
@@ -95,7 +97,9 @@ const download_resume = rid => {
         document.body.appendChild(a)
         a.click()
         a.remove()
-    })
+    } catch (err) {
+        //
+    }
 }
 
 const content_show = e => {

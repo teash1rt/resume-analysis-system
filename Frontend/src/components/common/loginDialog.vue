@@ -53,9 +53,9 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { req1 } from '@/utils/request'
 import { InfoStore } from '@/stores/InfoStore'
 import { SHA256Encrypt } from '@/utils/encrypt'
+import { userApi } from '@/api'
 import { ElNotification } from 'element-plus'
 
 // 状态1显示登录 状态2显示注册 状态3显示忘记密码
@@ -84,38 +84,31 @@ const update_data = () => {
 
 // 如果登录 传消息给NavBar 关闭此组件 | 需要登录则弹出窗口
 const emit = defineEmits(['is_login', 'must_login', 'submit_email'])
-const login = () => {
-    req1.post('/req1/user/login/', {
-        email: email.value,
-        password: SHA256Encrypt(password.value)
-    })
-        .then(res => {
-            infoStore.token = res.data
-            req1.get(`/req1/user/get-info/`)
-                .then(() => {
-                    update_data()
-                })
-                .catch(() => {})
-        })
-        .catch(() => {})
+const login = async () => {
+    try {
+        const res = await userApi.login({ email: email.value, password: SHA256Encrypt(password.value) })
+        infoStore.token = res.data
+        await userApi.getUserInfo()
+        update_data()
+    } catch (err) {
+        //
+    }
 }
 
-const register = () => {
-    req1.post('/req1/user/register/', {
-        email: email.value,
-        username: username.value,
-        password: SHA256Encrypt(password.value),
-        verify_code: verify_code.value
-    })
-        .then(res => {
-            infoStore.token = res.data
-            req1.get(`/req1/user/get-info/`)
-                .then(() => {
-                    update_data()
-                })
-                .catch(() => {})
+const register = async () => {
+    try {
+        const res = await userApi.register({
+            email: email.value,
+            username: username.value,
+            password: SHA256Encrypt(password.value),
+            verify_code: verify_code.value
         })
-        .catch(() => {})
+        infoStore.token = res.data
+        await userApi.getUserInfo()
+        update_data()
+    } catch (err) {
+        //
+    }
 }
 
 // 刷新验证码
@@ -129,20 +122,22 @@ const show_login_dialog = () => {
     emit('must_login')
 }
 
-const forget_password = () => {
-    req1.post('/req1/user/forget-password/', {
-        email: email.value,
-        verify_code: verify_code.value
-    })
-        .then(() => {
-            ElNotification({
-                title: '请查看邮箱以重置您的密码',
-                type: 'success'
-            })
-            emit('submit_email')
+const forget_password = async () => {
+    try {
+        await userApi.forgetPassword({
+            email: email.value,
+            verify_code: verify_code.value
         })
-        .catch(() => {})
+        ElNotification({
+            title: '请查看邮箱以重置您的密码',
+            type: 'success'
+        })
+        emit('submit_email')
+    } catch (err) {
+        //
+    }
 }
+
 window.show_login = show_login_dialog
 </script>
 
