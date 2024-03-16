@@ -122,8 +122,8 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { req1 } from '@/utils/request'
 import resumeData from '@/components/common/resumeData.vue'
+import { resumeApi } from '@/api'
 
 const current_page = ref(1)
 const page_size = 4
@@ -137,18 +137,23 @@ const page_change = () => {
     get_page_resumes(sort_order.value)
 }
 
+const init = async () => {
+    try {
+        const res = await resumeApi.getTotalCount()
+        total_count.value = res.data
+        get_page_resumes(1)
+    } catch (err) {
+        //
+    }
+}
+
 onMounted(() => {
-    req1.get('/req1/resume/get-total-count/')
-        .then(res => {
-            total_count.value = res.data
-        })
-        .catch(() => {})
-    get_page_resumes(1)
+    init()
 })
 
 const sort_order = ref(0)
 const sort_order_name = ref('最新发布')
-const get_page_resumes = e => {
+const get_page_resumes = async e => {
     sort_order.value = e
     if (e === 0) {
         sort_order_name.value = '最早发布'
@@ -157,26 +162,26 @@ const get_page_resumes = e => {
     } else {
         sort_order_name.value = '按推荐倒序'
     }
-    req1.get('/req1/resume/get-page-resumes-info/', {
-        params: {
+
+    try {
+        const res = await resumeApi.getPageResumesInfo({
             page: current_page.value,
             page_size: page_size,
             sort_order: sort_order.value
-        }
-    })
-        .then(res => {
-            res.data.map(item => {
-                item.summaryInfo = JSON.parse(item.summaryInfo)
-                return item
-            })
-            Object.assign(resume_data, res.data)
-            // 清空数组
-            tmp_favorite.length = 0
-            for (let i = 0; i < resume_data.length; i++) {
-                tmp_favorite.push(resume_data[i].favorite)
-            }
         })
-        .catch(() => {})
+        res.data.map(item => {
+            item.summaryInfo = JSON.parse(item.summaryInfo)
+            return item
+        })
+        Object.assign(resume_data, res.data)
+        // 清空数组
+        tmp_favorite.length = 0
+        for (let i = 0; i < resume_data.length; i++) {
+            tmp_favorite.push(resume_data[i].favorite)
+        }
+    } catch (err) {
+        //
+    }
 }
 
 const content_show = e => {
@@ -198,27 +203,20 @@ const change_favorite_status = (idx, rid) => {
     }
     timer = setTimeout(() => {
         lastIdx = idx
-        if (tmp_favorite[idx]) {
-            req1.post('/req1/resume/add-favorite/', {
-                rid: rid
-            }).catch(() => {})
-        } else {
-            req1.post('/req1/resume/cancel-favorite/', {
-                rid: rid
-            }).catch(() => {})
-        }
+        tmp_favorite[idx] ? resumeApi.addFavoriteResume({ rid: rid }) : resumeApi.cancelFavoriteResume({ rid: rid })
     }, 750)
 }
 
 const data = ref('')
 const dialog_visible = ref(false)
-const preview_resume = rid => {
-    req1.get(`/req1/resume/get-one-resume-info/${rid}/`)
-        .then(res => {
-            data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
-            dialog_visible.value = true
-        })
-        .catch(() => {})
+const preview_resume = async rid => {
+    try {
+        const res = await resumeApi.getOneResumeInfo({ rid: rid })
+        data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
+        dialog_visible.value = true
+    } catch (err) {
+        //
+    }
 }
 
 const close_dialog = done => {
@@ -226,8 +224,9 @@ const close_dialog = done => {
     done()
 }
 
-const download_resume = rid => {
-    req1.get(`/req1/resume/download/${rid}/`).then(res => {
+const download_resume = async rid => {
+    try {
+        const res = await resumeApi.downloadResume({ rid })
         const binaryData = atob(res.data.data)
         const uint8Array = new Uint8Array(binaryData.length)
         for (let i = 0; i < binaryData.length; i++) {
@@ -244,7 +243,9 @@ const download_resume = rid => {
         document.body.appendChild(a)
         a.click()
         a.remove()
-    })
+    } catch (err) {
+        //
+    }
 }
 </script>
 

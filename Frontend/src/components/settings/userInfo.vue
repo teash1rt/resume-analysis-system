@@ -131,7 +131,6 @@
 <script setup>
 import { InfoStore } from '@/stores/InfoStore'
 import { ref, reactive } from 'vue'
-import { req1 } from '@/utils/request'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { SHA256Encrypt } from '@/utils/encrypt'
@@ -214,62 +213,66 @@ const form = reactive({
 const waiting_verify_code = ref(false)
 const countdown = ref(30)
 
-const apply_permission = () => {
-    req1.post('/req1/user/check-application-status/', {
-        email: infoStore.email
-    })
-        .then(res => {
-            if (res.data) {
-                ElNotification({
-                    title: '您的申请正在审核中',
-                    message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
-                    type: 'warning'
-                })
-            } else {
-                to_apply_permission.value = true
-            }
+const apply_permission = async () => {
+    try {
+        const res = await userApi.checkApplicationStatus({
+            email: infoStore.email
         })
-        .catch(() => {})
-}
-
-const get_email_verify_code = () => {
-    waiting_verify_code.value = true
-    req1.post('/req1/user/get-apply-verify-code/', {
-        email: infoStore.email
-    })
-        .then(() => {
+        if (res.data) {
             ElNotification({
-                title: '邮箱验证码发送成功',
-                type: 'success'
-            })
-        })
-        .catch(() => {})
-    const timer = setInterval(() => {
-        countdown.value -= 1
-        if (countdown.value <= 0) {
-            clearInterval(timer)
-            countdown.value = 30
-            waiting_verify_code.value = false
-        }
-    }, 1000)
-}
-
-const submit_apply = () => {
-    req1.post('/req1/user/apply-permission/', {
-        email: infoStore.email,
-        purpose: form.purpose,
-        description: form.description,
-        verify_code: form.verify_code
-    })
-        .then(() => {
-            to_apply_permission.value = false
-            ElNotification({
-                title: '申请成功！请等待审核',
+                title: '您的申请正在审核中',
                 message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
-                type: 'success'
+                type: 'warning'
             })
+        } else {
+            to_apply_permission.value = true
+        }
+    } catch (err) {
+        //
+    }
+}
+
+const get_email_verify_code = async () => {
+    waiting_verify_code.value = true
+    try {
+        await userApi.getApplyVerifyCode({
+            email: infoStore.email
         })
-        .catch(() => {})
+        ElNotification({
+            title: '邮箱验证码发送成功',
+            type: 'success'
+        })
+    } catch (err) {
+        //
+    } finally {
+        const timer = setInterval(() => {
+            countdown.value -= 1
+            if (countdown.value <= 0) {
+                clearInterval(timer)
+                countdown.value = 30
+                waiting_verify_code.value = false
+            }
+        }, 1000)
+    }
+}
+
+const submit_apply = async () => {
+    try {
+        await userApi.applyPermission({
+            email: infoStore.email,
+            purpose: form.purpose,
+            description: form.description,
+            verify_code: form.verify_code
+        })
+        to_apply_permission.value = false
+        ElNotification({
+            title: '申请成功！请等待审核',
+            message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
+            type: 'success'
+        })
+    } catch (err) {
+        //
+    }
 }
 </script>
 

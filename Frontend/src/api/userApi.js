@@ -1,4 +1,4 @@
-import { req1 } from '@/utils/request'
+import { req1, req2 } from '@/utils/request'
 
 const login = ({ email: email, password: password }) => {
     return req1.post('/req1/user/login/', {
@@ -46,6 +46,48 @@ const changePassword = ({ old_password: old_password, new_password: new_password
     })
 }
 
+const getAvatar = () => {
+    return req1.get(`/req1/user/get-avatar/`)
+}
+
+const tokenCheck = ({ token: token }) => {
+    return req1.post('/req1/user/visitor-token-check/', {
+        token
+    })
+}
+
+const resetPassword = ({ url_path: url_path, new_password: new_password }) => {
+    return req1.post('/req1/user/reset-password/', {
+        url_path,
+        new_password
+    })
+}
+
+const checkApplicationStatus = ({ email: email }) => {
+    return req1.post('/req1/user/check-application-status/', {
+        email
+    })
+}
+
+const getApplyVerifyCode = ({ email: email }) => {
+    return req1.post('/req1/user/get-apply-verify-code/', {
+        email
+    })
+}
+
+const applyPermission = ({ email: email, purpose: purpose, description: description, verify_code: verify_code }) => {
+    return req1.post('/req1/user/apply-permission/', {
+        email,
+        purpose,
+        description,
+        verify_code
+    })
+}
+
+const getAuthorize = () => {
+    return req2.get('/req2/authorize/')
+}
+
 const userApi = {
     login,
     register,
@@ -53,7 +95,14 @@ const userApi = {
     forgetPassword,
     changeUsername,
     changeEmail,
-    changePassword
+    changePassword,
+    getAvatar,
+    tokenCheck,
+    resetPassword,
+    checkApplicationStatus,
+    getApplyVerifyCode,
+    applyPermission,
+    getAuthorize
 }
 
 export default userApi

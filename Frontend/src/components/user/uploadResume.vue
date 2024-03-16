@@ -37,36 +37,41 @@
 
 <script setup>
 import { onMounted, reactive } from 'vue'
-import { req1 } from '@/utils/request'
 import { ElNotification } from 'element-plus'
+import { resumeApi } from '@/api'
 
 const data = reactive([])
 
 const mp = new Map()
-onMounted(() => {
-    req1.get(`/req1/resume/get-upload-resumes/`)
-        .then(res => {
-            res.data.map((item, idx) => {
-                mp.set(item.rid, idx)
-                return (item.summaryInfo = JSON.parse(item.summaryInfo))
-            })
-            Object.assign(data, res.data)
+
+const init = async () => {
+    try {
+        const res = await resumeApi.getUploadResumes()
+        res.data.map((item, idx) => {
+            mp.set(item.rid, idx)
+            return (item.summaryInfo = JSON.parse(item.summaryInfo))
         })
-        .catch(() => {})
+        Object.assign(data, res.data)
+    } catch (err) {
+        //
+    }
+}
+
+onMounted(() => {
+    init()
 })
 
-const del_upload_resume = rid => {
-    req1.post('/req1/resume/del-upload-resume/', {
-        rid: rid
-    })
-        .then(res => {
-            ElNotification({
-                title: res.msg,
-                type: 'success'
-            })
+const del_upload_resume = async rid => {
+    try {
+        const res = await resumeApi.deleteUploadResume({ rid: rid })
+        ElNotification({
+            title: res.msg,
+            type: 'success'
         })
-        .catch(() => {})
-    data.splice(data[mp.get[rid]], 1)
+        data.splice(data[mp.get[rid]], 1)
+    } catch (err) {
+        //
+    }
 }
 
 const get_tree_data = e => {

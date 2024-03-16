@@ -19,10 +19,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { req1 } from '@/utils/request'
 import educationChart from '@/components/admin/educationChart.vue'
 import locationChart from '@/components/admin/locationChart.vue'
 import experienceChart from '@/components/admin/experienceChart.vue'
+import { statisticsApi } from '@/api'
 
 const edu_data = ref(null),
     exp_data = ref(null),
@@ -30,16 +30,21 @@ const edu_data = ref(null),
 // 解决 chart 在 onMounted 渲染时还没接收到数据
 const data_receive = ref(false)
 
+const init = async () => {
+    try {
+        const res = await statisticsApi.getStatisticsInfo()
+        const { education_statistics, experience_statistics, location_statistics } = res.data
+        edu_data.value = education_statistics
+        exp_data.value = experience_statistics
+        loc_data.value = location_statistics
+        data_receive.value = true
+    } catch (err) {
+        //
+    }
+}
+
 onMounted(() => {
-    req1.get('/req1/statistics/get-statistics-info/')
-        .then(res => {
-            const { education_statistics, experience_statistics, location_statistics } = res.data
-            edu_data.value = education_statistics
-            exp_data.value = experience_statistics
-            loc_data.value = location_statistics
-            data_receive.value = true
-        })
-        .catch(() => {})
+    init()
 })
 </script>
 

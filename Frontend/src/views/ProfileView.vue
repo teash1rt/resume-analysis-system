@@ -32,29 +32,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import userInfo from '@/components/settings/userInfo.vue'
 import userProfile from '@/components/settings/userProfile.vue'
 import uploadResume from '@/components/user/uploadResume.vue'
 import favoriteResume from '@/components/admin/favoriteResume.vue'
 import { InfoStore } from '@/stores/InfoStore'
-import { req1 } from '@/utils/request'
 import { convert_to_url } from '@/utils/base64ToUrl'
+import { userApi } from '@/api'
 
 const active_name = ref('View1')
 const infoStore = InfoStore()
 const permission = infoStore.type
-
 const url = ref('')
-req1.get(`/req1/user/get-avatar/`)
-    .then(res => {
+
+const init = async () => {
+    try {
+        const res = await userApi.getAvatar()
         if (res.data !== '') {
             url.value = convert_to_url(res.data)
         } else {
             url.value = require('../assets/avatar.webp')
         }
-    })
-    .catch(() => {})
+    } catch (err) {
+        //
+    }
+}
+
+onMounted(() => {
+    init()
+})
 </script>
 
 <style lang="less" scoped>

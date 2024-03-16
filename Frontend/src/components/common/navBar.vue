@@ -35,18 +35,16 @@
 import { ref, onMounted, watch } from 'vue'
 import loginDialog from '@/components/common/loginDialog.vue'
 import { InfoStore } from '@/stores/InfoStore'
-import { req1 } from '@/utils/request'
 import { convert_to_url } from '@/utils/base64ToUrl'
+import { userApi } from '@/api'
 
 const show_user_info = ref(false)
 const infoStore = InfoStore()
 const permission = infoStore.type
 
-// 首先判断token是否过期
-onMounted(() => {
-    req1.post('/req1/user/visitor-token-check/', {
-        token: infoStore.token
-    }).then(res => {
+const tokenCheck = async () => {
+    try {
+        const res = await userApi.tokenCheck({ token: infoStore.token })
         if (res.data === true) {
             show_user_info.value = true
             get_avatar()
@@ -54,7 +52,14 @@ onMounted(() => {
             show_user_info.value = false
             infoStore.clear_info()
         }
-    })
+    } catch (err) {
+        //
+    }
+}
+
+// 首先判断token是否过期
+onMounted(() => {
+    tokenCheck()
 })
 
 watch(
@@ -89,16 +94,17 @@ const must_login = () => {
 }
 
 const url = ref('')
-const get_avatar = () => {
-    req1.get(`/req1/user/get-avatar/`)
-        .then(res => {
-            if (res.data !== '') {
-                url.value = convert_to_url(res.data)
-            } else {
-                url.value = require('../../assets/avatar.webp')
-            }
-        })
-        .catch(() => {})
+const get_avatar = async () => {
+    try {
+        const res = await userApi.getAvatar()
+        if (res.data !== '') {
+            url.value = convert_to_url(res.data)
+        } else {
+            url.value = require('../../assets/avatar.webp')
+        }
+    } catch (err) {
+        //
+    }
 }
 </script>
 

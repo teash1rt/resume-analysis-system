@@ -1,4 +1,5 @@
 import userApi from './userApi'
 import resumeApi from './resumeApi'
+import statisticsApi from './statisticsApi'
 
-export { userApi, resumeApi }
+export { userApi, resumeApi, statisticsApi }
