@@ -58,9 +58,10 @@ python script.py
 
 1. 下载模型到`FastApi/models`目录下
 
-    > 原来的链接模型文件损坏，现在只能用百度网盘，但是隔一段时间就会失效 :(，可以通过 issues 解决一下
+    > 百度网盘隔段时间就会失效，可以通过 issues 解决下
+    > 有木有什么稳定靠谱的方法 :sob:
 
-    链接：https://pan.baidu.com/s/1F896LjLFOnlK6RYx1Jj5ng?pwd=e5io 提取码：e5io
+    链接：https://pan.baidu.com/s/1ppkmLlsn4joBOYHH_jsrHg?pwd=w4r9 提取码：w4r9
 
 2. 在`FastApi`目录下建立`secrets.txt`
 
