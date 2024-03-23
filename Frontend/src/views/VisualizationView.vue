@@ -30,20 +30,20 @@ const edu_data = ref(null),
 // 解决 chart 在 onMounted 渲染时还没接收到数据
 const data_receive = ref(false)
 
-const init = async () => {
-    try {
-        const res = await statisticsApi.getStatisticsInfo()
-        const { education_statistics, experience_statistics, location_statistics } = res.data
-        edu_data.value = education_statistics
-        exp_data.value = experience_statistics
-        loc_data.value = location_statistics
-        data_receive.value = true
-    } catch (err) {
-        //
-    }
-}
-
 onMounted(() => {
+    const init = async () => {
+        try {
+            const res = await statisticsApi.getStatisticsInfo()
+            const { education_statistics, experience_statistics, location_statistics } = res.data
+            edu_data.value = education_statistics
+            exp_data.value = experience_statistics
+            loc_data.value = location_statistics
+            data_receive.value = true
+        } catch (err) {
+            //
+        }
+    }
+
     init()
 })
 </script>

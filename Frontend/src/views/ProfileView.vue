@@ -46,20 +46,20 @@ const infoStore = InfoStore()
 const permission = infoStore.type
 const url = ref('')
 
-const init = async () => {
-    try {
-        const res = await userApi.getAvatar()
-        if (res.data !== '') {
-            url.value = convert_to_url(res.data)
-        } else {
-            url.value = require('../assets/avatar.webp')
-        }
-    } catch (err) {
-        //
-    }
-}
-
 onMounted(() => {
+    const init = async () => {
+        try {
+            const res = await userApi.getAvatar()
+            if (res.data !== '') {
+                url.value = convert_to_url(res.data)
+            } else {
+                url.value = require('../assets/avatar.webp')
+            }
+        } catch (err) {
+            //
+        }
+    }
+
     init()
 })
 </script>

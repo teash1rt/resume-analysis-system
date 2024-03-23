@@ -44,20 +44,20 @@ const data = reactive([])
 
 const mp = new Map()
 
-const init = async () => {
-    try {
-        const res = await resumeApi.getUploadResumes()
-        res.data.map((item, idx) => {
-            mp.set(item.rid, idx)
-            return (item.summaryInfo = JSON.parse(item.summaryInfo))
-        })
-        Object.assign(data, res.data)
-    } catch (err) {
-        //
-    }
-}
-
 onMounted(() => {
+    const init = async () => {
+        try {
+            const res = await resumeApi.getUploadResumes()
+            res.data.map((item, idx) => {
+                mp.set(item.rid, idx)
+                return (item.summaryInfo = JSON.parse(item.summaryInfo))
+            })
+            Object.assign(data, res.data)
+        } catch (err) {
+            //
+        }
+    }
+
     init()
 })
 

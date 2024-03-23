@@ -124,44 +124,45 @@
 import { ref, reactive, onMounted } from 'vue'
 import resumeData from '@/components/common/resumeData.vue'
 import { resumeApi } from '@/api'
+import { download_resume_fn } from '@/utils/download'
 
 const current_page = ref(1)
 const page_size = 4
 const total_count = ref(0)
 
-let resume_data = reactive([])
+const resume_data = reactive([])
 const tmp_favorite = reactive([])
 
 const page_change = () => {
-    resume_data = reactive([])
+    resume_data.length = 0
     get_page_resumes(sort_order.value)
 }
 
-const init = async () => {
-    try {
-        const res = await resumeApi.getTotalCount()
-        total_count.value = res.data
-        get_page_resumes(1)
-    } catch (err) {
-        //
-    }
-}
-
 onMounted(() => {
+    const init = async () => {
+        try {
+            const res = await resumeApi.getTotalCount()
+            total_count.value = res.data
+            get_page_resumes(1)
+        } catch (err) {
+            //
+        }
+    }
+
     init()
 })
 
+const sort_order_map = {
+    0: '最早发布',
+    1: '最新发布',
+    2: '按推荐倒序'
+}
+
 const sort_order = ref(0)
-const sort_order_name = ref('最新发布')
+const sort_order_name = ref(sort_order_map[0])
 const get_page_resumes = async e => {
     sort_order.value = e
-    if (e === 0) {
-        sort_order_name.value = '最早发布'
-    } else if (e === 1) {
-        sort_order_name.value = '最新发布'
-    } else {
-        sort_order_name.value = '按推荐倒序'
-    }
+    sort_order_name.value = sort_order_map[e]
 
     try {
         const res = await resumeApi.getPageResumesInfo({
@@ -225,27 +226,7 @@ const close_dialog = done => {
 }
 
 const download_resume = async rid => {
-    try {
-        const res = await resumeApi.downloadResume({ rid })
-        const binaryData = atob(res.data.data)
-        const uint8Array = new Uint8Array(binaryData.length)
-        for (let i = 0; i < binaryData.length; i++) {
-            uint8Array[i] = binaryData.charCodeAt(i)
-        }
-        const blob = new Blob([uint8Array])
-        // 创建 a 标签
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = `简历${res.data.type}`
-        // 隐藏 a 标签
-        a.style.display = 'none'
-        // 将a标签追加到文档对象中
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-    } catch (err) {
-        //
-    }
+    download_resume_fn(rid)
 }
 </script>
 
