@@ -5,12 +5,24 @@
                 <router-link :to="{ name: 'home' }" class="resume-link" href="#">简历解析系统</router-link>
             </div>
             <div class="block-b">
-                <div class="match-link">
-                    <router-link :to="{ name: 'loadview' }">简历解析</router-link>
-                    <router-link :to="{ name: 'uploadview' }" v-if="permission != 1">简历上传</router-link>
-                    <router-link :to="{ name: 'resumesview' }" v-if="permission == 1">简历数据</router-link>
-                    <router-link :to="{ name: 'profileview' }">个人中心</router-link>
-                </div>
+                <router-link :class="router_name === 'loadview' ? 'highlight' : null" :to="{ name: 'loadview' }"
+                    >简历解析</router-link
+                >
+                <router-link
+                    :class="router_name === 'uploadview' ? 'highlight' : null"
+                    :to="{ name: 'uploadview' }"
+                    v-if="permission != 1"
+                    >简历上传</router-link
+                >
+                <router-link
+                    :class="router_name === 'resumesview' ? 'highlight' : null"
+                    :to="{ name: 'resumesview' }"
+                    v-if="permission == 1"
+                    >简历数据</router-link
+                >
+                <router-link :class="router_name === 'profileview' ? 'highlight' : null" :to="{ name: 'profileview' }"
+                    >个人中心</router-link
+                >
             </div>
             <div class="block-c">
                 <el-button class="login-btn" color="#6f59f7" @click="to_login" v-if="!show_user_info" size="large">
@@ -37,7 +49,9 @@ import loginDialog from '@/components/common/loginDialog.vue'
 import { InfoStore } from '@/stores/InfoStore'
 import { convert_to_url } from '@/utils/base64ToUrl'
 import { userApi } from '@/api'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const show_user_info = ref(false)
 const infoStore = InfoStore()
 const permission = infoStore.type
@@ -68,6 +82,15 @@ watch(
         if (newVal === null) {
             show_user_info.value = false
         }
+    }
+)
+
+const router_name = ref(route.name)
+watch(
+    () => route.name,
+    newV => {
+        router_name.value = newV
+        console.log(router_name.value)
     }
 )
 
@@ -114,7 +137,7 @@ const get_avatar = async () => {
     top: 0;
     left: 0;
     width: 100%;
-    height: 8vh;
+    height: 90px;
     background: linear-gradient(to right, rgb(249, 250, 254), rgb(249, 250, 254), rgb(208, 231, 244));
     transition: background-color 0.3s;
     min-width: 1000px;
@@ -145,15 +168,32 @@ const get_avatar = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
-}
 
-.match-link a {
-    color: black;
-    margin: 0 2vw;
-    font-size: 2.2rem;
+    a {
+        color: black;
+        margin: 0 2vw;
+        font-size: 2.2rem;
+        text-decoration: none;
+        height: 40px;
 
-    &:hover {
-        color: rgb(18, 42, 198);
+        &:hover {
+            color: rgb(18, 42, 198);
+        }
+    }
+
+    .highlight {
+        color: rgb(18, 42, 198) !important;
+        position: relative;
+        font-weight: 600;
+
+        &::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 3px;
+            background-color: rgb(18, 42, 198);
+        }
     }
 }
 
@@ -184,8 +224,8 @@ const get_avatar = async () => {
 
 .avatar {
     margin-left: 3vw;
-    width: 3.5vw;
-    height: 3.5vw;
+    width: 70px;
+    height: 70px;
 }
 
 .avatar img {
