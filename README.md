@@ -3,6 +3,10 @@
 基于自然语言处理技术的前后端分离项目，支持对多种格式的简历文件进行关键信息的提取，分析和数据可视化
 
 > 有问题看 issues
+>
+> 维护计划目前在重构 vue 部分（感觉升级到 vite 和 typescript 迁移成本属实有点大...）
+>
+> :point_right: feat/fe-refactor
 
 ### 目录说明
 
@@ -54,9 +58,10 @@ python script.py
 
 1. 下载模型到`FastApi/models`目录下
 
-    > 原来的链接模型文件损坏，现在只能用百度网盘，但是隔一段时间就会失效 :(，可以通过 issues 解决一下
+    > 百度网盘隔段时间就会失效，可以通过 issues 解决下
+    > 有木有什么稳定靠谱的方法 :sob:
 
-    链接：https://pan.baidu.com/s/1F896LjLFOnlK6RYx1Jj5ng?pwd=e5io 提取码：e5io
+    链接：https://pan.baidu.com/s/1ppkmLlsn4joBOYHH_jsrHg?pwd=w4r9 提取码：w4r9
 
 2. 在`FastApi`目录下建立`secrets.txt`
 
