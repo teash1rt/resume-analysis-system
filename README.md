@@ -31,9 +31,9 @@
 #### 前端
 
 ```shell
-npm install
+pnpm install
 
-npm run serve-dev
+pnpm dev
 ```
 
 #### 后端

@@ -37,8 +37,9 @@
 
 <script setup>
 import { ref, onMounted, reactive, toRaw } from 'vue'
-import { req1 } from '@/utils/request'
+import { resumeApi } from '@/api'
 import resumeData from '@/components/common/resumeData.vue'
+import { download_resume_fn } from '@/utils/download'
 
 const count = ref(0)
 const data = reactive([])
@@ -46,17 +47,20 @@ const data = reactive([])
 // 记录data下标和rid的映射关系
 const mp = new Map()
 
-onMounted(() => {
-    req1.get(`/req1/resume/get-favorite/`).then(res => {
-        count.value = res.data.length
-        res.data.map((item, idx) => {
-            item.summaryInfo = JSON.parse(item.summaryInfo)
-            item.detailInfo = JSON.parse(item.detailInfo)
-            mp.set(item.rid, idx)
-            return item
-        })
-        Object.assign(data, res.data)
+const getFavoriteResume = async () => {
+    const res = await resumeApi.getFavoriteResume()
+    count.value = res.data.length
+    res.data.map((item, idx) => {
+        item.summaryInfo = JSON.parse(item.summaryInfo)
+        item.detailInfo = JSON.parse(item.detailInfo)
+        mp.set(item.rid, idx)
+        return item
     })
+    Object.assign(data, res.data)
+}
+
+onMounted(() => {
+    getFavoriteResume()
 })
 
 const load = () => {
@@ -72,30 +76,11 @@ const preview_resume = rid => {
 
 const cancel_favorite = rid => {
     data.splice(data[mp.get(rid)], 1)
-    req1.post('/req1/resume/cancel-favorite/', {
-        rid: rid
-    }).catch(() => {})
+    resumeApi.cancelFavoriteResume(rid)
 }
 
-const download_resume = rid => {
-    req1.get(`/req1/resume/download/${rid}/`).then(res => {
-        const binaryData = atob(res.data.data)
-        const uint8Array = new Uint8Array(binaryData.length)
-        for (let i = 0; i < binaryData.length; i++) {
-            uint8Array[i] = binaryData.charCodeAt(i)
-        }
-        const blob = new Blob([uint8Array])
-        // 创建 a 标签
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = `简历${res.data.type}`
-        // 隐藏 a 标签
-        a.style.display = 'none'
-        // 将a标签追加到文档对象中
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-    })
+const download_resume = async rid => {
+    download_resume_fn(rid)
 }
 
 const content_show = e => {

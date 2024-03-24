@@ -122,61 +122,67 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { req1 } from '@/utils/request'
 import resumeData from '@/components/common/resumeData.vue'
+import { resumeApi } from '@/api'
+import { download_resume_fn } from '@/utils/download'
 
 const current_page = ref(1)
 const page_size = 4
 const total_count = ref(0)
 
-let resume_data = reactive([])
+const resume_data = reactive([])
 const tmp_favorite = reactive([])
 
 const page_change = () => {
-    resume_data = reactive([])
+    resume_data.length = 0
     get_page_resumes(sort_order.value)
 }
 
 onMounted(() => {
-    req1.get('/req1/resume/get-total-count/')
-        .then(res => {
+    const init = async () => {
+        try {
+            const res = await resumeApi.getTotalCount()
             total_count.value = res.data
-        })
-        .catch(() => {})
-    get_page_resumes(1)
+            get_page_resumes(1)
+        } catch (err) {
+            //
+        }
+    }
+
+    init()
 })
 
+const sort_order_map = {
+    0: '最早发布',
+    1: '最新发布',
+    2: '按推荐倒序'
+}
+
 const sort_order = ref(0)
-const sort_order_name = ref('最新发布')
-const get_page_resumes = e => {
+const sort_order_name = ref(sort_order_map[0])
+const get_page_resumes = async e => {
     sort_order.value = e
-    if (e === 0) {
-        sort_order_name.value = '最早发布'
-    } else if (e === 1) {
-        sort_order_name.value = '最新发布'
-    } else {
-        sort_order_name.value = '按推荐倒序'
-    }
-    req1.get('/req1/resume/get-page-resumes-info/', {
-        params: {
+    sort_order_name.value = sort_order_map[e]
+
+    try {
+        const res = await resumeApi.getPageResumesInfo({
             page: current_page.value,
             page_size: page_size,
             sort_order: sort_order.value
-        }
-    })
-        .then(res => {
-            res.data.map(item => {
-                item.summaryInfo = JSON.parse(item.summaryInfo)
-                return item
-            })
-            Object.assign(resume_data, res.data)
-            // 清空数组
-            tmp_favorite.length = 0
-            for (let i = 0; i < resume_data.length; i++) {
-                tmp_favorite.push(resume_data[i].favorite)
-            }
         })
-        .catch(() => {})
+        res.data.map(item => {
+            item.summaryInfo = JSON.parse(item.summaryInfo)
+            return item
+        })
+        Object.assign(resume_data, res.data)
+        // 清空数组
+        tmp_favorite.length = 0
+        for (let i = 0; i < resume_data.length; i++) {
+            tmp_favorite.push(resume_data[i].favorite)
+        }
+    } catch (err) {
+        //
+    }
 }
 
 const content_show = e => {
@@ -198,27 +204,20 @@ const change_favorite_status = (idx, rid) => {
     }
     timer = setTimeout(() => {
         lastIdx = idx
-        if (tmp_favorite[idx]) {
-            req1.post('/req1/resume/add-favorite/', {
-                rid: rid
-            }).catch(() => {})
-        } else {
-            req1.post('/req1/resume/cancel-favorite/', {
-                rid: rid
-            }).catch(() => {})
-        }
+        tmp_favorite[idx] ? resumeApi.addFavoriteResume({ rid: rid }) : resumeApi.cancelFavoriteResume({ rid: rid })
     }, 750)
 }
 
 const data = ref('')
 const dialog_visible = ref(false)
-const preview_resume = rid => {
-    req1.get(`/req1/resume/get-one-resume-info/${rid}/`)
-        .then(res => {
-            data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
-            dialog_visible.value = true
-        })
-        .catch(() => {})
+const preview_resume = async rid => {
+    try {
+        const res = await resumeApi.getOneResumeInfo({ rid: rid })
+        data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
+        dialog_visible.value = true
+    } catch (err) {
+        //
+    }
 }
 
 const close_dialog = done => {
@@ -226,25 +225,8 @@ const close_dialog = done => {
     done()
 }
 
-const download_resume = rid => {
-    req1.get(`/req1/resume/download/${rid}/`).then(res => {
-        const binaryData = atob(res.data.data)
-        const uint8Array = new Uint8Array(binaryData.length)
-        for (let i = 0; i < binaryData.length; i++) {
-            uint8Array[i] = binaryData.charCodeAt(i)
-        }
-        const blob = new Blob([uint8Array])
-        // 创建 a 标签
-        const a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = `简历${res.data.type}`
-        // 隐藏 a 标签
-        a.style.display = 'none'
-        // 将a标签追加到文档对象中
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-    })
+const download_resume = async rid => {
+    download_resume_fn(rid)
 }
 </script>
 

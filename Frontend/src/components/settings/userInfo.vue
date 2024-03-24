@@ -131,10 +131,10 @@
 <script setup>
 import { InfoStore } from '@/stores/InfoStore'
 import { ref, reactive } from 'vue'
-import { req1 } from '@/utils/request'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { SHA256Encrypt } from '@/utils/encrypt'
+import { userApi } from '@/api'
 
 const infoStore = InfoStore()
 const permission = infoStore.type == 0 ? '普通用户' : '高级权限'
@@ -157,52 +157,48 @@ const edit_email = () => {
     to_change_email.value = true
 }
 
-const change_username = () => {
-    req1.post('/req1/user/change-username/', {
-        new_username: username_data.value
-    })
-        .then(() => {
-            req1.get(`/req1/user/get-info/`)
-                .then(() => {
-                    ElNotification({
-                        title: '用户名更改成功',
-                        type: 'success'
-                    })
-                    infoStore.update_info()
-                    to_change_username.value = false
-                })
-                .catch(() => {})
+const change_username = async () => {
+    try {
+        await userApi.changeUsername({ new_username: username_data.value })
+        await userApi.getUserInfo()
+        ElNotification({
+            title: '用户名更改成功',
+            type: 'success'
         })
-        .catch(() => {})
+        infoStore.update_info()
+        to_change_username.value = false
+    } catch (err) {
+        //
+    }
 }
 
-const change_email = () => {
-    req1.post('/req1/user/change-email/', {
-        new_email: email_data.value
-    })
-        .then(() => {
-            logout()
-        })
-        .catch(() => {})
+const change_email = async () => {
+    try {
+        await userApi.changeEmail({ new_email: email_data.value })
+        logout()
+    } catch (err) {
+        //
+    }
 }
 
 const old_password = ref('')
 const new_password = ref('')
 const to_change_password = ref(false)
 
-const change_password = () => {
-    req1.post('/req1/user/change-password/', {
-        old_password: SHA256Encrypt(old_password.value),
-        new_password: SHA256Encrypt(new_password.value)
-    })
-        .then(() => {
-            to_change_password.value = false
-            ElNotification({
-                title: '密码更改成功',
-                type: 'success'
-            })
+const change_password = async () => {
+    try {
+        await userApi.changePassword({
+            old_password: SHA256Encrypt(old_password.value),
+            new_password: SHA256Encrypt(new_password.value)
         })
-        .catch(() => {})
+        to_change_password.value = false
+        ElNotification({
+            title: '密码更改成功',
+            type: 'success'
+        })
+    } catch (err) {
+        //
+    }
 }
 
 // 控制申请弹窗
@@ -217,62 +213,66 @@ const form = reactive({
 const waiting_verify_code = ref(false)
 const countdown = ref(30)
 
-const apply_permission = () => {
-    req1.post('/req1/user/check-application-status/', {
-        email: infoStore.email
-    })
-        .then(res => {
-            if (res.data) {
-                ElNotification({
-                    title: '您的申请正在审核中',
-                    message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
-                    type: 'warning'
-                })
-            } else {
-                to_apply_permission.value = true
-            }
+const apply_permission = async () => {
+    try {
+        const res = await userApi.checkApplicationStatus({
+            email: infoStore.email
         })
-        .catch(() => {})
-}
-
-const get_email_verify_code = () => {
-    waiting_verify_code.value = true
-    req1.post('/req1/user/get-apply-verify-code/', {
-        email: infoStore.email
-    })
-        .then(() => {
+        if (res.data) {
             ElNotification({
-                title: '邮箱验证码发送成功',
-                type: 'success'
-            })
-        })
-        .catch(() => {})
-    const timer = setInterval(() => {
-        countdown.value -= 1
-        if (countdown.value <= 0) {
-            clearInterval(timer)
-            countdown.value = 30
-            waiting_verify_code.value = false
-        }
-    }, 1000)
-}
-
-const submit_apply = () => {
-    req1.post('/req1/user/apply-permission/', {
-        email: infoStore.email,
-        purpose: form.purpose,
-        description: form.description,
-        verify_code: form.verify_code
-    })
-        .then(() => {
-            to_apply_permission.value = false
-            ElNotification({
-                title: '申请成功！请等待审核',
+                title: '您的申请正在审核中',
                 message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
-                type: 'success'
+                type: 'warning'
             })
+        } else {
+            to_apply_permission.value = true
+        }
+    } catch (err) {
+        //
+    }
+}
+
+const get_email_verify_code = async () => {
+    waiting_verify_code.value = true
+    try {
+        await userApi.getApplyVerifyCode({
+            email: infoStore.email
         })
-        .catch(() => {})
+        ElNotification({
+            title: '邮箱验证码发送成功',
+            type: 'success'
+        })
+    } catch (err) {
+        //
+    } finally {
+        const timer = setInterval(() => {
+            countdown.value -= 1
+            if (countdown.value <= 0) {
+                clearInterval(timer)
+                countdown.value = 30
+                waiting_verify_code.value = false
+            }
+        }, 1000)
+    }
+}
+
+const submit_apply = async () => {
+    try {
+        await userApi.applyPermission({
+            email: infoStore.email,
+            purpose: form.purpose,
+            description: form.description,
+            verify_code: form.verify_code
+        })
+        to_apply_permission.value = false
+        ElNotification({
+            title: '申请成功！请等待审核',
+            message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
+            type: 'success'
+        })
+    } catch (err) {
+        //
+    }
 }
 </script>
 

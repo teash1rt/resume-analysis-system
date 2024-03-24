@@ -33,7 +33,7 @@
 import { ref } from 'vue'
 import { ElNotification, genFileId } from 'element-plus'
 import resumeData from '@/components/common/resumeData.vue'
-import { req2 } from '@/utils/request'
+import { userApi } from '@/api'
 
 const uploadRef = ref()
 const uploadUrl = '/req2/qes/'
@@ -78,7 +78,7 @@ const beforeAvatarUpload = async rawFile => {
     }
 
     try {
-        const res = await req2.get('/req2/authorize/')
+        const res = await userApi.getAuthorize()
         jwt_token.value = res.token
     } catch (err) {
         ElNotification({

@@ -182,7 +182,7 @@
 import { ref, nextTick, h } from 'vue'
 import { genFileId, ElNotification } from 'element-plus'
 import { InfoStore } from '@/stores/InfoStore'
-import { req1, req2 } from '@/utils/request'
+import { userApi, resumeApi } from '@/api'
 
 const upload_ref = ref(null)
 const jwt_token = ref('')
@@ -283,7 +283,7 @@ const beforeUpload = async rawFile => {
             return false
         }
         try {
-            await req1.get(`/req1/resume/check-before-upload/`)
+            await resumeApi.checkBeforeUpload()
         } catch {
             ElNotification({
                 title: '用户同时只能上传三份简历',
@@ -293,7 +293,7 @@ const beforeUpload = async rawFile => {
             return false
         }
         try {
-            const res = await req2.get('/req2/authorize/')
+            const res = await userApi.getAuthorize()
             jwt_token.value = res.token
         } catch (err) {
             ElNotification({

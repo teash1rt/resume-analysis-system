@@ -5,12 +5,24 @@
                 <router-link :to="{ name: 'home' }" class="resume-link" href="#">简历解析系统</router-link>
             </div>
             <div class="block-b">
-                <div class="match-link">
-                    <router-link :to="{ name: 'loadview' }">简历解析</router-link>
-                    <router-link :to="{ name: 'uploadview' }" v-if="permission != 1">简历上传</router-link>
-                    <router-link :to="{ name: 'resumesview' }" v-if="permission == 1">简历数据</router-link>
-                    <router-link :to="{ name: 'profileview' }">个人中心</router-link>
-                </div>
+                <router-link :class="router_name === 'loadview' ? 'highlight' : null" :to="{ name: 'loadview' }"
+                    >简历解析</router-link
+                >
+                <router-link
+                    :class="router_name === 'uploadview' ? 'highlight' : null"
+                    :to="{ name: 'uploadview' }"
+                    v-if="permission != 1"
+                    >简历上传</router-link
+                >
+                <router-link
+                    :class="router_name === 'resumesview' ? 'highlight' : null"
+                    :to="{ name: 'resumesview' }"
+                    v-if="permission == 1"
+                    >简历数据</router-link
+                >
+                <router-link :class="router_name === 'profileview' ? 'highlight' : null" :to="{ name: 'profileview' }"
+                    >个人中心</router-link
+                >
             </div>
             <div class="block-c">
                 <el-button class="login-btn" color="#6f59f7" @click="to_login" v-if="!show_user_info" size="large">
@@ -35,18 +47,18 @@
 import { ref, onMounted, watch } from 'vue'
 import loginDialog from '@/components/common/loginDialog.vue'
 import { InfoStore } from '@/stores/InfoStore'
-import { req1 } from '@/utils/request'
 import { convert_to_url } from '@/utils/base64ToUrl'
+import { userApi } from '@/api'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const show_user_info = ref(false)
 const infoStore = InfoStore()
 const permission = infoStore.type
 
-// 首先判断token是否过期
-onMounted(() => {
-    req1.post('/req1/user/visitor-token-check/', {
-        token: infoStore.token
-    }).then(res => {
+const tokenCheck = async () => {
+    try {
+        const res = await userApi.tokenCheck({ token: infoStore.token })
         if (res.data === true) {
             show_user_info.value = true
             get_avatar()
@@ -54,7 +66,14 @@ onMounted(() => {
             show_user_info.value = false
             infoStore.clear_info()
         }
-    })
+    } catch (err) {
+        //
+    }
+}
+
+// 首先判断token是否过期
+onMounted(() => {
+    tokenCheck()
 })
 
 watch(
@@ -63,6 +82,15 @@ watch(
         if (newVal === null) {
             show_user_info.value = false
         }
+    }
+)
+
+const router_name = ref(route.name)
+watch(
+    () => route.name,
+    newV => {
+        router_name.value = newV
+        console.log(router_name.value)
     }
 )
 
@@ -89,16 +117,17 @@ const must_login = () => {
 }
 
 const url = ref('')
-const get_avatar = () => {
-    req1.get(`/req1/user/get-avatar/`)
-        .then(res => {
-            if (res.data !== '') {
-                url.value = convert_to_url(res.data)
-            } else {
-                url.value = require('../../assets/avatar.webp')
-            }
-        })
-        .catch(() => {})
+const get_avatar = async () => {
+    try {
+        const res = await userApi.getAvatar()
+        if (res.data !== '') {
+            url.value = convert_to_url(res.data)
+        } else {
+            url.value = require('../../assets/avatar.webp')
+        }
+    } catch (err) {
+        //
+    }
 }
 </script>
 
@@ -108,7 +137,7 @@ const get_avatar = () => {
     top: 0;
     left: 0;
     width: 100%;
-    height: 8vh;
+    height: 90px;
     background: linear-gradient(to right, rgb(249, 250, 254), rgb(249, 250, 254), rgb(208, 231, 244));
     transition: background-color 0.3s;
     min-width: 1000px;
@@ -139,15 +168,32 @@ const get_avatar = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-}
 
-.match-link a {
-    color: black;
-    margin: 0 2vw;
-    font-size: 2.2rem;
+    a {
+        color: black;
+        margin: 0 2vw;
+        font-size: 2.2rem;
+        text-decoration: none;
+        height: 40px;
 
-    &:hover {
-        color: rgb(18, 42, 198);
+        &:hover {
+            color: rgb(18, 42, 198);
+        }
+    }
+
+    .highlight {
+        color: rgb(18, 42, 198) !important;
+        position: relative;
+        font-weight: 600;
+
+        &::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 3px;
+            background-color: rgb(18, 42, 198);
+        }
     }
 }
 
@@ -178,8 +224,8 @@ const get_avatar = () => {
 
 .avatar {
     margin-left: 3vw;
-    width: 3.5vw;
-    height: 3.5vw;
+    width: 70px;
+    height: 70px;
 }
 
 .avatar img {

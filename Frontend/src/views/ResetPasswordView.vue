@@ -15,35 +15,38 @@
 
 <script setup>
 import { ref } from 'vue'
-import { req1 } from '@/utils/request'
 import { ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { SHA256Encrypt } from '@/utils/encrypt'
+import { userApi } from '@/api'
 
 const new_password = ref('')
 const new_password_confirm = ref('')
 const router = useRouter()
 
-const reset_password = () => {
+const reset_password = async () => {
     if (new_password.value !== new_password_confirm.value) {
         ElNotification({
             title: '两次密码不一致',
             type: 'warning'
         })
     } else {
-        // 获得 url 中最后的 token 部分做验证
-        const paths = router.currentRoute.value.fullPath.split('/')
-        const url_path = paths[paths.length - 2]
-        req1.post('/req1/user/reset-password/', {
-            url_path: url_path,
-            new_password: SHA256Encrypt(new_password.value)
-        }).then(() => {
+        try {
+            // 获得 url 中最后的 token 部分做验证
+            const paths = router.currentRoute.value.fullPath.split('/')
+            const url_path = paths[paths.length - 2]
+            await userApi.resetPassword({
+                url_path: url_path,
+                new_password: SHA256Encrypt(new_password.value)
+            })
             ElNotification({
                 title: '更改成功',
                 type: 'success'
             })
             router.push({ name: 'home' })
-        })
+        } catch (err) {
+            //
+        }
     }
 }
 </script>
