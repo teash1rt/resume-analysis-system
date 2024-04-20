@@ -251,7 +251,7 @@ const download_resume = async rid => {
 
 .box-card {
     width: 65vw;
-    margin: 11vh auto;
+    margin: 10px auto 0;
     height: 82vh;
     min-width: 800px;
     overflow: auto;
