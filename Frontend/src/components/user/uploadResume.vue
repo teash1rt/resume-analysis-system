@@ -42,14 +42,14 @@ import { resumeApi } from '@/api'
 
 const data = reactive([])
 
-const mp = new Map()
+const mp = {}
 
 onMounted(() => {
     const init = async () => {
         try {
             const res = await resumeApi.getUploadResumes()
             res.data.map((item, idx) => {
-                mp.set(item.rid, idx)
+                mp[item.rid] = idx
                 return (item.summaryInfo = JSON.parse(item.summaryInfo))
             })
             Object.assign(data, res.data)
@@ -68,7 +68,7 @@ const del_upload_resume = async rid => {
             title: res.msg,
             type: 'success'
         })
-        data.splice(data[mp.get[rid]], 1)
+        data.splice(data[mp[rid]], 1)
     } catch (err) {
         //
     }
@@ -83,22 +83,22 @@ const get_tree_data = e => {
     ]
 }
 
-const basic_data_map = new Map()
-basic_data_map
-    .set('name', '姓名')
-    .set('birth', '生日')
-    .set('age', '年龄')
-    .set('tel', '电话')
-    .set('email', '邮箱')
-    .set('college', '学校')
-    .set('loc', '住址')
-    .set('edu', '学历')
+const basic_data_map = {
+    name: '姓名',
+    birth: '生日',
+    age: '年龄',
+    tel: '电话',
+    email: '邮箱',
+    college: '学校',
+    loc: '住址',
+    edu: '学历'
+}
 
 const basic_data_tree = e => {
     const arr = []
     for (const key in e) {
         const leaf = {}
-        leaf['label'] = `${basic_data_map.get(key)}:${e[key]}`
+        leaf['label'] = `${basic_data_map[key]}:${e[key]}`
         arr.push(leaf)
     }
     return arr

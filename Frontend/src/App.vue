@@ -24,7 +24,7 @@ const infoStore = InfoStore()
 }
 
 .content-container {
-    margin-top: 5%;
+    padding-top: 90px;
 }
 
 html {

@@ -81,19 +81,19 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
     public R get_upload_resumes() {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         QueryWrapper<Resume> resumeQueryWrapper = new QueryWrapper<>();
-        resumeQueryWrapper.eq("uid", uid).select("uid", "summary_info", "score", "create_time").orderByDesc("uid");
+        resumeQueryWrapper.eq("uid", uid).select("rid", "summary_info", "score", "create_time").orderByDesc("rid");
         List<Resume> resumeList = resumeMapper.selectList(resumeQueryWrapper);
         LocalDateTime now = LocalDateTime.now();
 
         List<Map<String, Object>> upload_resumes = new ArrayList<>();
         resumeList.forEach(e -> {
             Map<String, Object> info_map = new HashMap<>();
-            info_map.put("rid", e.getUid());
+            info_map.put("rid", e.getRid());
             info_map.put("summaryInfo", e.getSummaryInfo());
             info_map.put("createTime", e.getCreateTime());
             // TODO 优化这段查询
             QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
-            resumeFavoriteQueryWrapper.eq("rid", e.getUid());
+            resumeFavoriteQueryWrapper.eq("rid", e.getRid());
             Long favorite_count = resumeFavoriteMapper.selectCount(resumeFavoriteQueryWrapper);
             LocalDateTime dateTime = e.getCreateTime();
             Duration duration = Duration.between(dateTime, now);
@@ -118,18 +118,24 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
     @Override
     public R del_upload_resume(Integer rid) {
         Resume del_resume = resumeMapper.selectById(rid);
-        // 删文件
-        String del_resume_route = del_resume.getRoute();
-        File del_resume_file = new File(del_resume_route);
-        del_resume_file.delete();
-        // 同步 mongodb 数据
-        String del_resume_summary_info = del_resume.getSummaryInfo();
-        statisticsInfoService.update_statistics_info(del_resume_summary_info, -1, rid);
-        // 删除收藏
-        QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
-        resumeFavoriteQueryWrapper.eq("rid", rid);
-        resumeFavoriteMapper.delete(resumeFavoriteQueryWrapper);
-        resumeMapper.deleteById(rid);
-        return R.success("删除简历成功");
+        try {
+            // 删文件
+            String del_resume_route = del_resume.getRoute();
+            File del_resume_file = new File(del_resume_route);
+            del_resume_file.delete();
+            // 同步 mongodb 数据
+            String del_resume_summary_info = del_resume.getSummaryInfo();
+            statisticsInfoService.update_statistics_info(del_resume_summary_info, -1, rid);
+            // 删除收藏
+            QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
+            resumeFavoriteQueryWrapper.eq("rid", rid);
+            resumeFavoriteMapper.delete(resumeFavoriteQueryWrapper);
+            resumeMapper.deleteById(rid);
+            return R.success("删除简历成功");
+        } catch (Exception e) {
+            System.out.println(e);
+            return R.error("删除简历失败");
+        }
+
     }
 }

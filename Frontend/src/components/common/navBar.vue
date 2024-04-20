@@ -90,7 +90,6 @@ watch(
     () => route.name,
     newV => {
         router_name.value = newV
-        console.log(router_name.value)
     }
 )
 

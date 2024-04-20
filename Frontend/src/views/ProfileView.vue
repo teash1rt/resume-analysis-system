@@ -2,7 +2,7 @@
     <el-card class="box-card">
         <div class="common-layout">
             <el-container class="container">
-                <el-aside width="14vw" class="aside">
+                <el-aside width="300px" class="aside">
                     <div class="avatar">
                         <img :src="url" alt="avatar" class="avatar-img" />
                     </div>
@@ -66,10 +66,9 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .box-card {
-    height: 59vh;
-    width: 62vw;
-    margin: 15vh auto;
-    min-width: 800px;
+    height: 600px;
+    width: 1500px;
+    margin: 35px auto;
 }
 
 .common-layout {
@@ -85,7 +84,6 @@ onMounted(() => {
 
 .avatar {
     width: 85%;
-    height: 0;
     padding-bottom: 90%;
     margin-top: 5vh;
     margin-left: 10%;
