@@ -133,7 +133,6 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
             resumeMapper.deleteById(rid);
             return R.success("删除简历成功");
         } catch (Exception e) {
-            System.out.println(e);
             return R.error("删除简历失败");
         }
 
