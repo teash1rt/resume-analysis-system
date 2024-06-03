@@ -4,9 +4,9 @@
 
 > 有问题看 issues
 >
-> 维护计划目前在重构 vue 部分（感觉升级到 vite 和 typescript 迁移成本属实有点大...）
+> 维护计划目前在重构 springboot 部分
 >
-> :point_right: feat/fe-refactor
+> :point_right: feat/be-refactor
 
 ### 目录说明
 
