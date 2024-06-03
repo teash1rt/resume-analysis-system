@@ -28,12 +28,6 @@ public class ResumeUploadController {
         return resumeUploadService.get_upload_resumes();
     }
 
-    @GetMapping("/check-before-upload/")
-    @PreAuthorize("hasAnyAuthority('ROLE_0')")
-    public R check_before_upload() {
-        return resumeUploadService.check_before_upload();
-    }
-
     @PostMapping("/del-upload-resume/")
     @PreAuthorize("hasAnyAuthority('ROLE_0')")
     public R del_upload_resume(@RequestBody Map<String, Integer> map) {

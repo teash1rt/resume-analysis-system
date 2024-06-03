@@ -10,7 +10,5 @@ public interface ResumeUploadService {
 
     R get_upload_resumes();
 
-    R check_before_upload();
-
     R del_upload_resume(Integer rid);
 }

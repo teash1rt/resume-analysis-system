@@ -179,10 +179,10 @@
 </template>
 
 <script setup>
-import { ref, nextTick, h } from 'vue'
+import { ref, nextTick } from 'vue'
 import { genFileId, ElNotification } from 'element-plus'
 import { InfoStore } from '@/stores/InfoStore'
-import { userApi, resumeApi } from '@/api'
+import { userApi } from '@/api'
 
 const upload_ref = ref(null)
 const jwt_token = ref('')
@@ -282,16 +282,7 @@ const beforeUpload = async rawFile => {
             })
             return false
         }
-        try {
-            await resumeApi.checkBeforeUpload()
-        } catch {
-            ElNotification({
-                title: '用户同时只能上传三份简历',
-                message: h('span', { style: 'color: teal' }, "请在'个人中心->上传记录'中删除简历再尝试提交")
-            })
-            refuse_beforeUpload()
-            return false
-        }
+
         try {
             const res = await userApi.getAuthorize()
             jwt_token.value = res.token

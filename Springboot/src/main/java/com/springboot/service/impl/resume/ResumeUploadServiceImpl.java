@@ -34,24 +34,12 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
 
     private final Environment environment;
 
-    private Boolean check_upload_count(Integer uid) {
-        QueryWrapper<Resume> resumeQueryWrapper = new QueryWrapper<>();
-        resumeQueryWrapper.eq("uid", uid);
-        return resumeMapper.selectCount(resumeQueryWrapper) < 3;
-    }
-
     @Override
     public R resume_upload(MultipartFile file, String summary_info, String detail_info, Float score, HttpServletRequest request) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
-        if (!check_upload_count(uid)) {
-            return R.error("上传简历已达上限");
-        }
-        String realPath;
-        if (Objects.equals(environment.getActiveProfiles()[0], "dev")) {
-            realPath = request.getSession().getServletContext().getRealPath("/resume/");
-        } else {
-            realPath = "/home/ubuntu/static/resume/";
-        }
+        String realPath = Objects.equals(environment.getActiveProfiles()[0], "dev") ?
+                request.getSession().getServletContext().getRealPath("/resume/") :
+                "/home/ubuntu/static/resume/";
 
         File folder = new File(realPath);
         if (!folder.isDirectory()) {
@@ -104,15 +92,6 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
             upload_resumes.add(info_map);
         });
         return R.success("查询上传的简历数据成功", upload_resumes);
-    }
-
-    @Override
-    public R check_before_upload() {
-        Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
-        if (!check_upload_count(uid)) {
-            return R.error("上传简历已达上限");
-        }
-        return R.success("上传简历数量未达上限");
     }
 
     @Override

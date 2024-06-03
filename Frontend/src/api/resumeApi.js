@@ -48,10 +48,6 @@ const deleteUploadResume = ({ rid: rid }) => {
     })
 }
 
-const checkBeforeUpload = () => {
-    return req1.get(`/req1/resume/check-before-upload/`)
-}
-
 const resumeApi = {
     getFavoriteResume,
     addFavoriteResume,
@@ -61,8 +57,7 @@ const resumeApi = {
     getPageResumesInfo,
     getOneResumeInfo,
     getUploadResumes,
-    deleteUploadResume,
-    checkBeforeUpload
+    deleteUploadResume
 }
 
 export default resumeApi
