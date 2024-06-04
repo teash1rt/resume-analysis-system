@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <div class="content">
-            <h1 class="topic">智能简历解析系统 V1.2</h1>
+            <h1 class="topic">智能简历解析系统 V{{ envStore.version }}</h1>
             <div class="desc">基于自然语言处理技术对简历进行关键信息提取和岗位匹配</div>
             <div class="desc">整合后端技术为求职者和招聘者搭建沟通桥梁</div>
             <div class="btn-group">
@@ -14,14 +14,19 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { EnvStore } from '@/stores/EnvStore'
+import { GITHUB_URL } from '@/constants/url'
+
 const router = useRouter()
 const get_start = () => {
     router.push({ name: 'loadview' })
 }
 
 const get_author = () => {
-    window.open('https://github.com/teashirtt/resume-analysis-system')
+    window.open(GITHUB_URL)
 }
+
+const envStore = EnvStore()
 </script>
 
 <style lang="less" scoped>

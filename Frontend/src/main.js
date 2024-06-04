@@ -6,6 +6,7 @@ import { InfoStore } from '@/stores/InfoStore'
 import * as echarts from 'echarts'
 import 'element-plus/es/components/notification/style/css'
 import { debounce } from '@/utils/functions'
+import { EnvStore } from '@/stores/EnvStore'
 
 const resize_observer = window.ResizeObserver
 window.ResizeObserver = class ResizeObserver extends resize_observer {
@@ -18,14 +19,10 @@ window.ResizeObserver = class ResizeObserver extends resize_observer {
 const app = createApp(App).use(router).use(pinia)
 
 const infoStore = InfoStore()
-infoStore.update_info()
+infoStore.updateInfo()
 
-const flag = navigator.userAgent.match(
-    /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
-)
-if (flag) {
-    infoStore.is_mobile = true
-}
+const envStore = EnvStore()
+envStore.getEnv()
 
 app.config.globalProperties.echarts = echarts
 

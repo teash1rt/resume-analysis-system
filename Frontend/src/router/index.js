@@ -100,7 +100,7 @@ router.beforeEach(async (to, _, next) => {
                 }
                 next()
             } else {
-                infoStore.clear_info()
+                infoStore.clearInfo()
                 show_login()
             }
         } catch (err) {

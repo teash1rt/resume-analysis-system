@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container" v-if="!infoStore.is_mobile">
+    <div class="app-container" v-if="!envStore.isMobile">
         <navBar />
         <div class="content-container">
             <router-view />
@@ -13,9 +13,9 @@
 <script setup>
 import navBar from '@/components/common/navBar.vue'
 import MobileView from './views/MobileView.vue'
-import { InfoStore } from '@/stores/InfoStore'
+import { EnvStore } from '@/stores/EnvStore'
 
-const infoStore = InfoStore()
+const envStore = EnvStore()
 </script>
 
 <style>

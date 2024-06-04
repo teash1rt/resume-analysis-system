@@ -1,5 +1,5 @@
 <template>
-    <div class="chart" ref="edu_chart"></div>
+    <div class="chart" ref="chart" />
 </template>
 
 <script setup>
@@ -19,11 +19,11 @@ const edu_data_handle = data => {
     })
 }
 
-const edu_chart = ref()
+const chart = ref()
 const { proxy } = getCurrentInstance()
 
 onMounted(() => {
-    const myChart = proxy.echarts.init(edu_chart.value)
+    const myChart = proxy.echarts.init(chart.value)
     const option = {
         title: {
             text: '学历水平统计'

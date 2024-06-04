@@ -78,7 +78,7 @@ watch(
 const infoStore = InfoStore()
 
 const update_data = () => {
-    infoStore.update_info()
+    infoStore.updateInfo()
     emit('is_login')
 }
 

@@ -141,7 +141,7 @@ const permission = infoStore.type == 0 ? '普通用户' : '高级权限'
 
 const router = useRouter()
 const logout = () => {
-    infoStore.clear_info()
+    infoStore.clearInfo()
     router.push({ name: 'home' })
 }
 
@@ -165,7 +165,7 @@ const change_username = async () => {
             title: '用户名更改成功',
             type: 'success'
         })
-        infoStore.update_info()
+        infoStore.updateInfo()
         to_change_username.value = false
     } catch (err) {
         //

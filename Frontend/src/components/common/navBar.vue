@@ -64,7 +64,7 @@ const tokenCheck = async () => {
             get_avatar()
         } else {
             show_user_info.value = false
-            infoStore.clear_info()
+            infoStore.clearInfo()
         }
     } catch (err) {
         //

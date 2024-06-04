@@ -28,7 +28,7 @@ req1.interceptors.response.use(res => {
         return Promise.reject(res.data)
     } else if (res.data.code === 402 || res.data.code === 510) {
         // token正常过期 || CustomException越权异常
-        infoStore.clear_info()
+        infoStore.clearInfo()
         show_login()
     }
     return res.data

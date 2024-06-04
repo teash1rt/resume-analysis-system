@@ -1,5 +1,5 @@
 <template>
-    <div class="chart" ref="exp_chart"></div>
+    <div class="chart" ref="chart" />
 </template>
 
 <script setup>
@@ -32,11 +32,11 @@ const exp_data_handle = data => {
     return res
 }
 
-const exp_chart = ref()
+const chart = ref()
 const { proxy } = getCurrentInstance()
 
 onMounted(() => {
-    const myChart = proxy.echarts.init(exp_chart.value)
+    const myChart = proxy.echarts.init(chart.value)
     const option = {
         title: {
             text: '工作经验统计',

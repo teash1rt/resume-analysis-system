@@ -8,12 +8,11 @@ export const InfoStore = defineStore('InfoStore', {
             username: null,
             email: null,
             type: null,
-            token: null,
-            is_mobile: false
+            token: null
         }
     },
     actions: {
-        update_info() {
+        updateInfo() {
             if (
                 Cookies.get('username') &&
                 Cookies.get('email') &&
@@ -28,7 +27,7 @@ export const InfoStore = defineStore('InfoStore', {
                 this.token = aesDecrypt(Cookies.get('token'), key)
             }
         },
-        clear_info() {
+        clearInfo() {
             Cookies.remove('username')
             Cookies.remove('email')
             Cookies.remove('type')

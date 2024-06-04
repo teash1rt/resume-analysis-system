@@ -2,13 +2,19 @@
     <div class="box">
         <div class="content">
             <h1 class="topic">智能简历解析系统</h1>
-            <h3 class="version">V0.97</h3>
+            <h3 class="version">V{{ envStore.version }}</h3>
             <div class="desc">基于自然语言处理技术</div>
             <div class="desc">对简历进行关键信息提取和岗位匹配</div>
             <div class="waring">项目暂不支持移动端</div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { EnvStore } from '@/stores/EnvStore'
+
+const envStore = EnvStore()
+</script>
 
 <style lang="less" scoped>
 .box {

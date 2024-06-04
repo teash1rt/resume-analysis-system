@@ -1,5 +1,5 @@
 <template>
-    <div class="chart" ref="loc_chart"></div>
+    <div class="chart" ref="chart" />
 </template>
 
 <script setup>
@@ -28,11 +28,11 @@ const loc_data_handle = data => {
     }
 }
 
-const loc_chart = ref()
+const chart = ref()
 const { proxy } = getCurrentInstance()
 
 onMounted(() => {
-    const myChart = proxy.echarts.init(loc_chart.value)
+    const myChart = proxy.echarts.init(chart.value)
     const data = loc_data_handle(props.loc_data)
     const option = {
         title: {
