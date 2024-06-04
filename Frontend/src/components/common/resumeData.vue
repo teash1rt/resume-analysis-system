@@ -225,14 +225,6 @@
                     </li>
                 </el-card>
             </div>
-            <div v-if="infoStore.type == 1">
-                <div class="tag-topic">人才画像构建</div>
-                <el-card class="tag-card" shadow="hover">
-                    <li v-for="e in construction" :key="e">
-                        {{ e }}
-                    </li>
-                </el-card>
-            </div>
             <div
                 v-if="
                     infoStore.type == 1 &&
@@ -260,8 +252,10 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { InfoStore } from '@/stores/InfoStore'
+
+const infoStore = InfoStore()
 
 const props = defineProps({
     resume_data: {
@@ -270,8 +264,9 @@ const props = defineProps({
     }
 })
 
-const infoStore = InfoStore()
-const data = ref(props.resume_data)
+const data = computed(() => {
+    return props.resume_data
+})
 
 const cut_sentence = sentence => {
     const arr = sentence
@@ -285,47 +280,6 @@ const cut_sentence = sentence => {
     }
     return arr
 }
-
-watch(
-    () => props.resume_data,
-    newVal => {
-        data.value = newVal
-        construction_analysis(data.value)
-    }
-)
-
-const construction = reactive([])
-const construction_analysis = p => {
-    construction.length = 0
-    if (p.basic_data.edu === '博士' || p.basic_data.edu === '硕士' || p.basic_data.edu === '本科') {
-        construction.push('求职者学历程度较高')
-    } else if (p.basic_data.edu) {
-        construction.push('求职者学历程度一般')
-    }
-
-    if (p.tag.total_work_time === '0') {
-        construction.push('尚未积累足够的工作经验')
-    } else {
-        const work_year = parseInt(p.tag.total_work_time)
-        if (work_year >= 20) {
-            construction.push('具有非常丰富的工作经验')
-        } else if (work_year >= 10) {
-            construction.push('具有足够的工作经验')
-        } else if (work_year >= 4) {
-            construction.push('具有一定工作经验')
-        }
-    }
-
-    if (p.tag.experience_tag.length !== 0 && p.tag.total_work_time !== '0') {
-        const work_year = parseInt(p.tag.total_work_time)
-        if (work_year / p.tag.experience_tag.length >= 4 && p.tag.experience_tag.length <= 4) {
-            construction.push('工作相对稳定')
-        } else {
-            construction.push('工作变动频繁')
-        }
-    }
-}
-construction_analysis(data.value)
 </script>
 
 <style lang="less" scoped>

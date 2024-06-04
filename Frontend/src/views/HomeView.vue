@@ -2,7 +2,7 @@
     <div class="box">
         <div class="content">
             <h1 class="topic">智能简历解析系统 V1.2</h1>
-            <div class="desc">基于自然语言处理技术对简历进行关键信息提取和人才画像构建</div>
+            <div class="desc">基于自然语言处理技术对简历进行关键信息提取和岗位匹配</div>
             <div class="desc">整合后端技术为求职者和招聘者搭建沟通桥梁</div>
             <div class="btn-group">
                 <button class="get-start" @click="get_start">开始体验</button>
