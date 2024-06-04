@@ -38,7 +38,7 @@ import userProfile from '@/components/settings/userProfile.vue'
 import uploadResume from '@/components/user/uploadResume.vue'
 import favoriteResume from '@/components/admin/favoriteResume.vue'
 import { InfoStore } from '@/stores/InfoStore'
-import { convert_to_url } from '@/utils/base64ToUrl'
+import { convertToUrl } from '@/utils/base64ToUrl'
 import { userApi } from '@/api'
 
 const active_name = ref('View1')
@@ -51,7 +51,7 @@ onMounted(() => {
         try {
             const res = await userApi.getAvatar()
             if (res.data !== '') {
-                url.value = convert_to_url(res.data)
+                url.value = convertToUrl(res.data)
             } else {
                 url.value = require('../assets/avatar.webp')
             }

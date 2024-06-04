@@ -2,12 +2,12 @@
     <el-row :gutter="20">
         <el-col :span="19">
             <div>
-                <h1 v-if="data.basic_data.name != ''">{{ data.basic_data.name }}</h1>
-                <h5 v-if="data.job_obj.length > 0 && data.job_obj[0].trim() !== ''" class="job_obj">
-                    求职意向-{{ data.job_obj[0] }}
+                <h1 v-if="resume_data.basic_data.name !== ''">{{ resume_data.basic_data.name }}</h1>
+                <h5 v-if="resume_data.job_obj.length > 0 && resume_data.job_obj[0].trim() !== ''" class="job_obj">
+                    求职意向-{{ resume_data.job_obj[0] }}
                 </h5>
                 <el-descriptions class="descriptions" title="基本信息" :column="2" border>
-                    <el-descriptions-item v-if="data.basic_data.birth">
+                    <el-descriptions-item v-if="resume_data.basic_data.birth">
                         <template #label>
                             <div class="cell-item">
                                 <svg class="icon" viewBox="0 0 1024 1024" width="18" height="18">
@@ -18,9 +18,9 @@
                                 出生日期
                             </div>
                         </template>
-                        {{ data.basic_data.birth }}
+                        {{ resume_data.basic_data.birth }}
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.basic_data.age">
+                    <el-descriptions-item v-if="resume_data.basic_data.age">
                         <template #label>
                             <div class="cell-item">
                                 <svg viewBox="0 0 1024 1024" width="18" height="18">
@@ -31,9 +31,9 @@
                                 年龄
                             </div>
                         </template>
-                        {{ data.basic_data.age }}
+                        {{ resume_data.basic_data.age }}
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.basic_data.tel">
+                    <el-descriptions-item v-if="resume_data.basic_data.tel">
                         <template #label>
                             <div class="cell-item">
                                 <svg viewBox="0 0 1024 1024" width="18" height="18">
@@ -44,9 +44,9 @@
                                 联系方式
                             </div>
                         </template>
-                        {{ data.basic_data.tel }}
+                        {{ resume_data.basic_data.tel }}
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.basic_data.email">
+                    <el-descriptions-item v-if="resume_data.basic_data.email">
                         <template #label>
                             <div class="cell-item">
                                 <svg class="icon" viewBox="0 0 1024 1024" width="18" height="18">
@@ -57,9 +57,9 @@
                                 邮箱
                             </div>
                         </template>
-                        {{ data.basic_data.email }}
+                        {{ resume_data.basic_data.email }}
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.basic_data.college">
+                    <el-descriptions-item v-if="resume_data.basic_data.college">
                         <template #label>
                             <div class="cell-item">
                                 <svg viewBox="0 0 1024 1024" width="18" height="18">
@@ -74,11 +74,11 @@
                                 毕业院校
                             </div>
                         </template>
-                        <span v-for="e in data.basic_data.college" :key="e" style="margin-right: 1vw">
+                        <span v-for="(e, idx) in resume_data.basic_data.college" :key="idx" style="margin-right: 1vw">
                             {{ e }}
                         </span>
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.basic_data.edu">
+                    <el-descriptions-item v-if="resume_data.basic_data.edu">
                         <template #label>
                             <div class="cell-item">
                                 <svg class="icon" viewBox="0 0 1027 1024" width="18" height="18">
@@ -89,9 +89,9 @@
                                 学历
                             </div>
                         </template>
-                        {{ data.basic_data.edu }}
+                        {{ resume_data.basic_data.edu }}
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.basic_data.loc">
+                    <el-descriptions-item v-if="resume_data.basic_data.loc">
                         <template #label>
                             <div class="cell-item">
                                 <svg viewBox="0 0 1024 1024" width="18" height="18">
@@ -105,13 +105,13 @@
                                 住址
                             </div>
                         </template>
-                        <span v-for="e in data.basic_data.loc" :key="e">
+                        <span v-for="(e, idx) in resume_data.basic_data.loc" :key="idx">
                             {{ e }}
                         </span>
                     </el-descriptions-item>
                 </el-descriptions>
                 <el-descriptions class="descriptions" title="个人经历" :column="1" border>
-                    <el-descriptions-item v-if="data.experience">
+                    <el-descriptions-item v-if="resume_data.experience">
                         <template #label>
                             <div class="cell-item">
                                 <svg class="icon" viewBox="0 0 1024 1024" width="18" height="18">
@@ -121,11 +121,11 @@
                                 工作/项目经历
                             </div>
                         </template>
-                        <div v-for="e in cut_sentence(data.experience)" :key="e">
+                        <div v-for="(e, idx) in cutSentence(resume_data.experience)" :key="idx">
                             {{ e }}
                         </div>
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.award">
+                    <el-descriptions-item v-if="resume_data.award">
                         <template #label>
                             <div class="cell-item">
                                 <svg class="icon" viewBox="0 0 1024 1024" width="18" height="18">
@@ -139,11 +139,11 @@
                                 所得奖项
                             </div>
                         </template>
-                        <div v-for="e in data.award" :key="e">
+                        <div v-for="(e, idx) in resume_data.award" :key="idx">
                             {{ e }}
                         </div>
                     </el-descriptions-item>
-                    <el-descriptions-item v-if="data.ability">
+                    <el-descriptions-item v-if="resume_data.ability">
                         <template #label>
                             <div class="cell-item">
                                 <svg class="icon" viewBox="0 0 1024 1024" width="18" height="18">
@@ -153,7 +153,7 @@
                                 个人能力
                             </div>
                         </template>
-                        <div v-for="e in data.ability" :key="e">
+                        <div v-for="(e, idx) in resume_data.ability" :key="idx">
                             {{ e }}
                         </div>
                     </el-descriptions-item>
@@ -163,12 +163,7 @@
         <el-col :span="5">
             <div class="tag-topic">
                 简历标签
-                <el-tooltip
-                    content="灰色标签为用户自定义标签"
-                    placement="top"
-                    effect="customized"
-                    class="tooltip"
-                    v-if="infoStore.type == 1">
+                <el-tooltip content="灰色标签为用户自定义标签" placement="top" class="tooltip" v-if="infoStore.type == 1">
                     <svg class="icon" viewBox="0 0 1024 1024" width="15" height="15">
                         <path
                             d="M463.99957 784.352211c0 26.509985 21.490445 48.00043 48.00043 48.00043s48.00043-21.490445 48.00043-48.00043c0-26.509985-21.490445-48.00043-48.00043-48.00043S463.99957 757.842226 463.99957 784.352211z"
@@ -185,33 +180,33 @@
             <el-card class="tag-card" shadow="hover">
                 <div class="tag">
                     <div>
-                        <span v-for="e in data.tag.edu_tag" :key="e">
+                        <span v-for="(e, idx) in resume_data.tag.edu_tag" :key="idx">
                             <el-tag class="ml-2" type="danger">{{ e }}</el-tag>
                         </span>
-                        <span v-for="e in data.basic_data.college" :key="e">
+                        <span v-for="(e, idx) in resume_data.basic_data.college" :key="idx">
                             <el-tag class="ml-2" type="danger">{{ e }}</el-tag>
                         </span>
                     </div>
                     <div>
-                        <span v-for="e in data.basic_data.loc" :key="e">
+                        <span v-for="(e, idx) in resume_data.basic_data.loc" :key="idx">
                             <el-tag class="ml-2" type="success">
                                 {{ e }}
                             </el-tag>
                         </span>
                     </div>
                     <div>
-                        <el-tag class="ml-2" type="warning">{{ `工作年限:${data.tag.total_work_time}年` }}</el-tag>
-                        <span v-for="e in data.tag.experience_tag" :key="e">
+                        <el-tag class="ml-2" type="warning">{{ `工作年限:${resume_data.tag.total_work_time}年` }}</el-tag>
+                        <span v-for="(e, idx) in resume_data.tag.experience_tag" :key="idx">
                             <el-tag class="ml-2" type="warning">{{ e }}</el-tag>
                         </span>
                     </div>
                     <div>
-                        <span v-for="e in data.tag.ability" :key="e">
+                        <span v-for="(e, idx) in resume_data.tag.ability" :key="idx">
                             <el-tag class="ml-2">{{ e }}</el-tag>
                         </span>
                     </div>
                     <div v-if="infoStore.type == 1">
-                        <span v-for="e in data.custom_content.self_tag" :key="e">
+                        <span v-for="(e, idx) in resume_data.custom_content.self_tag" :key="idx">
                             <el-tag class="ml-2" type="info">{{ e }}</el-tag>
                         </span>
                     </div>
@@ -220,7 +215,7 @@
             <div>
                 <div class="tag-topic">岗位匹配</div>
                 <el-card class="tag-card" shadow="hover">
-                    <li v-for="e in data.job_fit" :key="e">
+                    <li v-for="(e, idx) in resume_data.job_fit" :key="idx">
                         {{ e }}
                     </li>
                 </el-card>
@@ -228,20 +223,20 @@
             <div
                 v-if="
                     infoStore.type == 1 &&
-                    (data.custom_content.money_obj != '' ||
-                        data.custom_content.self_desc.length > 0 ||
-                        data.custom_content.self_tag.length > 0)
+                    (resume_data.custom_content.money_obj != '' ||
+                        resume_data.custom_content.self_desc.length > 0 ||
+                        resume_data.custom_content.self_tag.length > 0)
                 ">
                 <div class="tag-topic">用户补充信息</div>
                 <el-card class="tag-card" shadow="hover">
-                    <div v-if="data.custom_content.money_obj != ''">
-                        <li>薪资预期：{{ data.custom_content.money_obj }}</li>
-                        <li v-for="e in data.custom_content.self_desc" :key="e">
+                    <div v-if="resume_data.custom_content.money_obj != ''">
+                        <li>薪资预期：{{ resume_data.custom_content.money_obj }}</li>
+                        <li v-for="(e, idx) in resume_data.custom_content.self_desc" :key="idx">
                             {{ e }}
                         </li>
                     </div>
-                    <div v-else-if="data.custom_content.self_desc.length > 0">
-                        <li v-for="e in data.custom_content.self_desc" :key="e">
+                    <div v-else-if="resume_data.custom_content.self_desc.length > 0">
+                        <li v-for="(e, idx) in resume_data.custom_content.self_desc" :key="idx">
                             {{ e }}
                         </li>
                     </div>
@@ -252,24 +247,19 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import { InfoStore } from '@/stores/InfoStore'
 
 const infoStore = InfoStore()
 
-const props = defineProps({
+defineProps({
     resume_data: {
         type: Object,
         required: true
     }
 })
 
-const data = computed(() => {
-    return props.resume_data
-})
-
-const cut_sentence = sentence => {
-    const arr = sentence
+const cutSentence = sentence => {
+    const arr = [...sentence]
     for (let i = 0; i < sentence.length; i++) {
         if (arr[i].length > 60) {
             // 将字符串分为长度为60的块
@@ -325,17 +315,5 @@ h5 {
 .tag span {
     margin-right: 0.2vw;
     margin-bottom: 0.5vh;
-}
-</style>
-
-<style>
-.el-popper.is-customized {
-    padding: 6px 12px;
-    background: linear-gradient(90deg, rgb(159, 229, 151), rgb(204, 229, 129));
-}
-
-.el-popper.is-customized .el-popper__arrow::before {
-    background: linear-gradient(45deg, #b2e68d, #bce689);
-    right: 0;
 }
 </style>

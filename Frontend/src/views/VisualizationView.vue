@@ -2,15 +2,21 @@
     <div class="box">
         <el-card shadow="hover" class="card">
             <router-link :to="{ name: 'resumesview' }" class="back">&lt;返回</router-link>
-            <el-carousel indicator-position="outside" class="carousel" height="80vh" :autoplay="false" trigger="click">
+            <el-carousel
+                indicator-position="outside"
+                class="carousel"
+                height="80vh"
+                :autoplay="false"
+                trigger="click"
+                v-if="hasInit">
                 <el-carousel-item class="carousel-item">
-                    <educationChart class="chartA" :edu_data="edu_data" v-if="data_receive" />
+                    <educationChart class="chartA" :edu_data="edu_data" />
                 </el-carousel-item>
                 <el-carousel-item class="carousel-item">
-                    <locationChart class="chartB" :loc_data="loc_data" v-if="data_receive" />
+                    <locationChart class="chartB" :loc_data="loc_data" />
                 </el-carousel-item>
                 <el-carousel-item class="carousel-item">
-                    <experienceChart class="chartC" :exp_data="exp_data" v-if="data_receive" />
+                    <experienceChart class="chartC" :exp_data="exp_data" />
                 </el-carousel-item>
             </el-carousel>
         </el-card>
@@ -18,17 +24,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, shallowRef, onMounted } from 'vue'
 import educationChart from '@/components/admin/educationChart.vue'
 import locationChart from '@/components/admin/locationChart.vue'
 import experienceChart from '@/components/admin/experienceChart.vue'
 import { statisticsApi } from '@/api'
 
-const edu_data = ref(null),
-    exp_data = ref(null),
-    loc_data = ref(null)
-// 解决 chart 在 onMounted 渲染时还没接收到数据
-const data_receive = ref(false)
+const edu_data = shallowRef(null)
+const exp_data = shallowRef(null)
+const loc_data = shallowRef(null)
+
+const hasInit = ref(false)
 
 onMounted(() => {
     const init = async () => {
@@ -38,7 +44,7 @@ onMounted(() => {
             edu_data.value = education_statistics
             exp_data.value = experience_statistics
             loc_data.value = location_statistics
-            data_receive.value = true
+            hasInit.value = true
         } catch (err) {
             //
         }
@@ -50,12 +56,14 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .card {
-    width: 70%;
-    margin: 11vh auto;
+    width: 65vw;
+    margin: 10px auto 0;
+    min-width: 800px;
+    position: relative;
 
     .back {
         position: absolute;
-        right: 16%;
+        right: 25px;
         font-size: 1.6rem;
         text-decoration: none;
         z-index: 10;

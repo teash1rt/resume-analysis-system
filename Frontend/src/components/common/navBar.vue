@@ -5,40 +5,36 @@
                 <router-link :to="{ name: 'home' }" class="resume-link" href="#">简历解析系统</router-link>
             </div>
             <div class="block-b">
-                <router-link :class="router_name === 'loadview' ? 'highlight' : null" :to="{ name: 'loadview' }"
-                    >简历解析</router-link
-                >
+                <router-link :class="routerName === 'loadview' ? 'highlight' : null" :to="{ name: 'loadview' }">
+                    简历解析
+                </router-link>
                 <router-link
-                    :class="router_name === 'uploadview' ? 'highlight' : null"
+                    :class="routerName === 'uploadview' ? 'highlight' : null"
                     :to="{ name: 'uploadview' }"
-                    v-if="permission != 1"
-                    >简历上传</router-link
-                >
+                    v-if="permission != 1">
+                    简历上传
+                </router-link>
                 <router-link
-                    :class="router_name === 'resumesview' ? 'highlight' : null"
+                    :class="routerName === 'resumesview' || routerName === 'visualizationview' ? 'highlight' : null"
                     :to="{ name: 'resumesview' }"
-                    v-if="permission == 1"
-                    >简历数据</router-link
-                >
-                <router-link :class="router_name === 'profileview' ? 'highlight' : null" :to="{ name: 'profileview' }"
-                    >个人中心</router-link
-                >
+                    v-if="permission == 1">
+                    简历数据
+                </router-link>
+                <router-link :class="routerName === 'profileview' ? 'highlight' : null" :to="{ name: 'profileview' }">
+                    个人中心
+                </router-link>
             </div>
             <div class="block-c">
-                <el-button class="login-btn" color="#6f59f7" @click="to_login" v-if="!show_user_info" size="large">
-                    登录
-                </el-button>
-                <div class="login-btn" v-if="show_user_info">
-                    <span class="el-dropdown-link">
-                        <div class="avatar">
-                            <router-link :to="{ name: 'profileview' }">
-                                <img :src="url" alt="avatar" />
-                            </router-link>
-                        </div>
-                    </span>
+                <el-button class="login-btn" color="#6f59f7" @click="toLogin" v-if="!isLogin" size="large"> 登录 </el-button>
+                <div class="login-btn" v-if="isLogin">
+                    <div class="avatar">
+                        <router-link :to="{ name: 'profileview' }">
+                            <img :src="url" alt="avatar" />
+                        </router-link>
+                    </div>
                 </div>
             </div>
-            <loginDialog v-model="dialog_visible" @is_login="is_login" @submit_email="submit_email" @must_login="must_login" />
+            <loginDialog v-model="dialogVisible" @is_login="finishLogin" @submit_email="submit_email" @must_login="must_login" />
         </div>
     </div>
 </template>
@@ -47,12 +43,12 @@
 import { ref, onMounted, watch } from 'vue'
 import loginDialog from '@/components/common/loginDialog.vue'
 import { InfoStore } from '@/stores/InfoStore'
-import { convert_to_url } from '@/utils/base64ToUrl'
+import { convertToUrl } from '@/utils/base64ToUrl'
 import { userApi } from '@/api'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const show_user_info = ref(false)
+const isLogin = ref(false)
 const infoStore = InfoStore()
 const permission = infoStore.type
 
@@ -60,10 +56,10 @@ const tokenCheck = async () => {
     try {
         const res = await userApi.tokenCheck({ token: infoStore.token })
         if (res.data === true) {
-            show_user_info.value = true
-            get_avatar()
+            isLogin.value = true
+            getAvatar()
         } else {
-            show_user_info.value = false
+            isLogin.value = false
             infoStore.clearInfo()
         }
     } catch (err) {
@@ -80,47 +76,47 @@ watch(
     () => infoStore.token,
     newVal => {
         if (newVal === null) {
-            show_user_info.value = false
+            isLogin.value = false
         }
     }
 )
 
-const router_name = ref(route.name)
+const routerName = ref(route.name)
 watch(
     () => route.name,
     newV => {
-        router_name.value = newV
+        routerName.value = newV
     }
 )
 
-const dialog_visible = ref(false)
-const to_login = () => {
-    dialog_visible.value = true
+const dialogVisible = ref(false)
+const toLogin = () => {
+    dialogVisible.value = true
 }
 
 // 登录后的方法
-const is_login = () => {
-    dialog_visible.value = false
-    show_user_info.value = true
-    get_avatar()
+const finishLogin = () => {
+    dialogVisible.value = false
+    isLogin.value = true
+    getAvatar()
     window.location.reload()
 }
 
 // 忘记密码后的方法
 const submit_email = () => {
-    dialog_visible.value = false
+    dialogVisible.value = false
 }
 // 弹登录窗
 const must_login = () => {
-    dialog_visible.value = true
+    dialogVisible.value = true
 }
 
 const url = ref('')
-const get_avatar = async () => {
+const getAvatar = async () => {
     try {
         const res = await userApi.getAvatar()
         if (res.data !== '') {
-            url.value = convert_to_url(res.data)
+            url.value = convertToUrl(res.data)
         } else {
             url.value = require('../../assets/avatar.webp')
         }
@@ -211,14 +207,6 @@ const get_avatar = async () => {
 .match-link a,
 .login-btn a {
     text-decoration: none;
-}
-
-.el-dropdown-link {
-    cursor: pointer;
-
-    &:focus {
-        outline: none;
-    }
 }
 
 .avatar {

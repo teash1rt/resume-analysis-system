@@ -4,10 +4,10 @@
             <div class="box">
                 <p class="table">重置密码</p>
                 <br />
-                <input class="input-content" type="text" placeholder="请输入新密码" v-model="new_password" />
-                <input class="input-content" type="password" placeholder="请确认密码" v-model="new_password_confirm" />
+                <input class="input-content" type="text" placeholder="请输入新密码" v-model="newPassword" />
+                <input class="input-content" type="password" placeholder="请确认密码" v-model="newPasswordConfirm" />
                 <br />
-                <a href="#" class="go" @click="reset_password">确认</a>
+                <a href="#" class="go" @click="handleReset">确认</a>
             </div>
         </div>
     </el-card>
@@ -20,12 +20,12 @@ import { useRouter } from 'vue-router'
 import { SHA256Encrypt } from '@/utils/encrypt'
 import { userApi } from '@/api'
 
-const new_password = ref('')
-const new_password_confirm = ref('')
+const newPassword = ref('')
+const newPasswordConfirm = ref('')
 const router = useRouter()
 
-const reset_password = async () => {
-    if (new_password.value !== new_password_confirm.value) {
+const handleReset = async () => {
+    if (newPassword.value !== newPasswordConfirm.value) {
         ElNotification({
             title: '两次密码不一致',
             type: 'warning'
@@ -37,7 +37,7 @@ const reset_password = async () => {
             const url_path = paths[paths.length - 2]
             await userApi.resetPassword({
                 url_path: url_path,
-                new_password: SHA256Encrypt(new_password.value)
+                newPassword: SHA256Encrypt(newPassword.value)
             })
             ElNotification({
                 title: '更改成功',

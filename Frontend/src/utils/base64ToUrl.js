@@ -1,4 +1,4 @@
-export const convert_to_url = str => {
+export const convertToUrl = str => {
     const byteCharacters = atob(str)
     const byteArrays = []
     for (let i = 0; i < byteCharacters.length; i++) {

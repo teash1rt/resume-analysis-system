@@ -45,7 +45,7 @@
                     <span class="s2" @click="dialog_status = 1">返回登录页</span>
                 </div>
                 <br />
-                <a href="#" class="go" @click="forget_password">确认</a>
+                <a href="#" class="go" @click="handleForgetPassword">确认</a>
             </div>
         </div>
     </el-dialog>
@@ -122,7 +122,7 @@ const show_login_dialog = () => {
     emit('must_login')
 }
 
-const forget_password = async () => {
+const handleForgetPassword = async () => {
     try {
         await userApi.forgetPassword({
             email: email.value,

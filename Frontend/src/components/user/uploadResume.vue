@@ -20,7 +20,7 @@
                     <span class="resume_op" @click="del_upload_resume(e.rid)">删除</span>
                 </el-col>
                 <el-col :span="2">
-                    <el-tooltip content="简历关注度" placement="top" effect="customized">
+                    <el-tooltip content="简历关注度" placement="top">
                         <div class="hot">
                             <svg class="icon" viewBox="0 0 1024 1024" width="16" height="16">
                                 <path
@@ -121,17 +121,5 @@ const basic_data_tree = e => {
 
 .hot:hover {
     cursor: pointer;
-}
-</style>
-
-<style>
-.el-popper.is-customized {
-    padding: 6px 12px;
-    background: linear-gradient(90deg, rgb(159, 229, 151), rgb(204, 229, 129));
-}
-
-.el-popper.is-customized .el-popper__arrow::before {
-    background: linear-gradient(45deg, #b2e68d, #bce689);
-    right: 0;
 }
 </style>
