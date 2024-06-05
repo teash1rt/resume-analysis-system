@@ -1,19 +1,22 @@
 import io
 from pdfminer.high_level import extract_text
-# import httpx
+#import httpx
+
+# 获取 docx 文件内容
+# 方法A FastApi向Express发送请求，通过js的mammoth库解析内容
+#async def get_docx_content(file):
+#    url = 'http://127.0.0.1:3010/analysis-docx-file/'
+#    async with httpx.AsyncClient() as client:
+#        response = await client.post(url, files={"file": file.file})
+#        if response.status_code != 400:
+#            return eval(response.text)
+#        else:
+#            raise Exception
+
 import docx2txt
 
 # 获取 docx 文件内容
-# async def get_docx_content(file):
-#     # url = 'http://127.0.0.1:3010/analysis-docx-file/'
-#     async with httpx.AsyncClient() as client:
-#         response = await client.post(url, files={"file": file.file})
-#         if response.status_code != 400:
-#             return eval(response.text)
-#         else:
-#             raise Exception
-
-
+# 方法B FastApi直接通过python的docx2txt库解析内容
 async def get_docx_content(file):
     with io.BytesIO(await file.read()) as stream:
         text = docx2txt.process(stream)
