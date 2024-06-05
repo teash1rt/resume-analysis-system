@@ -4,7 +4,7 @@
             <div class="field">用户名</div>
             <div class="info" v-if="!isChangingUsername">{{ infoStore.username }}</div>
             <div class="info" v-if="isChangingUsername">
-                <el-input v-model="username" placeholder="请输入新用户名" class="input" />
+                <el-input v-model="username" placeholder="请输入新用户名" class="input" size="large" />
             </div>
             <div class="edit" @click="editUsername" v-if="!isChangingUsername">
                 <svg viewBox="0 0 1024 1024" width="20" height="20">
@@ -18,12 +18,12 @@
                 编辑
             </div>
             <div class="edit" v-if="isChangingUsername">
-                <svg @click="changeUsername" viewBox="0 0 1024 1024" width="20" height="20">
+                <svg @click="changeUsername" viewBox="0 0 1024 1024" width="24" height="24">
                     <path
                         fill="currentColor"
                         d="M406.656 706.944 195.84 496.256a32 32 0 1 0-45.248 45.248l256 256 512-512a32 32 0 0 0-45.248-45.248L406.592 706.944z"></path>
                 </svg>
-                <svg @click="isChangingUsername = false" viewBox="0 0 1024 1024" width="20" height="20">
+                <svg @click="isChangingUsername = false" viewBox="0 0 1024 1024" width="24" height="24">
                     <path
                         fill="currentColor"
                         d="M764.288 214.592 512 466.88 259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z"></path>
@@ -34,7 +34,7 @@
             <div class="field">注册邮箱</div>
             <div class="info" v-if="!isChangingEmail">{{ infoStore.email }}</div>
             <div class="info" v-if="isChangingEmail">
-                <el-input v-model="email" placeholder="请输入新邮箱" class="input" />
+                <el-input v-model="email" placeholder="请输入新邮箱" class="input" size="large" />
             </div>
             <div class="edit" @click="editEmail" v-if="!isChangingEmail">
                 <svg viewBox="0 0 1024 1024" width="20" height="20">
@@ -48,12 +48,12 @@
                 编辑
             </div>
             <div class="edit" v-if="isChangingEmail">
-                <svg @click="changeEmail" viewBox="0 0 1024 1024" width="20" height="20">
+                <svg @click="changeEmail" viewBox="0 0 1024 1024" width="24" height="24">
                     <path
                         fill="currentColor"
                         d="M406.656 706.944 195.84 496.256a32 32 0 1 0-45.248 45.248l256 256 512-512a32 32 0 0 0-45.248-45.248L406.592 706.944z"></path>
                 </svg>
-                <svg @click="isChangingEmail = false" viewBox="0 0 1024 1024" width="20" height="20">
+                <svg @click="isChangingEmail = false" viewBox="0 0 1024 1024" width="24" height="24">
                     <path
                         fill="currentColor"
                         d="M764.288 214.592 512 466.88 259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z"></path>
@@ -170,7 +170,14 @@ const changeUsername = () => {
 
 const changeEmail = () => {
     userApi.changeEmail({ new_email: email.value }).then(() => {
-        logout()
+        ElNotification({
+            title: '邮箱更改成功',
+            message: '请您重新登录',
+            type: 'success'
+        })
+        setTimeout(() => {
+            logout()
+        }, 3000)
     })
 }
 

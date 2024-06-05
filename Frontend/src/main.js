@@ -3,7 +3,8 @@ import App from './App.vue'
 import router from './router'
 import pinia from '@/stores/store'
 import { InfoStore } from '@/stores/InfoStore'
-import * as echarts from 'echarts'
+import echarts, { echartsKey } from '@/utils/echarts'
+
 import 'element-plus/es/components/notification/style/css'
 import { debounce } from '@/utils/debounce'
 import { EnvStore } from '@/stores/EnvStore'
@@ -24,6 +25,6 @@ infoStore.updateInfo()
 const envStore = EnvStore()
 envStore.getEnv()
 
-app.config.globalProperties.echarts = echarts
+app.provide(echartsKey, echarts)
 
 app.mount('#app')

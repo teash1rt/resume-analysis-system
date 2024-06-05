@@ -29,7 +29,6 @@ module.exports = defineConfig({
     },
     configureWebpack: {
         externals: {
-            echarts: 'echarts',
             axios: 'axios',
             'js-cookie': 'Cookies'
         },

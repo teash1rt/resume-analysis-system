@@ -3,7 +3,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, getCurrentInstance } from 'vue'
+import { ref, onMounted, inject } from 'vue'
+import { echartsKey } from '@/utils/echarts'
 
 const props = defineProps({
     data: {
@@ -33,10 +34,11 @@ const dataParse = data => {
 }
 
 const chart = ref()
-const { proxy } = getCurrentInstance()
+
+const echarts = inject(echartsKey)
 
 onMounted(() => {
-    const myChart = proxy.echarts.init(chart.value)
+    const myChart = echarts.init(chart.value)
     const option = {
         title: {
             text: '工作经验统计',
