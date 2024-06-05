@@ -6,26 +6,26 @@
 import { ref, onMounted, getCurrentInstance } from 'vue'
 
 const props = defineProps({
-    exp_data: {
+    data: {
         type: Object,
         required: true
     }
 })
 
 // 二维转三维 第三维为出现的次数
-const exp_data_handle = data => {
+const dataParse = data => {
     const arr = []
     data.total_company_count.forEach((val, idx) => {
         arr.push([val, data.total_work_time[idx]])
     })
 
-    const mp = {}
+    const countingMap = {}
     arr.forEach(e => {
         const key = JSON.stringify(e)
-        mp[key] = mp[key] ? mp[key] + 1 : 1
+        countingMap[key] = countingMap[key] ? countingMap[key] + 1 : 1
     })
 
-    const res = Object.entries(mp).map(([key, value]) => {
+    const res = Object.entries(countingMap).map(([key, value]) => {
         const item = JSON.parse(key)
         return [...item, value]
     })
@@ -58,7 +58,7 @@ onMounted(() => {
         },
         series: [
             {
-                data: exp_data_handle(props.exp_data),
+                data: dataParse(props.data),
                 symbolSize: data => {
                     // 做对数处理
                     return 60 * Math.log10(data[2] + 1)

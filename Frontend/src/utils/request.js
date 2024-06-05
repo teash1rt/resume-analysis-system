@@ -2,7 +2,7 @@ import axios from 'axios'
 import { ElNotification } from 'element-plus'
 import { InfoStore } from '@/stores/InfoStore'
 import pinia from '@/stores/store'
-import { show_login } from '@/utils/showLogin'
+import { showLogin } from '@/utils/showLogin'
 
 const infoStore = InfoStore(pinia)
 
@@ -29,7 +29,7 @@ req1.interceptors.response.use(res => {
     } else if (res.data.code === 402 || res.data.code === 510) {
         // token正常过期 || CustomException越权异常
         infoStore.clearInfo()
-        show_login()
+        showLogin()
     }
     return res.data
 })

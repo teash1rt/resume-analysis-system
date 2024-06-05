@@ -5,7 +5,7 @@ import pinia from '@/stores/store'
 import { InfoStore } from '@/stores/InfoStore'
 import * as echarts from 'echarts'
 import 'element-plus/es/components/notification/style/css'
-import { debounce } from '@/utils/functions'
+import { debounce } from '@/utils/debounce'
 import { EnvStore } from '@/stores/EnvStore'
 
 const resize_observer = window.ResizeObserver

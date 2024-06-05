@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { show_login } from '@/utils/showLogin'
-import { req1 } from '@/utils/request'
+import { showLogin } from '@/utils/showLogin'
 import pinia from '@/stores/store'
 import { InfoStore } from '@/stores/InfoStore'
 import { userApi } from '@/api'
@@ -90,6 +89,7 @@ const router = createRouter({
 })
 
 const infoStore = InfoStore(pinia)
+
 router.beforeEach((to, _, next) => {
     if (to.meta.requestAuth === true) {
         userApi.tokenCheck({ token: infoStore.token }).then(res => {
@@ -99,19 +99,14 @@ router.beforeEach((to, _, next) => {
                 }
                 next()
             } else {
+                console.log(1)
                 infoStore.clearInfo()
-                show_login()
+                showLogin()
             }
         })
     } else if (to.meta.authority === -2) {
-        req1.post('/req1/user/url-token-check/', {
-            url_path: to.params.url_path
-        }).then(res => {
-            if (res.data === true) {
-                next()
-            } else {
-                next('/404/')
-            }
+        userApi.urlTokenCheck({ url_path: to.params.url_path }).then(res => {
+            res.data ? next() : next('/404/')
         })
     } else {
         next()

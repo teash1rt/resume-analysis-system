@@ -17,7 +17,7 @@ const register = ({ email: email, username: username, password: password, verify
 }
 
 const getUserInfo = () => {
-    return req1.get(`/req1/user/get-info/`)
+    return req1.get('/req1/user/get-info/')
 }
 
 const forgetPassword = ({ email: email, verify_code: verify_code }) => {
@@ -47,7 +47,7 @@ const changePassword = ({ old_password: old_password, new_password: new_password
 }
 
 const getAvatar = () => {
-    return req1.get(`/req1/user/get-avatar/`)
+    return req1.get('/req1/user/get-avatar/')
 }
 
 const tokenCheck = ({ token: token }) => {
@@ -88,6 +88,12 @@ const getAuthorize = () => {
     return req2.get('/req2/authorize/')
 }
 
+const urlTokenCheck = ({ url_path: url_path }) => {
+    return req1.post('/req1/user/url-token-check/', {
+        url_path
+    })
+}
+
 const userApi = {
     login,
     register,
@@ -102,7 +108,8 @@ const userApi = {
     checkApplicationStatus,
     getApplyVerifyCode,
     applyPermission,
-    getAuthorize
+    getAuthorize,
+    urlTokenCheck
 }
 
 export default userApi

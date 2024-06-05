@@ -17,9 +17,9 @@
                     </span>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="get_page_resumes(0)">最早发布</el-dropdown-item>
-                            <el-dropdown-item @click="get_page_resumes(1)">最新发布</el-dropdown-item>
-                            <el-dropdown-item @click="get_page_resumes(2)">按推荐排序</el-dropdown-item>
+                            <el-dropdown-item @click="getResumes(0)">最早发布</el-dropdown-item>
+                            <el-dropdown-item @click="getResumes(1)">最新发布</el-dropdown-item>
+                            <el-dropdown-item @click="getResumes(2)">按推荐排序</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -74,7 +74,7 @@
                         <span class="resume-options" @click="preview_resume(e.rid)">摘要</span>
                     </el-col>
                     <el-col :span="1">
-                        <span class="resume-options" @click="download_resume(e.rid)">下载</span>
+                        <span class="resume-options" @click="downloadResume(e.rid)">下载</span>
                     </el-col>
                     <el-col :span="1">
                         <svg
@@ -115,7 +115,7 @@
                 @current-change="page_change()" />
         </div>
     </el-card>
-    <el-dialog v-model="dialog_visible" title="" width="70%" top="2vh" :before-close="close_dialog">
+    <el-dialog v-model="dialogVisible" title="" width="70%" top="2vh" :before-close="closeDialog">
         <resumeData :resume_data="data" />
     </el-dialog>
 </template>
@@ -124,7 +124,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import resumeData from '@/components/common/resumeData.vue'
 import { resumeApi } from '@/api'
-import { download_resume_fn } from '@/utils/download'
+import { downloadResume } from '@/utils/download'
 
 const current_page = ref(1)
 const page_size = 4
@@ -135,13 +135,13 @@ const favoriteStatus = reactive([])
 
 const page_change = () => {
     resume_data.length = 0
-    get_page_resumes(sort_order.value)
+    getResumes(sort_order.value)
 }
 
 onMounted(() => {
     resumeApi.getTotalCount().then(res => {
         total_count.value = res.data
-        get_page_resumes(1)
+        getResumes(1)
     })
 })
 
@@ -153,7 +153,7 @@ const sort_order_map = {
 
 const sort_order = ref(0)
 const sort_order_name = ref(sort_order_map[0])
-const get_page_resumes = e => {
+const getResumes = e => {
     sort_order.value = e
     sort_order_name.value = sort_order_map[e]
 
@@ -200,21 +200,17 @@ const change_favorite_status = (idx, rid) => {
 }
 
 const data = ref('')
-const dialog_visible = ref(false)
+const dialogVisible = ref(false)
 const preview_resume = rid => {
     resumeApi.getOneResumeInfo({ rid: rid }).then(res => {
         data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
-        dialog_visible.value = true
+        dialogVisible.value = true
     })
 }
 
-const close_dialog = done => {
-    dialog_visible.value = false
+const closeDialog = done => {
+    dialogVisible.value = false
     done()
-}
-
-const download_resume = rid => {
-    download_resume_fn(rid)
 }
 </script>
 
@@ -243,6 +239,7 @@ const download_resume = rid => {
     height: 82vh;
     min-width: 800px;
     overflow: auto;
+    position: relative;
 }
 
 .pagination-block {

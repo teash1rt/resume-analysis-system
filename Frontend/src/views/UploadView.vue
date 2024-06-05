@@ -13,33 +13,29 @@
             </div>
             <div>
                 <el-upload
-                    ref="upload_ref"
+                    ref="uploadRef"
                     class="upload"
-                    :action="upload_url"
+                    :action="uploadUrl"
                     :before-upload="beforeUpload"
-                    :data="{
-                        summary_info: summary_info,
-                        detail_info: detail_info,
-                        score: resume_score
-                    }"
+                    :data="uploadData"
                     :on-success="handleUploadSuccess"
                     :auto-upload="false"
                     :limit="1"
                     :on-exceed="handleExceed"
-                    :on-change="file_change"
+                    :on-change="fileChange"
                     name="file"
-                    :headers="{ Authorization: `Bearer ${jwt_token}` }"
-                    :show-file-list="show_file_list"
+                    :headers="{ Authorization: `Bearer ${jwtToken}` }"
+                    :show-file-list="showFileList"
                     :before-remove="beforeRemove">
                     <template #trigger>
                         <button class="status0-btn" v-if="status === 0">点击上传</button>
                     </template>
-                    <button class="status1-btn" @click="upload_to_analysis" v-if="status === 1">确认上传</button>
+                    <button class="status1-btn" @click="uploadToAnalysis" v-if="status === 1">确认上传</button>
                     <button class="status2-btn" v-if="status === 2">上传准备</button>
                 </el-upload>
             </div>
         </div>
-        <el-dialog v-model="dialog_visible" top="5vh" width="65%" :before-close="close_dialog" class="dialog">
+        <el-dialog v-model="dialogVisible" top="5vh" width="65%" :before-close="closeDialog" class="dialog">
             <div class="dialog-content">
                 <div class="dialog-box">
                     <h3 class="dialog-topic">基本信息</h3>
@@ -47,11 +43,11 @@
                         <el-descriptions-item v-for="(value, key) in data.basic_data" :key="value">
                             <template #label>
                                 <div>
-                                    {{ descriptions[key] }}
+                                    {{ COLUMNS[key] }}
                                 </div>
                             </template>
                             <span v-if="key === 'loc' || key === 'college'">
-                                <span v-for="e in value" style="margin-right: 0.7vw" :key="e">
+                                <span v-for="(e, idx) in value" style="margin-right: 0.7vw" :key="idx">
                                     {{ e }}
                                 </span>
                             </span>
@@ -64,22 +60,22 @@
                 <div class="dialog-box">
                     <h3 class="dialog-topic">发现标签</h3>
                     <div class="tag">
-                        <span v-for="e in data.tag.edu_tag" :key="e">
+                        <span v-for="(e, idx) in data.tag.edu_tag" :key="idx">
                             <el-tag class="ml-2" type="danger">{{ e }}</el-tag>
                         </span>
-                        <span v-for="e in data.basic_data.college" :key="e">
+                        <span v-for="(e, idx) in data.basic_data.college" :key="idx">
                             <el-tag class="ml-2" type="danger">{{ e }}</el-tag>
                         </span>
-                        <span v-for="e in data.basic_data.loc" :key="e">
+                        <span v-for="(e, idx) in data.basic_data.loc" :key="idx">
                             <el-tag class="ml-2" type="success">{{ e }}</el-tag>
                         </span>
                         <el-tag class="ml-2" type="warning" v-if="data.tag.total_work_time > 0">{{
                             `工作年限:${data.tag.total_work_time}年`
                         }}</el-tag>
-                        <span v-for="e in data.tag.experience_tag" :key="e">
+                        <span v-for="(e, idx) in data.tag.experience_tag" :key="idx">
                             <el-tag class="ml-2" type="warning">{{ e }}</el-tag>
                         </span>
-                        <span v-for="e in data.tag.ability" :key="e">
+                        <span v-for="(e, idx) in data.tag.ability" :key="idx">
                             <el-tag class="ml-2">{{ e }}</el-tag>
                         </span>
                         <span>
@@ -112,19 +108,19 @@
                             <el-descriptions class="descriptions" :column="1" border>
                                 <el-descriptions-item v-if="data.experience">
                                     <template #label> 工作/项目经历 </template>
-                                    <div v-for="e in cut_sentence(data.experience)" :key="e">
+                                    <div v-for="(e, idx) in cutSentence(data.experience)" :key="idx">
                                         {{ e }}
                                     </div>
                                 </el-descriptions-item>
                                 <el-descriptions-item v-if="data.award">
                                     <template #label> 所得奖项 </template>
-                                    <div v-for="e in data.award" :key="e">
+                                    <div v-for="(e, idx) in data.award" :key="idx">
                                         {{ e }}
                                     </div>
                                 </el-descriptions-item>
                                 <el-descriptions-item v-if="data.ability">
                                     <template #label> 个人能力 </template>
-                                    <div v-for="e in data.ability" :key="e">
+                                    <div v-for="(e, idx) in data.ability" :key="idx">
                                         {{ e }}
                                     </div>
                                 </el-descriptions-item>
@@ -134,14 +130,14 @@
                             <div>
                                 <div v-if="data.job_obj.length > 0">
                                     <h3 class="dialog-topic">求职意向</h3>
-                                    <span v-for="e in data.job_obj" :key="e" style="margin-right: 0.7vw">
+                                    <span v-for="(e, idx) in data.job_obj" :key="idx" style="margin-right: 0.7vw">
                                         {{ e }}
                                     </span>
                                 </div>
                                 <div v-else>
                                     <h3 class="dialog-topic">请填写求职意向</h3>
                                     <el-input
-                                        v-model="job_obj_input"
+                                        v-model="jobObjective"
                                         maxlength="20"
                                         placeholder="如有多个求职意向可用分号分隔"
                                         show-word-limit
@@ -151,7 +147,7 @@
                             <div>
                                 <h3 class="dialog-topic">薪资预期</h3>
                                 <el-input
-                                    v-model="money_obj_input"
+                                    v-model="salaryObjective"
                                     maxlength="10"
                                     placeholder="请输入您的薪资预期"
                                     show-word-limit
@@ -160,7 +156,7 @@
                             <div>
                                 <h3 class="dialog-topic">自我描述</h3>
                                 <el-input
-                                    v-model="self_description_input"
+                                    v-model="selfDescription"
                                     maxlength="30"
                                     placeholder="请输入您的自我描述,支持使用分号划分不同方面的描述"
                                     show-word-limit
@@ -171,43 +167,47 @@
                 </div>
             </div>
             <div class="btn-group">
-                <el-button type="default" plain @click="cancel_upload">取消上传</el-button>
-                <el-button type="success" plain @click="upload_to_database">确认上传</el-button>
+                <el-button type="default" plain @click="cancelUpload">取消上传</el-button>
+                <el-button type="success" plain @click="uploadToDatabase">确认上传</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { genFileId, ElNotification } from 'element-plus'
 import { InfoStore } from '@/stores/InfoStore'
+import { COLUMNS } from '@/constants/columns'
+import { FILE_TYPE } from '@/constants/fileType'
+import { Analysis_URL } from '@/constants/url'
+import { cutSentence } from '@/utils/cutSentence'
 import { userApi } from '@/api'
 
-const upload_ref = ref(null)
-const jwt_token = ref('')
+const uploadRef = ref(null)
+const jwtToken = ref('')
 // 0表示没选文件 1表示选了但没解析 2表示正在解析中 3表示解析完成没上传
 const status = ref(0)
 // 开始时显示列表 状态为2时消失
-const show_file_list = ref(true)
-const upload_url = ref('/req2/qes/')
-const dialog_visible = ref(false)
+const showFileList = ref(true)
+const uploadUrl = ref(Analysis_URL)
+const dialogVisible = ref(false)
 const infoStore = InfoStore()
 
 const handleExceed = files => {
-    upload_ref.value.clearFiles()
+    uploadRef.value.clearFiles()
     const file = files[0]
     file.uid = genFileId()
-    upload_ref.value.handleStart(file)
+    uploadRef.value.handleStart(file)
 }
 
-const upload_to_analysis = () => {
+const uploadToAnalysis = () => {
     status.value = 2
-    show_file_list.value = false
-    upload_ref.value.submit()
+    showFileList.value = false
+    uploadRef.value.submit()
 }
 
-const file_change = () => {
+const fileChange = () => {
     // 状态转换 0->1
     if (status.value === 0) {
         status.value = 1
@@ -216,32 +216,27 @@ const file_change = () => {
     }
 }
 
-const upload_to_database = () => {
-    upload_url.value = '/req1/resume/upload/'
-    jwt_token.value = infoStore.token
-    const { basic_data, job_obj, experience, award, ability, job_fit, score, tag, custom_content } = data.value
+const uploadToDatabase = () => {
+    uploadUrl.value = '/req1/resume/upload/'
+    jwtToken.value = infoStore.token
     // 根据用户自定义内容构造 custom_content JSON 串 定义在下面
-    calculate_content()
-    // 划分 优化查询花销
-    summary_info.value = JSON.stringify({ basic_data, job_obj, tag, custom_content })
-    detail_info.value = JSON.stringify({ experience, award, ability, job_fit })
-    resume_score.value = score
-    upload_ref.value.submit()
-    dialog_visible.value = false
-    clear_data()
+    contentParse()
+    uploadRef.value.submit()
+    dialogVisible.value = false
+    clearData()
 }
 
 // 这里主要处理解析后取消上传的情况
-const close_dialog = done => {
-    cancel_upload()
+const closeDialog = done => {
+    cancelUpload()
     done()
 }
-const cancel_upload = () => {
-    upload_ref.value.clearFiles()
+const cancelUpload = () => {
+    uploadRef.value.clearFiles()
     status.value = 0
-    show_file_list.value = true
-    dialog_visible.value = false
-    clear_data()
+    showFileList.value = true
+    dialogVisible.value = false
+    clearData()
 }
 
 const beforeRemove = () => {
@@ -249,33 +244,24 @@ const beforeRemove = () => {
     return true
 }
 
-const summary_info = ref('')
-const detail_info = ref('')
-const resume_score = ref(0)
 const data = ref(null)
 
-const refuse_beforeUpload = () => {
-    show_file_list.value = true
-    upload_ref.value.clearFiles()
+const refuseBeforeUpload = () => {
+    showFileList.value = true
+    uploadRef.value.clearFiles()
     status.value = 0
 }
 
 const beforeUpload = async rawFile => {
-    if (upload_url.value === '/req2/qes/') {
-        const fileType = rawFile.type
-        const fileSize = rawFile.size
-        if (
-            fileType !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
-            fileType !== 'application/pdf' &&
-            fileType !== 'text/plain'
-        ) {
+    if (uploadUrl.value === Analysis_URL) {
+        if (!FILE_TYPE.includes(rawFile.type)) {
             ElNotification({
                 title: '目前仅支持docx,pdf,txt格式',
                 type: 'warning'
             })
-            refuse_beforeUpload()
+            refuseBeforeUpload()
             return false
-        } else if (fileSize > 5000 * 1024) {
+        } else if (rawFile.size > 5000 * 1024) {
             ElNotification({
                 title: '文件过大',
                 type: 'warning'
@@ -285,22 +271,42 @@ const beforeUpload = async rawFile => {
 
         try {
             const res = await userApi.getAuthorize()
-            jwt_token.value = res.token
+            jwtToken.value = res.token
         } catch (err) {
             ElNotification({
                 title: '服务器接口状态异常 | 请等待处理',
                 type: 'error'
             })
-            refuse_beforeUpload()
+            refuseBeforeUpload()
             return false
         }
     }
 }
 
+const uploadData = computed(() => {
+    return data.value
+        ? {
+              summary_info: JSON.stringify({
+                  basic_data: data.value.basic_data,
+                  job_obj: data.value.job_obj,
+                  tag: data.value.tag,
+                  custom_content: data.value.custom_content
+              }),
+              detail_info: JSON.stringify({
+                  experience: data.value.experience,
+                  award: data.value.award,
+                  ability: data.value.ability,
+                  job_fit: data.value.job_fit
+              }),
+              score: data.value.score
+          }
+        : {}
+})
+
 const handleUploadSuccess = (res, uploadFile) => {
     // 这里单独处理 因为单独用url而没用 axios 所以没办法被拦截
     // 这里首先判断调用这个方法的是哪次请求
-    if (upload_url.value === '/req2/qes/') {
+    if (uploadUrl.value === Analysis_URL) {
         // 关键代码 要不然无法二次提交
         uploadFile.status = 'ready'
         if (res.code === 400) {
@@ -310,11 +316,11 @@ const handleUploadSuccess = (res, uploadFile) => {
             })
             // 恢复状态
             status.value = 0
-            upload_ref.value.clearFiles()
-            upload_url.value = '/req2/qes/'
+            uploadRef.value.clearFiles()
+            uploadUrl.value = Analysis_URL
         } else if (res.code === 200) {
             data.value = JSON.parse(res.res)
-            dialog_visible.value = true
+            dialogVisible.value = true
             status.value = 3
         }
     } else {
@@ -322,24 +328,12 @@ const handleUploadSuccess = (res, uploadFile) => {
             title: res.msg,
             type: res.code === 400 ? 'warning' : 'success'
         })
-        upload_ref.value.clearFiles()
-        show_file_list.value = true
-        // 这里结束的时候会调用 file_change
+        uploadRef.value.clearFiles()
+        showFileList.value = true
+        // 这里结束的时候会调用 fileChange
         status.value = 1
-        upload_url.value = '/req2/qes/'
+        uploadUrl.value = Analysis_URL
     }
-}
-
-// 由于JSON串的key是英文的 这里标注对应关系方便Descriptions中显示
-const descriptions = {
-    name: '姓名',
-    birth: '生日',
-    age: '年龄',
-    tel: '电话',
-    email: '邮箱',
-    college: '学校',
-    loc: '住址',
-    edu: '学历'
 }
 
 // 添加标签
@@ -380,20 +374,20 @@ const handleInputConfirm = () => {
 }
 
 // 自定义内容
-const job_obj_input = ref('')
-const money_obj_input = ref('')
-const self_description_input = ref('')
+const jobObjective = ref('')
+const salaryObjective = ref('')
+const selfDescription = ref('')
 
-const calculate_content = () => {
-    if (data.value.job_obj.length === 0 && job_obj_input.value) {
-        const job_obj = job_obj_input.value.split(/[; ；]/).filter(e => e.trim() !== '')
+const contentParse = () => {
+    if (data.value.job_obj.length === 0 && jobObjective.value) {
+        const job_obj = jobObjective.value.split(/[; ；]/).filter(e => e.trim() !== '')
         data.value.job_obj.push(...job_obj)
     }
-    if (money_obj_input.value && money_obj_input.value.trim !== '') {
-        data.value.custom_content.money_obj = money_obj_input.value
+    if (salaryObjective.value && salaryObjective.value.trim !== '') {
+        data.value.custom_content.money_obj = salaryObjective.value
     }
-    if (self_description_input.value) {
-        const self_description = self_description_input.value.split(/[; ；]/).filter(e => e.trim() !== '')
+    if (selfDescription.value) {
+        const self_description = selfDescription.value.split(/[; ；]/).filter(e => e.trim() !== '')
         data.value.custom_content.self_desc = [...self_description]
     }
     if (dynamicTags.value.length > 0) {
@@ -401,24 +395,11 @@ const calculate_content = () => {
     }
 }
 
-const clear_data = () => {
+const clearData = () => {
     dynamicTags.value.length = 0
-    job_obj_input.value = ''
-    money_obj_input.value = ''
-    self_description_input.value = ''
-}
-
-const cut_sentence = sentence => {
-    const arr = sentence
-    for (let i = 0; i < sentence.length; i++) {
-        if (arr[i].length > 60) {
-            // 将字符串分为长度为60的块
-            const chunks = arr[i].match(/.{1,60}/g)
-            arr.splice(i, 1, ...chunks)
-            i += chunks.length - 1
-        }
-    }
-    return arr
+    jobObjective.value = ''
+    salaryObjective.value = ''
+    selfDescription.value = ''
 }
 </script>
 
@@ -442,7 +423,7 @@ const cut_sentence = sentence => {
 .list {
     display: flex;
     font-size: 2rem;
-    margin-top: 3vh;
+    margin-top: 15px;
 }
 
 .list li {
@@ -461,7 +442,7 @@ const cut_sentence = sentence => {
 .status0-btn,
 .status1-btn,
 .status2-btn {
-    margin-top: 6vh;
+    margin-top: 30px;
     width: 170px;
     height: 60px;
     font-size: 1.6rem;

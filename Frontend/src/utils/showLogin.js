@@ -1,3 +1,3 @@
-export const show_login = () => {
-    window.show_login()
+export const showLogin = () => {
+    window.showLogin()
 }

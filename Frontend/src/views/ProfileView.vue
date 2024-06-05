@@ -11,7 +11,7 @@
                     </div>
                 </el-aside>
                 <el-main class="main">
-                    <el-tabs v-model="active_name" class="tabs">
+                    <el-tabs v-model="activeTab" class="tabs">
                         <el-tab-pane label="个人信息" name="View1" class="tab">
                             <userInfo />
                         </el-tab-pane>
@@ -41,7 +41,7 @@ import { InfoStore } from '@/stores/InfoStore'
 import { convertToUrl } from '@/utils/base64ToUrl'
 import { userApi } from '@/api'
 
-const active_name = ref('View1')
+const activeTab = ref('View1')
 const infoStore = InfoStore()
 const permission = infoStore.type
 const url = ref('')

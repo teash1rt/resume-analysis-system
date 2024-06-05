@@ -3,7 +3,7 @@
         <el-card v-for="e in data" :key="e.rid" shadow="hover" class="card-item">
             <el-row class="row">
                 <el-col :span="18" class="topic">
-                    <el-tree :data="get_tree_data(e)" class="tree" />
+                    <el-tree :data="getTreeData(e)" class="tree" />
                 </el-col>
                 <el-col :span="3">
                     <div class="grid-content ep-bg-purple-light" />
@@ -17,7 +17,7 @@
                     <div class="grid-content ep-bg-purple" />
                 </el-col>
                 <el-col :span="2">
-                    <span class="resume_op" @click="del_upload_resume(e.rid)">删除</span>
+                    <span class="resume_op" @click="deleteUploadResume(e.rid)">删除</span>
                 </el-col>
                 <el-col :span="2">
                     <el-tooltip content="简历关注度" placement="top">
@@ -36,59 +36,50 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted, shallowRef } from 'vue'
 import { ElNotification } from 'element-plus'
+import { COLUMNS } from '@/constants/columns'
 import { resumeApi } from '@/api'
 
-const data = reactive([])
+const data = shallowRef([])
 
-const mp = {}
-
-onMounted(() => {
+const getUploadResumes = () => {
     resumeApi.getUploadResumes().then(res => {
-        res.data.map((item, idx) => {
-            mp[item.rid] = idx
+        res.data.map(item => {
             return (item.summaryInfo = JSON.parse(item.summaryInfo))
         })
-        Object.assign(data, res.data)
+        data.value = res.data
     })
+}
+
+onMounted(() => {
+    getUploadResumes()
 })
 
-const del_upload_resume = rid => {
+const deleteUploadResume = rid => {
     resumeApi.deleteUploadResume({ rid: rid }).then(res => {
         ElNotification({
             title: res.msg,
             type: 'success'
         })
-        data.splice(data[mp[rid]], 1)
+        getUploadResumes()
     })
 }
 
-const get_tree_data = e => {
+const getTreeData = e => {
     return [
         {
             label: '简历信息',
-            children: basic_data_tree(e.summaryInfo.basic_data)
+            children: basicDataTree(e.summaryInfo.basic_data)
         }
     ]
 }
 
-const basic_data_map = {
-    name: '姓名',
-    birth: '生日',
-    age: '年龄',
-    tel: '电话',
-    email: '邮箱',
-    college: '学校',
-    loc: '住址',
-    edu: '学历'
-}
-
-const basic_data_tree = e => {
+const basicDataTree = e => {
     const arr = []
     for (const key in e) {
         const leaf = {}
-        leaf['label'] = `${basic_data_map[key]}:${e[key]}`
+        leaf['label'] = `${COLUMNS[key]}:${e[key]}`
         arr.push(leaf)
     }
     return arr

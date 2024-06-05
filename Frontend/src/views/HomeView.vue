@@ -5,8 +5,8 @@
             <div class="desc">基于自然语言处理技术对简历进行关键信息提取和岗位匹配</div>
             <div class="desc">整合后端技术为求职者和招聘者搭建沟通桥梁</div>
             <div class="btn-group">
-                <button class="get-start" @click="get_start">开始体验</button>
-                <button class="get-author" @click="get_author">联系我们</button>
+                <button class="get-start" @click="getStart">开始体验</button>
+                <button class="get-author" @click="getAuthor">联系我们</button>
             </div>
         </div>
     </div>
@@ -18,11 +18,11 @@ import { EnvStore } from '@/stores/EnvStore'
 import { GITHUB_URL } from '@/constants/url'
 
 const router = useRouter()
-const get_start = () => {
+const getStart = () => {
     router.push({ name: 'loadview' })
 }
 
-const get_author = () => {
+const getAuthor = () => {
     window.open(GITHUB_URL)
 }
 

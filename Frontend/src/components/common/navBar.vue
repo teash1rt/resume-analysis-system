@@ -34,13 +34,17 @@
                     </div>
                 </div>
             </div>
-            <loginDialog v-model="dialogVisible" @is_login="finishLogin" @submit_email="submit_email" @must_login="must_login" />
+            <loginDialog
+                v-model="dialogVisible"
+                @finishLogin="finishLogin"
+                @submitEmail="submitEmail"
+                @handleLogin="handleLogin" />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import loginDialog from '@/components/common/loginDialog.vue'
 import { InfoStore } from '@/stores/InfoStore'
 import { convertToUrl } from '@/utils/base64ToUrl'
@@ -78,19 +82,15 @@ onMounted(() => {
 watch(
     () => infoStore.token,
     newVal => {
-        if (newVal === null) {
+        if (!newVal) {
             isLogin.value = false
         }
     }
 )
 
-const routerName = ref(route.name)
-watch(
-    () => route.name,
-    newV => {
-        routerName.value = newV
-    }
-)
+const routerName = computed(() => {
+    return route.name
+})
 
 const dialogVisible = ref(false)
 const toLogin = () => {
@@ -106,11 +106,11 @@ const finishLogin = () => {
 }
 
 // 忘记密码后的方法
-const submit_email = () => {
+const submitEmail = () => {
     dialogVisible.value = false
 }
 // 弹登录窗
-const must_login = () => {
+const handleLogin = () => {
     dialogVisible.value = true
 }
 

@@ -1,6 +1,6 @@
 import { resumeApi } from '@/api'
 
-export const download_resume_fn = rid => {
+export const downloadResume = rid => {
     resumeApi.downloadResume({ rid }).then(res => {
         const binaryData = atob(res.data.data)
         const uint8Array = new Uint8Array(binaryData.length)

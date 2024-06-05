@@ -3,11 +3,11 @@
         <el-upload
             class="upload-demo"
             drag
-            :action="uploadUrl"
+            :action="Analysis_URL"
             :before-upload="beforeAvatarUpload"
             :auto-upload="false"
             ref="uploadRef"
-            :name="fieldName"
+            name="file"
             :on-success="handleUploadSuccess"
             :on-error="handleUploadError"
             :limit="1"
@@ -30,15 +30,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 import { ElNotification, genFileId } from 'element-plus'
 import resumeData from '@/components/common/resumeData.vue'
+import { FILE_TYPE } from '@/constants/fileType'
 import { userApi } from '@/api'
+import { Analysis_URL } from '@/constants/url'
 
 const uploadRef = ref()
-const uploadUrl = '/req2/qes/'
-// 要用fastapi接受的话这里必须为file
-const fieldName = 'file'
 const dialogTableVisible = ref(false)
 
 const handleExceed = files => {
@@ -56,20 +55,14 @@ const jwtToken = ref('')
 
 const beforeAvatarUpload = async rawFile => {
     isWaitingForResult.value = true
-    const fileType = rawFile.type
-    const fileSize = rawFile.size
-    if (
-        fileType !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
-        fileType !== 'application/pdf' &&
-        fileType !== 'text/plain'
-    ) {
+    if (!FILE_TYPE.includes(rawFile.type)) {
         ElNotification({
             title: '目前仅支持docx,pdf,txt格式的文件',
             type: 'warning'
         })
         isWaitingForResult.value = false
         return false
-    } else if (fileSize > 5000 * 1024) {
+    } else if (rawFile.size > 5000 * 1024) {
         ElNotification({
             title: '文件过大',
             type: 'warning'
@@ -91,7 +84,7 @@ const beforeAvatarUpload = async rawFile => {
     showFileList.value = false
 }
 
-const data = ref('')
+const data = shallowRef(null)
 
 const handleUploadSuccess = res => {
     uploadRef.value.clearFiles()

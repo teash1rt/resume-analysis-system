@@ -8,7 +8,7 @@
             :headers="{ Authorization: `Bearer ${infoStore.token}` }"
             :before-upload="beforeAvatarUpload"
             :auto-upload="false"
-            ref="upload_ref"
+            ref="uploadRef"
             :on-change="changeAvatar">
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <svg v-else class="avatar-uploader-icon" viewBox="0 0 1024 1024">
@@ -31,11 +31,11 @@ import { InfoStore } from '@/stores/InfoStore'
 const imageUrl = ref('')
 const infoStore = InfoStore()
 
-const upload_ref = ref()
-const emit = defineEmits(['change'])
+const uploadRef = ref()
+const emit = defineEmits(['reload'])
 
 const handleAvatarSuccess = () => {
-    emit('change')
+    emit('reload')
 }
 
 const beforeAvatarUpload = rawFile => {
@@ -68,7 +68,7 @@ const changeAvatar = uploadFile => {
 }
 
 const submitUpload = () => {
-    upload_ref.value.submit()
+    uploadRef.value.submit()
 }
 </script>
 

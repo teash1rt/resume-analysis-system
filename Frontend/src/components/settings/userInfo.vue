@@ -127,10 +127,10 @@
 </template>
 
 <script setup>
-import { InfoStore } from '@/stores/InfoStore'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
+import { InfoStore } from '@/stores/InfoStore'
 import { SHA256Encrypt } from '@/utils/encrypt'
 import { userApi } from '@/api'
 

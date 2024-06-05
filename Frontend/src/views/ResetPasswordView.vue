@@ -30,23 +30,23 @@ const handleReset = () => {
             title: '两次密码不一致',
             type: 'warning'
         })
-    } else {
-        // 获得 url 中最后的 token 部分做验证
-        const paths = router.currentRoute.value.fullPath.split('/')
-        const url_path = paths[paths.length - 2]
-        userApi
-            .resetPassword({
-                url_path: url_path,
-                newPassword: SHA256Encrypt(newPassword.value)
-            })
-            .then(() => {
-                ElNotification({
-                    title: '更改成功',
-                    type: 'success'
-                })
-                router.push({ name: 'home' })
-            })
+        return
     }
+
+    // 获得 url 中最后的 token 部分做验证
+    const paths = router.currentRoute.value.fullPath.split('/')
+    userApi
+        .resetPassword({
+            url_path: paths[paths.length - 2],
+            new_password: SHA256Encrypt(newPassword.value)
+        })
+        .then(() => {
+            ElNotification({
+                title: '更改成功',
+                type: 'success'
+            })
+            router.push({ name: 'home' })
+        })
 }
 </script>
 

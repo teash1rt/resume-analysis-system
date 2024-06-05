@@ -6,13 +6,13 @@
 import { ref, onMounted, getCurrentInstance } from 'vue'
 
 const props = defineProps({
-    loc_data: {
+    data: {
         type: Object,
         required: true
     }
 })
 
-const loc_data_handle = data => {
+const dataParse = data => {
     const legendData = []
     const seriesData = []
     data.forEach(val => {
@@ -33,7 +33,7 @@ const { proxy } = getCurrentInstance()
 
 onMounted(() => {
     const myChart = proxy.echarts.init(chart.value)
-    const data = loc_data_handle(props.loc_data)
+    const data = dataParse(props.data)
     const option = {
         title: {
             text: '简历来源地统计'

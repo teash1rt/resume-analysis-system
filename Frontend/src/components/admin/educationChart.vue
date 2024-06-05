@@ -6,13 +6,13 @@
 import { ref, onMounted, getCurrentInstance } from 'vue'
 
 const props = defineProps({
-    edu_data: {
+    data: {
         type: Object,
         required: true
     }
 })
 
-const edu_data_handle = data => {
+const dataParse = data => {
     data.sort((a, b) => b.count - a.count)
     return data.map(e => {
         return { value: e.count, name: e.education }
@@ -45,7 +45,7 @@ onMounted(() => {
                 itemStyle: {
                     borderRadius: 8
                 },
-                data: edu_data_handle(props.edu_data)
+                data: dataParse(props.data)
             }
         ]
     }

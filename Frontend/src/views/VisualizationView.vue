@@ -2,21 +2,15 @@
     <div class="box">
         <el-card shadow="hover" class="card">
             <router-link :to="{ name: 'resumesview' }" class="back">&lt;返回</router-link>
-            <el-carousel
-                indicator-position="outside"
-                class="carousel"
-                height="80vh"
-                :autoplay="false"
-                trigger="click"
-                v-if="hasInit">
+            <el-carousel indicator-position="outside" height="80vh" :autoplay="false" trigger="click" v-if="hasInit">
                 <el-carousel-item class="carousel-item">
-                    <educationChart class="chartA" :edu_data="edu_data" />
+                    <educationChart class="chartA" :data="data.education_statistics" />
                 </el-carousel-item>
                 <el-carousel-item class="carousel-item">
-                    <locationChart class="chartB" :loc_data="loc_data" />
+                    <locationChart class="chartB" :data="data.location_statistics" />
                 </el-carousel-item>
                 <el-carousel-item class="carousel-item">
-                    <experienceChart class="chartC" :exp_data="exp_data" />
+                    <experienceChart class="chartC" :data="data.experience_statistics" />
                 </el-carousel-item>
             </el-carousel>
         </el-card>
@@ -30,18 +24,12 @@ import locationChart from '@/components/admin/locationChart.vue'
 import experienceChart from '@/components/admin/experienceChart.vue'
 import { statisticsApi } from '@/api'
 
-const edu_data = shallowRef(null)
-const exp_data = shallowRef(null)
-const loc_data = shallowRef(null)
-
+const data = shallowRef(null)
 const hasInit = ref(false)
 
 onMounted(() => {
     statisticsApi.getStatisticsInfo().then(res => {
-        const { education_statistics, experience_statistics, location_statistics } = res.data
-        edu_data.value = education_statistics
-        exp_data.value = experience_statistics
-        loc_data.value = location_statistics
+        data.value = res.data
         hasInit.value = true
     })
 })
@@ -53,6 +41,7 @@ onMounted(() => {
     margin: 10px auto 0;
     min-width: 800px;
     position: relative;
+    min-height: 500px;
 
     .back {
         position: absolute;

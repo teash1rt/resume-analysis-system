@@ -1,7 +1,7 @@
 import { req1 } from '@/utils/request'
 
 const getFavoriteResume = () => {
-    return req1.get(`/req1/resume/get-favorite/`)
+    return req1.get('/req1/resume/get-favorite/')
 }
 
 const addFavoriteResume = ({ rid: rid }) => {
@@ -39,7 +39,7 @@ const getOneResumeInfo = ({ rid: rid }) => {
 }
 
 const getUploadResumes = () => {
-    return req1.get(`/req1/resume/get-upload-resumes/`)
+    return req1.get('/req1/resume/get-upload-resumes/')
 }
 
 const deleteUploadResume = ({ rid: rid }) => {

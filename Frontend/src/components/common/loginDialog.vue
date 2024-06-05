@@ -1,20 +1,20 @@
 <template>
     <el-dialog width="32%" top="20vh" draggable :append-to-body="true">
-        <div class="login" v-if="dialog_status === 1">
+        <div class="login" v-if="dialogStatus === 1">
             <div class="box">
                 <p class="table">登录</p>
                 <br />
                 <input class="input-content" type="text" placeholder="请输入邮箱号" v-model="email" />
                 <input class="input-content" type="password" placeholder="请输入密码" v-model="password" />
                 <div>
-                    <span class="s1" @click="dialog_status = 3">忘记密码</span>
-                    <span class="s2" @click="dialog_status = 2">注册</span>
+                    <span class="s1" @click="dialogStatus = 3">忘记密码</span>
+                    <span class="s2" @click="dialogStatus = 2">注册</span>
                 </div>
                 <br />
                 <a href="#" class="go" @click="login">登录</a>
             </div>
         </div>
-        <div class="register" v-if="dialog_status === 2">
+        <div class="register" v-if="dialogStatus === 2">
             <div class="box">
                 <p class="table">注册</p>
                 <br />
@@ -22,27 +22,27 @@
                 <input class="input-content" type="text" placeholder="请输入用户名" v-model="username" />
                 <input class="input-content" type="password" placeholder="请输入密码" v-model="password" />
                 <div class="verify-container">
-                    <input class="verify-content" type="text" placeholder="请输入验证码" v-model="verify_code" />
-                    <img src="/req1/user/get-verify-code/" ref="verify_img" @click="refresh_verify_code" />
+                    <input class="verify-content" type="text" placeholder="请输入验证码" v-model="verifyCode" />
+                    <img src="/req1/user/get-verify-code/" ref="verifyImgRef" @click="refresh_verify_code" />
                 </div>
                 <div>
-                    <span class="s2" @click="dialog_status = 1">返回登录页</span>
+                    <span class="s2" @click="dialogStatus = 1">返回登录页</span>
                 </div>
                 <br />
                 <a href="#" class="go" @click="register">注册账号</a>
             </div>
         </div>
-        <div class="forget-password" v-if="dialog_status === 3">
+        <div class="forget-password" v-if="dialogStatus === 3">
             <div class="box">
                 <p class="table">忘记密码</p>
                 <br />
                 <input class="input-content" type="text" placeholder="请输入注册邮箱号" v-model="email" />
                 <div class="verify-container">
-                    <input class="verify-content" type="text" placeholder="请输入验证码" v-model="verify_code" />
-                    <img src="/req1/user/get-verify-code/" ref="verify_img" @click="refresh_verify_code" />
+                    <input class="verify-content" type="text" placeholder="请输入验证码" v-model="verifyCode" />
+                    <img src="/req1/user/get-verify-code/" ref="verifyImgRef" @click="refresh_verify_code" />
                 </div>
                 <div>
-                    <span class="s2" @click="dialog_status = 1">返回登录页</span>
+                    <span class="s2" @click="dialogStatus = 1">返回登录页</span>
                 </div>
                 <br />
                 <a href="#" class="go" @click="handleForgetPassword">确认</a>
@@ -59,19 +59,19 @@ import { userApi } from '@/api'
 import { ElNotification } from 'element-plus'
 
 // 状态1显示登录 状态2显示注册 状态3显示忘记密码
-const dialog_status = ref(1)
+const dialogStatus = ref(1)
 const email = ref('')
 const username = ref('')
 const password = ref('')
-const verify_code = ref('')
+const verifyCode = ref('')
 
 watch(
-    () => dialog_status.value,
+    () => dialogStatus.value,
     () => {
         email.value = ''
         username.value = ''
         password.value = ''
-        verify_code.value = ''
+        verifyCode.value = ''
     }
 )
 
@@ -80,12 +80,12 @@ const infoStore = InfoStore()
 const updateData = () => {
     userApi.getUserInfo().then(() => {
         infoStore.updateInfo()
-        emit('is_login')
+        emit('finishLogin')
     })
 }
 
 // 如果登录 传消息给NavBar 关闭此组件 | 需要登录则弹出窗口
-const emit = defineEmits(['is_login', 'must_login', 'submit_email'])
+const emit = defineEmits(['finishLogin', 'handleLogin', 'submitEmail'])
 const login = () => {
     userApi.login({ email: email.value, password: SHA256Encrypt(password.value) }).then(res => {
         infoStore.token = res.data
@@ -99,7 +99,7 @@ const register = () => {
             email: email.value,
             username: username.value,
             password: SHA256Encrypt(password.value),
-            verify_code: verify_code.value
+            verify_code: verifyCode.value
         })
         .then(res => {
             infoStore.token = res.data
@@ -108,32 +108,32 @@ const register = () => {
 }
 
 // 刷新验证码
-const verify_img = ref()
+const verifyImgRef = ref()
 const refresh_verify_code = () => {
-    verify_img.value.src = '/req1/user/get-verify-code/?time' + new Date().getTime()
+    verifyImgRef.value.src = '/req1/user/get-verify-code/?time' + new Date().getTime()
 }
 
 // 这将会是一个全局方法
-const show_login_dialog = () => {
-    emit('must_login')
+const showLoginDialog = () => {
+    emit('handleLogin')
 }
 
 const handleForgetPassword = () => {
     userApi
         .forgetPassword({
             email: email.value,
-            verify_code: verify_code.value
+            verify_code: verifyCode.value
         })
         .then(() => {
             ElNotification({
                 title: '请查看邮箱以重置您的密码',
                 type: 'success'
             })
-            emit('submit_email')
+            emit('submitEmail')
         })
 }
 
-window.show_login = show_login_dialog
+window.showLogin = showLoginDialog
 </script>
 
 <style lang="less" scoped>
