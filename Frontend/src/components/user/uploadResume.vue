@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <el-card v-for="e in data" :key="e.rid" shadow="hover" class="card-item">
+        <el-card v-for="e in data" :key="e.rid" shadow="hover" class="card">
             <el-row class="row">
                 <el-col :span="18" class="topic">
                     <el-tree :data="getTreeData(e)" class="tree" />
@@ -9,17 +9,12 @@
                     <div class="grid-content ep-bg-purple-light" />
                 </el-col>
             </el-row>
-            <el-row class="row">
-                <el-col :span="6" class="date">
+            <div class="footer">
+                <div :span="20" class="date">
                     {{ `发布于 ${e.createTime.split('T')[0]} ${e.createTime.split('T')[1]}` }}
-                </el-col>
-                <el-col :span="14">
-                    <div class="grid-content ep-bg-purple" />
-                </el-col>
-                <el-col :span="2">
-                    <span class="resume_op" @click="deleteUploadResume(e.rid)">删除</span>
-                </el-col>
-                <el-col :span="2">
+                </div>
+                <div class="meta">
+                    <div class="delete" @click="deleteUploadResume(e.rid)">删除</div>
                     <el-tooltip content="简历关注度" placement="top">
                         <div class="hot">
                             <svg class="icon" viewBox="0 0 1024 1024" width="16" height="16">
@@ -29,8 +24,8 @@
                             <span>{{ e.favorite_score }}</span>
                         </div>
                     </el-tooltip>
-                </el-col>
-            </el-row>
+                </div>
+            </div>
         </el-card>
     </div>
 </template>
@@ -92,15 +87,27 @@ const basicDataTree = e => {
     overflow-y: auto;
 }
 
-.card-item {
-    margin-bottom: 1vh;
+.card {
+    margin-bottom: 10px;
 }
 
-.row {
-    margin-bottom: 0.5vh;
-}
+.footer {
+    display: flex;
+    font-size: 1.4rem;
+    justify-content: space-between;
+    margin-top: 10px;
 
-.hot:hover {
-    cursor: pointer;
+    .meta {
+        display: flex;
+        gap: 10px;
+
+        .delete {
+            cursor: pointer;
+        }
+
+        .hot {
+            cursor: pointer;
+        }
+    }
 }
 </style>
