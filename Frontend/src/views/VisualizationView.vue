@@ -37,20 +37,13 @@ const loc_data = shallowRef(null)
 const hasInit = ref(false)
 
 onMounted(() => {
-    const init = async () => {
-        try {
-            const res = await statisticsApi.getStatisticsInfo()
-            const { education_statistics, experience_statistics, location_statistics } = res.data
-            edu_data.value = education_statistics
-            exp_data.value = experience_statistics
-            loc_data.value = location_statistics
-            hasInit.value = true
-        } catch (err) {
-            //
-        }
-    }
-
-    init()
+    statisticsApi.getStatisticsInfo().then(res => {
+        const { education_statistics, experience_statistics, location_statistics } = res.data
+        edu_data.value = education_statistics
+        exp_data.value = experience_statistics
+        loc_data.value = location_statistics
+        hasInit.value = true
+    })
 })
 </script>
 

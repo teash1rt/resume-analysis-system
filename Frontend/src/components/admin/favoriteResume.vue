@@ -45,22 +45,19 @@ const count = ref(0)
 const data = reactive([])
 
 // 记录data下标和rid的映射关系
-const mp = new Map()
-
-const getFavoriteResume = async () => {
-    const res = await resumeApi.getFavoriteResume()
-    count.value = res.data.length
-    res.data.map((item, idx) => {
-        item.summaryInfo = JSON.parse(item.summaryInfo)
-        item.detailInfo = JSON.parse(item.detailInfo)
-        mp.set(item.rid, idx)
-        return item
-    })
-    Object.assign(data, res.data)
-}
+const ridMap = new Map()
 
 onMounted(() => {
-    getFavoriteResume()
+    resumeApi.getFavoriteResume().then(res => {
+        count.value = res.data.length
+        res.data.map((item, idx) => {
+            item.summaryInfo = JSON.parse(item.summaryInfo)
+            item.detailInfo = JSON.parse(item.detailInfo)
+            ridMap.set(item.rid, idx)
+            return item
+        })
+        Object.assign(data, res.data)
+    })
 })
 
 const load = () => {
@@ -70,16 +67,16 @@ const load = () => {
 const dialog_visible = ref(false)
 const info_data = ref('')
 const preview_resume = rid => {
-    info_data.value = Object.assign({}, toRaw(data[mp.get(rid)].summaryInfo), toRaw(data[mp.get(rid)].detailInfo))
+    info_data.value = Object.assign({}, toRaw(data[ridMap.get(rid)].summaryInfo), toRaw(data[ridMap.get(rid)].detailInfo))
     dialog_visible.value = true
 }
 
 const cancel_favorite = rid => {
-    data.splice(data[mp.get(rid)], 1)
+    data.splice(data[ridMap.get(rid)], 1)
     resumeApi.cancelFavoriteResume(rid)
 }
 
-const download_resume = async rid => {
+const download_resume = rid => {
     download_resume_fn(rid)
 }
 

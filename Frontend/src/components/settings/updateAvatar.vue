@@ -54,12 +54,9 @@ const beforeAvatarUpload = rawFile => {
     } else if (rawFile.size / 1024 / 1024 > 0.05) {
         // 图像压缩至 50KB
         const myImg = new Promise(resolve => {
-            imageConversion
-                .compressAccurately(rawFile, 50)
-                .then(res => {
-                    resolve(res)
-                })
-                .catch(() => {})
+            imageConversion.compressAccurately(rawFile, 50).then(res => {
+                resolve(res)
+            })
         })
         return myImg
     }

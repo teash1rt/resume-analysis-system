@@ -52,19 +52,22 @@ const isLogin = ref(false)
 const infoStore = InfoStore()
 const permission = infoStore.type
 
-const tokenCheck = async () => {
-    try {
-        const res = await userApi.tokenCheck({ token: infoStore.token })
-        if (res.data === true) {
-            isLogin.value = true
-            getAvatar()
-        } else {
+const tokenCheck = () => {
+    userApi
+        .tokenCheck({ token: infoStore.token })
+        .then(res => {
+            if (res.data === true) {
+                isLogin.value = true
+                getAvatar()
+            } else {
+                isLogin.value = false
+                infoStore.clearInfo()
+            }
+        })
+        .catch(() => {
             isLogin.value = false
             infoStore.clearInfo()
-        }
-    } catch (err) {
-        //
-    }
+        })
 }
 
 // 首先判断token是否过期
@@ -112,17 +115,10 @@ const must_login = () => {
 }
 
 const url = ref('')
-const getAvatar = async () => {
-    try {
-        const res = await userApi.getAvatar()
-        if (res.data !== '') {
-            url.value = convertToUrl(res.data)
-        } else {
-            url.value = require('../../assets/avatar.webp')
-        }
-    } catch (err) {
-        //
-    }
+const getAvatar = () => {
+    userApi.getAvatar().then(res => {
+        url.value = res.data !== '' ? convertToUrl(res.data) : require('../../assets/avatar.webp')
+    })
 }
 </script>
 

@@ -14,7 +14,7 @@
             <div>
                 <el-upload
                     ref="upload_ref"
-                    class="upload-demo"
+                    class="upload"
                     :action="upload_url"
                     :before-upload="beforeUpload"
                     :data="{
@@ -47,7 +47,7 @@
                         <el-descriptions-item v-for="(value, key) in data.basic_data" :key="value">
                             <template #label>
                                 <div>
-                                    {{ mp.get(key) }}
+                                    {{ descriptions[key] }}
                                 </div>
                             </template>
                             <span v-if="key === 'loc' || key === 'college'">
@@ -318,17 +318,10 @@ const handleUploadSuccess = (res, uploadFile) => {
             status.value = 3
         }
     } else {
-        if (res.code === 400) {
-            ElNotification({
-                title: res.msg,
-                type: 'warning'
-            })
-        } else {
-            ElNotification({
-                title: res.msg,
-                type: 'success'
-            })
-        }
+        ElNotification({
+            title: res.msg,
+            type: res.code === 400 ? 'warning' : 'success'
+        })
         upload_ref.value.clearFiles()
         show_file_list.value = true
         // 这里结束的时候会调用 file_change
@@ -338,15 +331,16 @@ const handleUploadSuccess = (res, uploadFile) => {
 }
 
 // 由于JSON串的key是英文的 这里标注对应关系方便Descriptions中显示
-const mp = new Map()
-mp.set('name', '姓名')
-    .set('birth', '生日')
-    .set('age', '年龄')
-    .set('tel', '电话')
-    .set('email', '邮箱')
-    .set('college', '学校')
-    .set('loc', '住址')
-    .set('edu', '学历')
+const descriptions = {
+    name: '姓名',
+    birth: '生日',
+    age: '年龄',
+    tel: '电话',
+    email: '邮箱',
+    college: '学校',
+    loc: '住址',
+    edu: '学历'
+}
 
 // 添加标签
 const inputValue = ref('')
@@ -487,7 +481,7 @@ const cut_sentence = sentence => {
     }
 }
 
-.upload-demo {
+.upload {
     margin-left: 13vw;
     margin-right: 60vw;
     height: 20vh;

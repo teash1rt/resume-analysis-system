@@ -47,20 +47,9 @@ const permission = infoStore.type
 const url = ref('')
 
 onMounted(() => {
-    const init = async () => {
-        try {
-            const res = await userApi.getAvatar()
-            if (res.data !== '') {
-                url.value = convertToUrl(res.data)
-            } else {
-                url.value = require('../assets/avatar.webp')
-            }
-        } catch (err) {
-            //
-        }
-    }
-
-    init()
+    userApi.getAvatar().then(res => {
+        url.value = res.data !== '' ? convertToUrl(res.data) : require('../assets/avatar.webp')
+    })
 })
 </script>
 

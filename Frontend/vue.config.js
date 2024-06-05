@@ -22,6 +22,9 @@ module.exports = defineConfig({
                 ws: true,
                 changeOrigin: true
             }
+        },
+        client: {
+            overlay: false
         }
     },
     configureWebpack: {

@@ -2,11 +2,11 @@
     <div class="list">
         <div class="item1">
             <div class="field">用户名</div>
-            <div class="info" v-if="!to_change_username">{{ infoStore.username }}</div>
-            <div class="info" v-if="to_change_username">
-                <el-input v-model="username_data" placeholder="请输入新用户名" class="input" />
+            <div class="info" v-if="!isChangingUsername">{{ infoStore.username }}</div>
+            <div class="info" v-if="isChangingUsername">
+                <el-input v-model="username" placeholder="请输入新用户名" class="input" />
             </div>
-            <div class="edit" @click="edit_username" v-if="!to_change_username">
+            <div class="edit" @click="editUsername" v-if="!isChangingUsername">
                 <svg viewBox="0 0 1024 1024" width="20" height="20">
                     <path
                         fill="currentColor"
@@ -17,13 +17,13 @@
                 </svg>
                 编辑
             </div>
-            <div class="edit" v-if="to_change_username">
-                <svg @click="change_username" viewBox="0 0 1024 1024" width="20" height="20">
+            <div class="edit" v-if="isChangingUsername">
+                <svg @click="changeUsername" viewBox="0 0 1024 1024" width="20" height="20">
                     <path
                         fill="currentColor"
                         d="M406.656 706.944 195.84 496.256a32 32 0 1 0-45.248 45.248l256 256 512-512a32 32 0 0 0-45.248-45.248L406.592 706.944z"></path>
                 </svg>
-                <svg @click="to_change_username = false" viewBox="0 0 1024 1024" width="20" height="20">
+                <svg @click="isChangingUsername = false" viewBox="0 0 1024 1024" width="20" height="20">
                     <path
                         fill="currentColor"
                         d="M764.288 214.592 512 466.88 259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z"></path>
@@ -32,11 +32,11 @@
         </div>
         <div class="item2">
             <div class="field">注册邮箱</div>
-            <div class="info" v-if="!to_change_email">{{ infoStore.email }}</div>
-            <div class="info" v-if="to_change_email">
-                <el-input v-model="email_data" placeholder="请输入新邮箱" class="input" />
+            <div class="info" v-if="!isChangingEmail">{{ infoStore.email }}</div>
+            <div class="info" v-if="isChangingEmail">
+                <el-input v-model="email" placeholder="请输入新邮箱" class="input" />
             </div>
-            <div class="edit" @click="edit_email" v-if="!to_change_email">
+            <div class="edit" @click="editEmail" v-if="!isChangingEmail">
                 <svg viewBox="0 0 1024 1024" width="20" height="20">
                     <path
                         fill="currentColor"
@@ -47,13 +47,13 @@
                 </svg>
                 编辑
             </div>
-            <div class="edit" v-if="to_change_email">
-                <svg @click="change_email" viewBox="0 0 1024 1024" width="20" height="20">
+            <div class="edit" v-if="isChangingEmail">
+                <svg @click="changeEmail" viewBox="0 0 1024 1024" width="20" height="20">
                     <path
                         fill="currentColor"
                         d="M406.656 706.944 195.84 496.256a32 32 0 1 0-45.248 45.248l256 256 512-512a32 32 0 0 0-45.248-45.248L406.592 706.944z"></path>
                 </svg>
-                <svg @click="to_change_email = false" viewBox="0 0 1024 1024" width="20" height="20">
+                <svg @click="isChangingEmail = false" viewBox="0 0 1024 1024" width="20" height="20">
                     <path
                         fill="currentColor"
                         d="M764.288 214.592 512 466.88 259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z"></path>
@@ -63,7 +63,7 @@
         <div class="item3">
             <div class="field">用户权限</div>
             <div class="info">{{ permission }}</div>
-            <div class="edit" v-if="permission === '普通用户'" @click="apply_permission">
+            <div class="edit" v-if="permission === '普通用户'" @click="applyPermission">
                 <svg viewBox="0 0 1024 1024" width="20" height="20">
                     <path
                         fill="currentColor"
@@ -82,21 +82,21 @@
         </div>
     </div>
     <div class="button-wrapper">
-        <el-button type="info" plain @click="to_change_password = true" size="large" class="btn">更改密码</el-button>
+        <el-button type="info" plain @click="changePasswordDialogVisible = true" size="large" class="btn">更改密码</el-button>
         <el-button type="danger" plain @click="logout" size="large" class="btn">退出登录</el-button>
     </div>
-    <el-dialog title="更改密码" width="30%" top="18vh" draggable v-model="to_change_password">
+    <el-dialog title="更改密码" width="30%" top="18vh" draggable v-model="changePasswordDialogVisible">
         <el-form :label-position="left" label-width="100px" :model="formLabelAlign" style="max-width: 460px">
             <el-form-item label="原密码">
-                <el-input v-model="old_password" />
+                <el-input v-model="oldPassword" />
             </el-form-item>
             <el-form-item label="新密码">
-                <el-input v-model="new_password" />
+                <el-input v-model="newPassword" />
             </el-form-item>
         </el-form>
-        <el-button type="primary" @click="change_password">确认更改</el-button>
+        <el-button type="primary" @click="changePassword">确认更改</el-button>
     </el-dialog>
-    <el-dialog v-model="to_apply_permission" title="申请信息" width="50%" top="20vh">
+    <el-dialog v-model="applyPermissionDialogVisible" title="申请信息" width="50%" top="20vh">
         <el-form :model="form" label-width="120px">
             <el-form-item label="申请性质">
                 <el-radio-group v-model="form.purpose">
@@ -112,17 +112,15 @@
                     :autosize="{ minRows: 4, maxRows: 7 }" />
             </el-form-item>
             <el-form-item label="邮箱验证">
-                <el-input v-model="form.verify_code" placeholder="请输入邮箱验证码" style="width: 80%" />
-                <el-button style="margin-left: 1vw" @click="get_email_verify_code" v-if="!waiting_verify_code"
-                    >发送验证码</el-button
-                >
-                <el-button style="margin-left: 1vw" v-if="waiting_verify_code" type="info" class="waiting-btn"
-                    >&nbsp;&nbsp;&nbsp;{{ countdown }}s&nbsp;&nbsp;&nbsp;</el-button
-                >
+                <el-input v-model="form.verifyCode" placeholder="请输入邮箱验证码" style="width: 80%" />
+                <el-button style="margin-left: 1vw" @click="getVerifyCode" v-if="!isWaiting"> 发送验证码 </el-button>
+                <el-button style="margin-left: 1vw" v-if="isWaiting" type="info" class="waiting-btn">
+                    &nbsp;&nbsp;&nbsp;{{ countdown }}s&nbsp;&nbsp;&nbsp;
+                </el-button>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submit_apply">提交</el-button>
-                <el-button @click="to_apply_permission = false">取消</el-button>
+                <el-button type="primary" @click="submitApply">提交</el-button>
+                <el-button @click="applyPermissionDialogVisible = false">取消</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -145,95 +143,88 @@ const logout = () => {
     router.push({ name: 'home' })
 }
 
-const to_change_username = ref(false)
-const to_change_email = ref(false)
-const username_data = ref('')
-const email_data = ref('')
-const edit_username = () => {
-    to_change_username.value = true
+const isChangingUsername = ref(false)
+const isChangingEmail = ref(false)
+const username = ref('')
+const email = ref('')
+const editUsername = () => {
+    isChangingUsername.value = true
 }
 
-const edit_email = () => {
-    to_change_email.value = true
+const editEmail = () => {
+    isChangingEmail.value = true
 }
 
-const change_username = async () => {
-    try {
-        await userApi.changeUsername({ new_username: username_data.value })
-        await userApi.getUserInfo()
-        ElNotification({
-            title: '用户名更改成功',
-            type: 'success'
+const changeUsername = () => {
+    userApi.changeUsername({ new_username: username.value }).then(() => {
+        userApi.getUserInfo().then(() => {
+            ElNotification({
+                title: '用户名更改成功',
+                type: 'success'
+            })
+            infoStore.updateInfo()
+            isChangingUsername.value = false
         })
-        infoStore.updateInfo()
-        to_change_username.value = false
-    } catch (err) {
-        //
-    }
+    })
 }
 
-const change_email = async () => {
-    try {
-        await userApi.changeEmail({ new_email: email_data.value })
+const changeEmail = () => {
+    userApi.changeEmail({ new_email: email.value }).then(() => {
         logout()
-    } catch (err) {
-        //
-    }
+    })
 }
 
-const old_password = ref('')
-const new_password = ref('')
-const to_change_password = ref(false)
+const oldPassword = ref('')
+const newPassword = ref('')
+const changePasswordDialogVisible = ref(false)
 
-const change_password = async () => {
-    try {
-        await userApi.changePassword({
-            old_password: SHA256Encrypt(old_password.value),
-            new_password: SHA256Encrypt(new_password.value)
+const changePassword = () => {
+    userApi
+        .changePassword({
+            old_password: SHA256Encrypt(oldPassword.value),
+            new_password: SHA256Encrypt(newPassword.value)
         })
-        to_change_password.value = false
-        ElNotification({
-            title: '密码更改成功',
-            type: 'success'
+        .then(() => {
+            changePasswordDialogVisible.value = false
+            ElNotification({
+                title: '密码更改成功',
+                type: 'success'
+            })
         })
-    } catch (err) {
-        //
-    }
 }
 
 // 控制申请弹窗
-const to_apply_permission = ref(false)
+const applyPermissionDialogVisible = ref(false)
 const form = reactive({
     purpose: '',
     description: '',
-    verify_code: ''
+    verifyCode: ''
 })
 
 // 发送验证码后显示 30s 倒计时
-const waiting_verify_code = ref(false)
+const isWaiting = ref(false)
 const countdown = ref(30)
 
-const apply_permission = async () => {
-    try {
-        const res = await userApi.checkApplicationStatus({
+const applyPermission = () => {
+    userApi
+        .checkApplicationStatus({
             email: infoStore.email
         })
-        if (res.data) {
-            ElNotification({
-                title: '您的申请正在审核中',
-                message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
-                type: 'warning'
-            })
-        } else {
-            to_apply_permission.value = true
-        }
-    } catch (err) {
-        //
-    }
+        .then(res => {
+            if (res.data) {
+                ElNotification({
+                    title: '您的申请正在审核中',
+                    message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
+                    type: 'warning'
+                })
+            } else {
+                applyPermissionDialogVisible.value = true
+            }
+        })
 }
 
-const get_email_verify_code = async () => {
-    waiting_verify_code.value = true
+const getVerifyCode = async () => {
+    isWaiting.value = true
     try {
         await userApi.getApplyVerifyCode({
             email: infoStore.email
@@ -242,37 +233,34 @@ const get_email_verify_code = async () => {
             title: '邮箱验证码发送成功',
             type: 'success'
         })
-    } catch (err) {
-        //
     } finally {
         const timer = setInterval(() => {
             countdown.value -= 1
             if (countdown.value <= 0) {
                 clearInterval(timer)
                 countdown.value = 30
-                waiting_verify_code.value = false
+                isWaiting.value = false
             }
         }, 1000)
     }
 }
 
-const submit_apply = async () => {
-    try {
-        await userApi.applyPermission({
+const submitApply = () => {
+    userApi
+        .applyPermission({
             email: infoStore.email,
             purpose: form.purpose,
             description: form.description,
-            verify_code: form.verify_code
+            verify_code: form.verifyCode
         })
-        to_apply_permission.value = false
-        ElNotification({
-            title: '申请成功！请等待审核',
-            message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
-            type: 'success'
+        .then(() => {
+            applyPermissionDialogVisible.value = false
+            ElNotification({
+                title: '申请成功！请等待审核',
+                message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
+                type: 'success'
+            })
         })
-    } catch (err) {
-        //
-    }
 }
 </script>
 

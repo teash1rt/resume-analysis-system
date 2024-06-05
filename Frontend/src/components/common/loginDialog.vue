@@ -77,38 +77,34 @@ watch(
 
 const infoStore = InfoStore()
 
-const update_data = () => {
-    infoStore.updateInfo()
-    emit('is_login')
+const updateData = () => {
+    userApi.getUserInfo().then(() => {
+        infoStore.updateInfo()
+        emit('is_login')
+    })
 }
 
 // 如果登录 传消息给NavBar 关闭此组件 | 需要登录则弹出窗口
 const emit = defineEmits(['is_login', 'must_login', 'submit_email'])
-const login = async () => {
-    try {
-        const res = await userApi.login({ email: email.value, password: SHA256Encrypt(password.value) })
+const login = () => {
+    userApi.login({ email: email.value, password: SHA256Encrypt(password.value) }).then(res => {
         infoStore.token = res.data
-        await userApi.getUserInfo()
-        update_data()
-    } catch (err) {
-        //
-    }
+        updateData()
+    })
 }
 
-const register = async () => {
-    try {
-        const res = await userApi.register({
+const register = () => {
+    userApi
+        .register({
             email: email.value,
             username: username.value,
             password: SHA256Encrypt(password.value),
             verify_code: verify_code.value
         })
-        infoStore.token = res.data
-        await userApi.getUserInfo()
-        update_data()
-    } catch (err) {
-        //
-    }
+        .then(res => {
+            infoStore.token = res.data
+            updateData()
+        })
 }
 
 // 刷新验证码
@@ -122,20 +118,19 @@ const show_login_dialog = () => {
     emit('must_login')
 }
 
-const handleForgetPassword = async () => {
-    try {
-        await userApi.forgetPassword({
+const handleForgetPassword = () => {
+    userApi
+        .forgetPassword({
             email: email.value,
             verify_code: verify_code.value
         })
-        ElNotification({
-            title: '请查看邮箱以重置您的密码',
-            type: 'success'
+        .then(() => {
+            ElNotification({
+                title: '请查看邮箱以重置您的密码',
+                type: 'success'
+            })
+            emit('submit_email')
         })
-        emit('submit_email')
-    } catch (err) {
-        //
-    }
 }
 
 window.show_login = show_login_dialog

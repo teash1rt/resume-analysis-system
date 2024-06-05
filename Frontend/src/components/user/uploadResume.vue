@@ -45,33 +45,23 @@ const data = reactive([])
 const mp = {}
 
 onMounted(() => {
-    const init = async () => {
-        try {
-            const res = await resumeApi.getUploadResumes()
-            res.data.map((item, idx) => {
-                mp[item.rid] = idx
-                return (item.summaryInfo = JSON.parse(item.summaryInfo))
-            })
-            Object.assign(data, res.data)
-        } catch (err) {
-            //
-        }
-    }
-
-    init()
+    resumeApi.getUploadResumes().then(res => {
+        res.data.map((item, idx) => {
+            mp[item.rid] = idx
+            return (item.summaryInfo = JSON.parse(item.summaryInfo))
+        })
+        Object.assign(data, res.data)
+    })
 })
 
-const del_upload_resume = async rid => {
-    try {
-        const res = await resumeApi.deleteUploadResume({ rid: rid })
+const del_upload_resume = rid => {
+    resumeApi.deleteUploadResume({ rid: rid }).then(res => {
         ElNotification({
             title: res.msg,
             type: 'success'
         })
         data.splice(data[mp[rid]], 1)
-    } catch (err) {
-        //
-    }
+    })
 }
 
 const get_tree_data = e => {

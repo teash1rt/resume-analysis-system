@@ -78,7 +78,7 @@
                     </el-col>
                     <el-col :span="1">
                         <svg
-                            v-if="!tmp_favorite[index]"
+                            v-if="!favoriteStatus[index]"
                             @click="change_favorite_status(index, e.rid)"
                             class="icon"
                             viewBox="0 0 1024 1024"
@@ -131,7 +131,7 @@ const page_size = 4
 const total_count = ref(0)
 
 const resume_data = reactive([])
-const tmp_favorite = reactive([])
+const favoriteStatus = reactive([])
 
 const page_change = () => {
     resume_data.length = 0
@@ -139,17 +139,10 @@ const page_change = () => {
 }
 
 onMounted(() => {
-    const init = async () => {
-        try {
-            const res = await resumeApi.getTotalCount()
-            total_count.value = res.data
-            get_page_resumes(1)
-        } catch (err) {
-            //
-        }
-    }
-
-    init()
+    resumeApi.getTotalCount().then(res => {
+        total_count.value = res.data
+        get_page_resumes(1)
+    })
 })
 
 const sort_order_map = {
@@ -160,29 +153,27 @@ const sort_order_map = {
 
 const sort_order = ref(0)
 const sort_order_name = ref(sort_order_map[0])
-const get_page_resumes = async e => {
+const get_page_resumes = e => {
     sort_order.value = e
     sort_order_name.value = sort_order_map[e]
 
-    try {
-        const res = await resumeApi.getPageResumesInfo({
+    resumeApi
+        .getPageResumesInfo({
             page: current_page.value,
             page_size: page_size,
             sort_order: sort_order.value
         })
-        res.data.map(item => {
-            item.summaryInfo = JSON.parse(item.summaryInfo)
-            return item
+        .then(res => {
+            res.data.map(item => {
+                item.summaryInfo = JSON.parse(item.summaryInfo)
+                return item
+            })
+            Object.assign(resume_data, res.data)
+            favoriteStatus.length = 0
+            for (let i = 0; i < resume_data.length; i++) {
+                favoriteStatus.push(resume_data[i].favorite)
+            }
         })
-        Object.assign(resume_data, res.data)
-        // 清空数组
-        tmp_favorite.length = 0
-        for (let i = 0; i < resume_data.length; i++) {
-            tmp_favorite.push(resume_data[i].favorite)
-        }
-    } catch (err) {
-        //
-    }
 }
 
 const content_show = e => {
@@ -198,26 +189,23 @@ const content_show = e => {
 let timer = null
 let lastIdx = null
 const change_favorite_status = (idx, rid) => {
-    tmp_favorite[idx] = !tmp_favorite[idx]
+    favoriteStatus[idx] = !favoriteStatus[idx]
     if (timer && idx === lastIdx) {
         clearTimeout(timer)
     }
     timer = setTimeout(() => {
         lastIdx = idx
-        tmp_favorite[idx] ? resumeApi.addFavoriteResume({ rid: rid }) : resumeApi.cancelFavoriteResume({ rid: rid })
+        favoriteStatus[idx] ? resumeApi.addFavoriteResume({ rid: rid }) : resumeApi.cancelFavoriteResume({ rid: rid })
     }, 750)
 }
 
 const data = ref('')
 const dialog_visible = ref(false)
-const preview_resume = async rid => {
-    try {
-        const res = await resumeApi.getOneResumeInfo({ rid: rid })
+const preview_resume = rid => {
+    resumeApi.getOneResumeInfo({ rid: rid }).then(res => {
         data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
         dialog_visible.value = true
-    } catch (err) {
-        //
-    }
+    })
 }
 
 const close_dialog = done => {
@@ -225,7 +213,7 @@ const close_dialog = done => {
     done()
 }
 
-const download_resume = async rid => {
+const download_resume = rid => {
     download_resume_fn(rid)
 }
 </script>
@@ -260,8 +248,8 @@ const download_resume = async rid => {
 .pagination-block {
     display: block;
     position: absolute;
-    bottom: 1vh;
-    right: 18vw;
+    bottom: 10px;
+    right: 18px;
 }
 
 .resume-card {

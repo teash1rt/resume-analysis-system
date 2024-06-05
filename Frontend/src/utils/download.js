@@ -1,8 +1,7 @@
 import { resumeApi } from '@/api'
 
-export const download_resume_fn = async rid => {
-    try {
-        const res = await resumeApi.downloadResume({ rid })
+export const download_resume_fn = rid => {
+    resumeApi.downloadResume({ rid }).then(res => {
         const binaryData = atob(res.data.data)
         const uint8Array = new Uint8Array(binaryData.length)
         for (let i = 0; i < binaryData.length; i++) {
@@ -19,7 +18,5 @@ export const download_resume_fn = async rid => {
         document.body.appendChild(a)
         a.click()
         a.remove()
-    } catch (err) {
-        //
-    }
+    })
 }

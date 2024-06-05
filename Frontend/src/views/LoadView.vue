@@ -12,8 +12,8 @@
             :on-error="handleUploadError"
             :limit="1"
             :on-exceed="handleExceed"
-            :show-file-list="show_file_list"
-            :headers="{ Authorization: `Bearer ${jwt_token}` }">
+            :show-file-list="showFileList"
+            :headers="{ Authorization: `Bearer ${jwtToken}` }">
             <svg viewBox="0 0 1024 1024" width="50" height="50" color="grey">
                 <path
                     fill="currentColor"
@@ -21,8 +21,8 @@
             </svg>
             <div class="el-upload-text">拖入文件 <em>点击上传</em></div>
         </el-upload>
-        <button @click="submitUpload" v-if="!waiting_for_result" class="before-waiting-btn">开始解析</button>
-        <button @click="submitUpload" v-if="waiting_for_result" class="on-waiting-btn">正在分析</button>
+        <button @click="submitUpload" v-if="!isWaitingForResult" class="before-waiting-btn">开始解析</button>
+        <button @click="submitUpload" v-if="isWaitingForResult" class="on-waiting-btn">正在分析</button>
         <el-dialog v-model="dialogTableVisible" title="" width="70%" top="2vh">
             <resumeData :resume_data="data" />
         </el-dialog>
@@ -49,13 +49,13 @@ const handleExceed = files => {
 }
 
 // 显示上传按钮还是进度条
-const waiting_for_result = ref(false)
+const isWaitingForResult = ref(false)
 // 选文件显示列表 但是上传不显示（不美观）
-const show_file_list = ref(true)
-const jwt_token = ref('')
+const showFileList = ref(true)
+const jwtToken = ref('')
 
 const beforeAvatarUpload = async rawFile => {
-    waiting_for_result.value = true
+    isWaitingForResult.value = true
     const fileType = rawFile.type
     const fileSize = rawFile.size
     if (
@@ -67,7 +67,7 @@ const beforeAvatarUpload = async rawFile => {
             title: '目前仅支持docx,pdf,txt格式的文件',
             type: 'warning'
         })
-        waiting_for_result.value = false
+        isWaitingForResult.value = false
         return false
     } else if (fileSize > 5000 * 1024) {
         ElNotification({
@@ -79,16 +79,16 @@ const beforeAvatarUpload = async rawFile => {
 
     try {
         const res = await userApi.getAuthorize()
-        jwt_token.value = res.token
+        jwtToken.value = res.token
     } catch (err) {
         ElNotification({
             title: '服务器接口状态异常 | 请等待处理',
             type: 'error'
         })
-        waiting_for_result.value = false
+        isWaitingForResult.value = false
         return false
     }
-    show_file_list.value = false
+    showFileList.value = false
 }
 
 const data = ref('')
@@ -101,11 +101,11 @@ const handleUploadSuccess = res => {
             title: res.msg,
             type: 'warning'
         })
-        show_file_list.value = true
-        waiting_for_result.value = false
+        showFileList.value = true
+        isWaitingForResult.value = false
     } else {
-        show_file_list.value = true
-        waiting_for_result.value = false
+        showFileList.value = true
+        isWaitingForResult.value = false
         dialogTableVisible.value = true
         data.value = JSON.parse(res.res)
     }

@@ -24,29 +24,28 @@ const newPassword = ref('')
 const newPasswordConfirm = ref('')
 const router = useRouter()
 
-const handleReset = async () => {
+const handleReset = () => {
     if (newPassword.value !== newPasswordConfirm.value) {
         ElNotification({
             title: '两次密码不一致',
             type: 'warning'
         })
     } else {
-        try {
-            // 获得 url 中最后的 token 部分做验证
-            const paths = router.currentRoute.value.fullPath.split('/')
-            const url_path = paths[paths.length - 2]
-            await userApi.resetPassword({
+        // 获得 url 中最后的 token 部分做验证
+        const paths = router.currentRoute.value.fullPath.split('/')
+        const url_path = paths[paths.length - 2]
+        userApi
+            .resetPassword({
                 url_path: url_path,
                 newPassword: SHA256Encrypt(newPassword.value)
             })
-            ElNotification({
-                title: '更改成功',
-                type: 'success'
+            .then(() => {
+                ElNotification({
+                    title: '更改成功',
+                    type: 'success'
+                })
+                router.push({ name: 'home' })
             })
-            router.push({ name: 'home' })
-        } catch (err) {
-            //
-        }
     }
 }
 </script>
