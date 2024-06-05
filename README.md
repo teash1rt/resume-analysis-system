@@ -4,9 +4,9 @@
 
 > 有问题看 issues
 >
-> 维护计划目前在重构 springboot 部分
+> 维护计划目前在重构（主要在做减法和提高代码质量）
 >
-> :point_right: feat/be-refactor
+> :point_right: feat/be-refactor | feat/fe-refactor
 
 ### 目录说明
 
@@ -21,7 +21,7 @@
 │  └─classfication	分类器
 │  └─ner	命名实体识别
 │  └─test	模型测试
-├─Utils	工具
+├─Utils	开发依赖工具
 │  └─format	格式转换
 │  └─gather	分类数据采集
 ```
@@ -78,25 +78,27 @@ python script.py
 
 ##### Express
 
-`Express`中使用了`mammoth`来解析`docx`文件，可以作为`docx2txt`的替代品使用。在某些情况下`mammoth`的解析结果更加准确，具体体现在实际测试中`docx2txt`会重复读取两次内容
+`Express`中使用了`mammoth`来解析`docx`文件，可以作为`docx2txt`的替代品使用，你可以在`FastApi/document.py`中自行选择其一作为解析工具
 
-你可以在`FastApi/document.py`中自行选择其一作为解析工具
+> 在某些情况下`mammoth`的解析结果更加准确，具体体现在`docx2txt`会重复读取两次文件内容（可能跟文件有关也有可能库本身有缺陷）
 
 ```py
-# import httpx
+# 方法A FastApi向Express发送请求，通过js的mammoth库解析内容
+import httpx
+
+async def get_docx_content(file):
+  # 本地默认路径
+  url = 'http://127.0.0.1:3010/analysis-docx-file/'
+  async with httpx.AsyncClient() as client:
+      response = await client.post(url, files={"file": file.file})
+      if response.status_code != 400:
+          return eval(response.text)
+      else:
+          raise Exception
+
+# 方法B FastApi直接通过python的docx2txt库解析内容
 import docx2txt
 
-# 方法A 向Express发送请求，通过js库mammoth获取内容
-# async def get_docx_content(file):
-#     # url = 'http://127.0.0.1:3010/analysis-docx-file/'
-#     async with httpx.AsyncClient() as client:
-#         response = await client.post(url, files={"file": file.file})
-#         if response.status_code != 400:
-#             return eval(response.text)
-#         else:
-#             raise Exception
-
-# 方法B 通过python库docx2txt获取内容
 async def get_docx_content(file):
     with io.BytesIO(await file.read()) as stream:
         text = docx2txt.process(stream)
@@ -109,6 +111,8 @@ async def get_docx_content(file):
 如果使用`Express`需要在该模块下执行
 
 ```shell
+pnpm install
+
 node app.js
 ```
 
@@ -142,7 +146,7 @@ PyTorch+BERT
 
 ---
 
-![](assets/architecture.png)
+![](Assets/architecture.png)
 
 ### 实现功能
 
@@ -157,22 +161,22 @@ PyTorch+BERT
 -   普通用户可以借助项目中的模块对自己的简历进行分析，补充并上传，从而实现投递简历的过程
 -   高级权限可以查看所有普通用户上传的简历，并支持查看摘要，收藏和下载简历等操作，实现了帮助招聘者更好的处理和管理简历的过程。高级权限还可以查看简历的可视化信息，目前支持的可视化维度有：学历信息统计，来源地信息统计，工作经历信息统计，能够有助于招聘者更好的了解求职者和简历信息的整体情况
 
-![](assets/function.png)
+![](Assets/function.png)
 
 ### 项目截图
 
 -   简历解析
 
-![](assets/result1.png)
+![](Assets/result1.png)
 
 -   简历上传
 
-![](assets/result2.png)
+![](Assets/result2.png)
 
 -   数据可视化
 
-![](assets/result3.png)
+![](Assets/result3.png)
 
 -   数据列表
 
-![](assets/result4.png)
+![](Assets/result4.png)
