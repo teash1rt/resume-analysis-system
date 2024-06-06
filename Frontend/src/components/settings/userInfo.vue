@@ -156,7 +156,7 @@ const editEmail = () => {
 }
 
 const changeUsername = () => {
-    userApi.changeUsername({ new_username: username.value }).then(() => {
+    userApi.changeUsername({ newUsername: username.value }).then(() => {
         userApi.getUserInfo().then(() => {
             ElNotification({
                 title: '用户名更改成功',
@@ -169,7 +169,7 @@ const changeUsername = () => {
 }
 
 const changeEmail = () => {
-    userApi.changeEmail({ new_email: email.value }).then(() => {
+    userApi.changeEmail({ newEmail: email.value }).then(() => {
         ElNotification({
             title: '邮箱更改成功',
             message: '请您重新登录',
@@ -188,8 +188,8 @@ const changePasswordDialogVisible = ref(false)
 const changePassword = () => {
     userApi
         .changePassword({
-            old_password: SHA256Encrypt(oldPassword.value),
-            new_password: SHA256Encrypt(newPassword.value)
+            oldPassword: SHA256Encrypt(oldPassword.value),
+            newPassword: SHA256Encrypt(newPassword.value)
         })
         .then(() => {
             changePasswordDialogVisible.value = false
@@ -213,29 +213,23 @@ const isWaiting = ref(false)
 const countdown = ref(30)
 
 const applyPermission = () => {
-    userApi
-        .checkApplicationStatus({
-            email: infoStore.email
-        })
-        .then(res => {
-            if (res.data) {
-                ElNotification({
-                    title: '您的申请正在审核中',
-                    message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
-                    type: 'warning'
-                })
-            } else {
-                applyPermissionDialogVisible.value = true
-            }
-        })
+    userApi.checkApplicationStatus().then(res => {
+        if (res.data) {
+            ElNotification({
+                title: '您的申请正在审核中',
+                message: '我们会尽快处理您的申请，请关注您的邮箱以查看申请结果',
+                type: 'warning'
+            })
+        } else {
+            applyPermissionDialogVisible.value = true
+        }
+    })
 }
 
 const getVerifyCode = async () => {
     isWaiting.value = true
     try {
-        await userApi.getApplyVerifyCode({
-            email: infoStore.email
-        })
+        await userApi.getApplyVerifyCode()
         ElNotification({
             title: '邮箱验证码发送成功',
             type: 'success'
@@ -258,7 +252,7 @@ const submitApply = () => {
             email: infoStore.email,
             purpose: form.purpose,
             description: form.description,
-            verify_code: form.verifyCode
+            verifyCode: form.verifyCode
         })
         .then(() => {
             applyPermissionDialogVisible.value = false

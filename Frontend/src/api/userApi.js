@@ -1,97 +1,63 @@
-import { req1, req2 } from '@/utils/request'
+import { req1, req2 } from './request'
 
-const login = ({ email: email, password: password }) => {
-    return req1.post('/req1/user/login/', {
-        email,
-        password
-    })
+const login = ({ email, password }) => {
+    return req1.post('/req1/user/login/', { email, password })
 }
 
-const register = ({ email: email, username: username, password: password, verify_code: verify_code }) => {
-    return req1.post('/req1/user/register/', {
-        email,
-        username,
-        password,
-        verify_code
-    })
+const register = ({ email, username, password, verifyCode }) => {
+    return req1.post('/req1/user/register/', { email, username, password, verifyCode })
 }
 
 const getUserInfo = () => {
     return req1.get('/req1/user/get-info/')
 }
 
-const forgetPassword = ({ email: email, verify_code: verify_code }) => {
-    return req1.post('/req1/user/forget-password/', {
-        email,
-        verify_code
-    })
+const forgetPassword = ({ email, verifyCode }) => {
+    return req1.post('/req1/user/forget-password/', { email, verifyCode })
 }
 
-const changeUsername = ({ new_username: new_username }) => {
-    return req1.post('/req1/user/change-username/', {
-        new_username
-    })
+const changeUsername = ({ newUsername }) => {
+    return req1.post('/req1/user/change-username/', { newUsername })
 }
 
-const changeEmail = ({ new_email: new_email }) => {
-    return req1.post('/req1/user/change-email/', {
-        new_email
-    })
+const changeEmail = ({ newEmail }) => {
+    return req1.post('/req1/user/change-email/', { newEmail })
 }
 
-const changePassword = ({ old_password: old_password, new_password: new_password }) => {
-    return req1.post('/req1/user/change-password/', {
-        old_password,
-        new_password
-    })
+const changePassword = ({ oldPassword, newPassword }) => {
+    return req1.post('/req1/user/change-password/', { oldPassword, newPassword })
 }
 
 const getAvatar = () => {
     return req1.get('/req1/user/get-avatar/')
 }
 
-const tokenCheck = ({ token: token }) => {
-    return req1.post('/req1/user/visitor-token-check/', {
-        token
-    })
+const tokenCheck = ({ token }) => {
+    return req1.post('/req1/user/visitor-token-check/', { token })
 }
 
-const resetPassword = ({ url_path: url_path, new_password: new_password }) => {
-    return req1.post('/req1/user/reset-password/', {
-        url_path,
-        new_password
-    })
+const resetPassword = ({ urlPath, newPassword }) => {
+    return req1.post('/req1/user/reset-password/', { urlPath, newPassword })
 }
 
-const checkApplicationStatus = ({ email: email }) => {
-    return req1.post('/req1/user/check-application-status/', {
-        email
-    })
+const checkApplicationStatus = () => {
+    return req1.post('/req1/user/check-application-status/')
 }
 
-const getApplyVerifyCode = ({ email: email }) => {
-    return req1.post('/req1/user/get-apply-verify-code/', {
-        email
-    })
+const getApplyVerifyCode = () => {
+    return req1.get('/req1/user/get-apply-verify-code/')
 }
 
-const applyPermission = ({ email: email, purpose: purpose, description: description, verify_code: verify_code }) => {
-    return req1.post('/req1/user/apply-permission/', {
-        email,
-        purpose,
-        description,
-        verify_code
-    })
+const applyPermission = ({ email, purpose, description, verifyCode }) => {
+    return req1.post('/req1/user/apply-permission/', { email, purpose, description, verifyCode })
 }
 
 const getAuthorize = () => {
     return req2.get('/req2/authorize/')
 }
 
-const urlTokenCheck = ({ url_path: url_path }) => {
-    return req1.post('/req1/user/url-token-check/', {
-        url_path
-    })
+const urlTokenCheck = ({ urlPath }) => {
+    return req1.post('/req1/user/url-token-check/', { urlPath })
 }
 
 const userApi = {

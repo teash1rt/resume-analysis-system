@@ -105,7 +105,7 @@ router.beforeEach((to, _, next) => {
             }
         })
     } else if (to.meta.authority === -2) {
-        userApi.urlTokenCheck({ url_path: to.params.url_path }).then(res => {
+        userApi.urlTokenCheck({ urlPath: to.params.url_path }).then(res => {
             res.data ? next() : next('/404/')
         })
     } else {

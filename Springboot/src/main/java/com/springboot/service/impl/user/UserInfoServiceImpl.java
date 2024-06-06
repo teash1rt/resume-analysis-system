@@ -146,13 +146,17 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public R check_application_status(String email) {
-        Boolean status = (Boolean) redisTemplate.opsForValue().get(RedisBaseKey.waiting_permission_application_base_name.getValue() + email);
+    public R check_application_status() {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+        Boolean status = (Boolean) redisTemplate.opsForValue().get(
+                RedisBaseKey.waiting_permission_application_base_name.getValue() + email
+        );
         return R.success("查询申请状态成功", status);
     }
 
     @Override
-    public R get_apply_verify_code(String email) throws MessagingException {
+    public R get_apply_verify_code() throws MessagingException {
+        String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         permissionUpgradeMailService.send_verify_code(email);
         return R.success("申请权限邮箱验证码发送成功！请查看邮件");
     }

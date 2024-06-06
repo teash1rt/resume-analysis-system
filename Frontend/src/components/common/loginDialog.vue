@@ -99,7 +99,7 @@ const register = () => {
             email: email.value,
             username: username.value,
             password: SHA256Encrypt(password.value),
-            verify_code: verifyCode.value
+            verifyCode: verifyCode.value
         })
         .then(res => {
             infoStore.token = res.data
@@ -122,7 +122,7 @@ const handleForgetPassword = () => {
     userApi
         .forgetPassword({
             email: email.value,
-            verify_code: verifyCode.value
+            verifyCode: verifyCode.value
         })
         .then(() => {
             ElNotification({

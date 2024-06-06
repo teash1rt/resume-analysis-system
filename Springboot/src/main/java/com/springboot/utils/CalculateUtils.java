@@ -1,9 +1,5 @@
 package com.springboot.utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class CalculateUtils {
     // TODO 30天过期
     private static final Double[] days_score_in_month = {10.102, 10.047, 9.977, 9.89, 9.779, 9.641, 9.469, 9.258, 9.0, 8.691, 8.324, 7.898, 7.412, 6.873, 6.29, 5.678, 5.054, 4.437, 3.847, 3.297, 2.8, 2.361, 1.982, 1.66, 1.392, 1.172, 0.992, 0.848, 0.732, 0.639, 0.566, 0.509};

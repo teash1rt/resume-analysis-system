@@ -1,6 +1,7 @@
 package com.springboot.controller.user;
 
 import com.springboot.common.R;
+import com.springboot.dto.TokenCheckDTO;
 import com.springboot.service.user.TokenCheckService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +18,8 @@ public class TokenCheckController {
     private final TokenCheckService tokencheckService;
 
     @PostMapping("/visitor-token-check/")
-    public R token_check(@RequestBody Map<String, String> map) {
-        String token = map.get("token");
-        return tokencheckService.visitor_token_check(token);
+    public R token_check(@RequestBody TokenCheckDTO tokenCheckDTO) {
+        return tokencheckService.visitor_token_check(tokenCheckDTO.getToken());
     }
 
     @PostMapping("/url-token-check/")

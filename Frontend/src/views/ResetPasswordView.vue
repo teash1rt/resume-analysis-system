@@ -37,8 +37,8 @@ const handleReset = () => {
     const paths = router.currentRoute.value.fullPath.split('/')
     userApi
         .resetPassword({
-            url_path: paths[paths.length - 2],
-            new_password: SHA256Encrypt(newPassword.value)
+            urlPath: paths[paths.length - 2],
+            newPassword: SHA256Encrypt(newPassword.value)
         })
         .then(() => {
             ElNotification({

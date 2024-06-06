@@ -71,7 +71,7 @@
                         <div class="grid-content ep-bg-purple" />
                     </el-col>
                     <el-col :span="1">
-                        <span class="resume-options" @click="preview_resume(e.rid)">摘要</span>
+                        <span class="resume-options" @click="previewResume(e.rid)">摘要</span>
                     </el-col>
                     <el-col :span="1">
                         <span class="resume-options" @click="downloadResume(e.rid)">下载</span>
@@ -160,8 +160,8 @@ const getResumes = e => {
     resumeApi
         .getPageResumesInfo({
             page: current_page.value,
-            page_size: page_size,
-            sort_order: sort_order.value
+            pageSize: page_size,
+            sortOrder: sort_order.value
         })
         .then(res => {
             res.data.map(item => {
@@ -201,8 +201,8 @@ const change_favorite_status = (idx, rid) => {
 
 const data = ref('')
 const dialogVisible = ref(false)
-const preview_resume = rid => {
-    resumeApi.getOneResumeInfo({ rid: rid }).then(res => {
+const previewResume = rid => {
+    resumeApi.getOneResumeInfo({ rid }).then(res => {
         data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
         dialogVisible.value = true
     })
