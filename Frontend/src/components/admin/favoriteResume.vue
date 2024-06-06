@@ -21,7 +21,7 @@
                 </el-col>
             </el-row>
             <div class="date">
-                {{ `收藏于 ${e.favorite_createTime.split('T')[0]}` }}
+                {{ `收藏于 ${e.createTime.split('T')[0]}` }}
             </div>
         </div>
     </ul>

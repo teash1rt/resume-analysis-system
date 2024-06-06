@@ -8,6 +8,7 @@ import com.springboot.entity.user.User;
 import com.springboot.mapper.resume.ResumeFavoriteMapper;
 import com.springboot.mapper.resume.ResumeMapper;
 import com.springboot.service.resume.ResumeFavoriteService;
+import com.springboot.vo.GetFavoriteResumesVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class ResumeFavoriteServiceImpl implements ResumeFavoriteService {
-
     private final ResumeFavoriteMapper resumeFavoriteMapper;
-
-    private final ResumeMapper resumeMapper;
-
     @Override
     public R add_favorite(Integer rid) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
@@ -42,22 +39,9 @@ public class ResumeFavoriteServiceImpl implements ResumeFavoriteService {
     }
 
     @Override
-    public R get_favorite() {
+    public R getFavoriteResumes() {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
-        QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
-        resumeFavoriteQueryWrapper.eq("uid", uid).orderByDesc("create_time");
-        List<ResumeFavorite> resumeFavorites = resumeFavoriteMapper.selectList(resumeFavoriteQueryWrapper);
-        List<Map<String, Object>> favoriteInfo = new ArrayList<>();
-        resumeFavorites.forEach(e -> {
-            Map<String, Object> info_map = new HashMap<>();
-            Resume resume = resumeMapper.selectById(e.getRid());
-            info_map.put("rid", resume.getRid());
-            info_map.put("summaryInfo", resume.getSummaryInfo());
-            info_map.put("detailInfo", resume.getDetailInfo());
-            info_map.put("resume_createTime", resume.getCreateTime());
-            info_map.put("favorite_createTime", e.getCreateTime());
-            favoriteInfo.add(info_map);
-        });
-        return R.success("收藏信息查询成功", favoriteInfo);
+        List<GetFavoriteResumesVO> favoriteResumes = resumeFavoriteMapper.getFavoriteResumes(uid);
+        return R.success("收藏信息查询成功", favoriteResumes);
     }
 }

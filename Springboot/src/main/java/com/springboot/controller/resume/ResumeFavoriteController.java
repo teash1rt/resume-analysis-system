@@ -28,7 +28,7 @@ public class ResumeFavoriteController {
 
     @GetMapping("/get-favorite/")
     @PreAuthorize("hasAnyAuthority('ROLE_1')")
-    public R get_favorite() {
-        return resumeFavoriteService.get_favorite();
+    public R getFavoriteResumes() {
+        return resumeFavoriteService.getFavoriteResumes();
     }
 }

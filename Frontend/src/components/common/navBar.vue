@@ -132,6 +132,7 @@ const getAvatar = () => {
     background: linear-gradient(to right, rgb(249, 250, 254), rgb(249, 250, 254), rgb(208, 231, 244));
     transition: background-color 0.3s;
     min-width: 1000px;
+    z-index: 1000;
 }
 
 .navbar-content {

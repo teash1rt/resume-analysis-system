@@ -7,5 +7,5 @@ public interface ResumeFavoriteService {
 
     R cancel_favorite(Integer rid);
 
-    R get_favorite();
+    R getFavoriteResumes();
 }

@@ -32,6 +32,9 @@ spring:
   thymeleaf:
     cache: false
 
+mybatis-plus:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.springboot.entity
 
 server:
   port: 4080
