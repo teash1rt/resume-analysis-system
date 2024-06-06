@@ -16,12 +16,8 @@ const downloadResume = ({ rid }) => {
     return req1.get('/req1/resume/download/', { params: { rid } })
 }
 
-const getTotalCount = () => {
-    return req1.get('/req1/resume/get-total-count/')
-}
-
 const getPageResumesInfo = ({ page, pageSize, sortOrder }) => {
-    return req1.get('/req1/resume/get-page-resumes-info/', { params: { page, pageSize, sortOrder } })
+    return req1.get('/req1/resume/get-page-info/', { params: { page, pageSize, sortOrder } })
 }
 
 const getOneResumeInfo = ({ rid }) => {
@@ -42,7 +38,6 @@ const resumeApi = {
     addFavoriteResume,
     cancelFavoriteResume,
     downloadResume,
-    getTotalCount,
     getPageResumesInfo,
     getOneResumeInfo,
     getUploadResumes,

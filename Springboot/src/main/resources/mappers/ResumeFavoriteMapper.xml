@@ -5,7 +5,7 @@
         SELECT favorite.rid, favorite.create_time, summary_info, detail_info
         FROM (SELECT rid, create_time
               FROM resumefavorite
-              WHERE resumefavorite.uid = #{uid}) as favorite
+              WHERE resumefavorite.uid = #{uid}) AS favorite
                  INNER JOIN resume ON favorite.rid = resume.rid
     </select>
 </mapper>

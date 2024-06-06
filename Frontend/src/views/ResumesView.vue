@@ -8,7 +8,7 @@
                 </span>
                 <el-dropdown :hide-on-click="false">
                     <span class="el-dropdown-link">
-                        {{ sort_order_name }}
+                        {{ sortOrderTag }}
                         <svg viewBox="0 0 1024 1024" width="13" height="13">
                             <path
                                 fill="currentColor"
@@ -17,15 +17,15 @@
                     </span>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item @click="getResumes(0)">最早发布</el-dropdown-item>
-                            <el-dropdown-item @click="getResumes(1)">最新发布</el-dropdown-item>
+                            <el-dropdown-item @click="getResumes(0)">最新发布</el-dropdown-item>
+                            <el-dropdown-item @click="getResumes(1)">最早发布</el-dropdown-item>
                             <el-dropdown-item @click="getResumes(2)">按推荐排序</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
             </div>
         </template>
-        <div v-for="(e, index) in resume_data" :key="e.rid">
+        <div v-for="(e, index) in resumes" :key="e.rid">
             <el-card class="resume-card">
                 <el-row>
                     <el-col :span="18">
@@ -78,7 +78,7 @@
                     </el-col>
                     <el-col :span="1">
                         <svg
-                            v-if="!favoriteStatus[index]"
+                            v-if="!e.isFavorite"
                             @click="change_favorite_status(index, e.rid)"
                             class="icon"
                             viewBox="0 0 1024 1024"
@@ -107,12 +107,12 @@
             <el-pagination
                 background
                 layout="prev, pager, next"
-                :total="total_count"
+                :total="totalPage"
                 class="mt-4"
                 :hide-on-single-page="true"
-                v-model:current-page="current_page"
-                v-model:page-size="page_size"
-                @current-change="page_change()" />
+                v-model:current-page="currentPage"
+                v-model:page-size="PAGE_SIZE"
+                @current-change="pageChange" />
         </div>
     </el-card>
     <el-dialog v-model="dialogVisible" title="" width="70%" top="2vh" :before-close="closeDialog">
@@ -121,58 +121,50 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, triggerRef, onMounted, shallowRef } from 'vue'
 import resumeData from '@/components/common/resumeData.vue'
 import { resumeApi } from '@/api'
 import { downloadResume } from '@/utils/download'
 
-const current_page = ref(1)
-const page_size = 4
-const total_count = ref(0)
+const currentPage = ref(1)
+const totalPage = ref(0)
+const PAGE_SIZE = 4
+const resumes = shallowRef([])
 
-const resume_data = reactive([])
-const favoriteStatus = reactive([])
-
-const page_change = () => {
-    resume_data.length = 0
-    getResumes(sort_order.value)
+const pageChange = () => {
+    getResumes(sortOrder)
 }
 
 onMounted(() => {
-    resumeApi.getTotalCount().then(res => {
-        total_count.value = res.data
-        getResumes(1)
-    })
+    getResumes(0)
 })
 
-const sort_order_map = {
-    0: '最早发布',
-    1: '最新发布',
+const SORT_ORDER_MAP = {
+    0: '最新发布',
+    1: '最早发布',
     2: '按推荐倒序'
 }
 
-const sort_order = ref(0)
-const sort_order_name = ref(sort_order_map[0])
+const sortOrderTag = ref(SORT_ORDER_MAP[0])
+let sortOrder = 0
 const getResumes = e => {
-    sort_order.value = e
-    sort_order_name.value = sort_order_map[e]
+    sortOrder = e
+    sortOrderTag.value = SORT_ORDER_MAP[e]
 
     resumeApi
         .getPageResumesInfo({
-            page: current_page.value,
-            pageSize: page_size,
-            sortOrder: sort_order.value
+            page: currentPage.value,
+            pageSize: PAGE_SIZE,
+            sortOrder
         })
         .then(res => {
-            res.data.map(item => {
-                item.summaryInfo = JSON.parse(item.summaryInfo)
-                return item
+            totalPage.value = res.data.total
+            resumes.value = res.data.pageInfo.map(item => {
+                return {
+                    ...item,
+                    summaryInfo: JSON.parse(item.summaryInfo)
+                }
             })
-            Object.assign(resume_data, res.data)
-            favoriteStatus.length = 0
-            for (let i = 0; i < resume_data.length; i++) {
-                favoriteStatus.push(resume_data[i].favorite)
-            }
         })
 }
 
@@ -189,13 +181,14 @@ const content_show = e => {
 let timer = null
 let lastIdx = null
 const change_favorite_status = (idx, rid) => {
-    favoriteStatus[idx] = !favoriteStatus[idx]
+    resumes.value[idx].isFavorite = !resumes.value[idx].isFavorite
+    triggerRef(resumes)
     if (timer && idx === lastIdx) {
         clearTimeout(timer)
     }
     timer = setTimeout(() => {
         lastIdx = idx
-        favoriteStatus[idx] ? resumeApi.addFavoriteResume({ rid: rid }) : resumeApi.cancelFavoriteResume({ rid: rid })
+        resumes.value[idx].isFavorite ? resumeApi.addFavoriteResume({ rid }) : resumeApi.cancelFavoriteResume({ rid })
     }, 750)
 }
 
@@ -267,7 +260,7 @@ const closeDialog = done => {
 }
 
 .create-time {
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: grey;
     text-align: right;
     margin-left: 1.5vw;

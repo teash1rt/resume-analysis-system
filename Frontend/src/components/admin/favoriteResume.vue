@@ -42,12 +42,13 @@ const data = shallowRef([])
 const getFavoriteResume = () => {
     resumeApi.getFavoriteResume().then(res => {
         count.value = res.data.length
-        res.data.map(item => {
-            item.summaryInfo = JSON.parse(item.summaryInfo)
-            item.detailInfo = JSON.parse(item.detailInfo)
-            return item
+        data.value = res.data.map(item => {
+            return {
+                ...item,
+                summaryInfo: JSON.parse(item.summaryInfo),
+                detailInfo: JSON.parse(item.detailInfo)
+            }
         })
-        data.value = res.data
     })
 }
 

@@ -40,10 +40,12 @@ const data = shallowRef([])
 
 const getUploadResumes = () => {
     resumeApi.getUploadResumes().then(res => {
-        res.data.map(item => {
-            return (item.summaryInfo = JSON.parse(item.summaryInfo))
+        data.value = res.data.map(item => {
+            return {
+                ...item,
+                summaryInfo: JSON.parse(item.summaryInfo)
+            }
         })
-        data.value = res.data
     })
 }
 

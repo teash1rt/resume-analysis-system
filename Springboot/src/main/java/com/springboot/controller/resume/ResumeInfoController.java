@@ -18,23 +18,17 @@ public class ResumeInfoController {
 
     @GetMapping("/get-resume-info/")
     @PreAuthorize("hasAnyAuthority('ROLE_1')")
-    public R get_resume_info(GetResumeInfoDTO getResumeInfoDTO) {
-        return resumeInfoService.get_one_resume_info(getResumeInfoDTO.getRid());
+    public R getResumeInfo(GetResumeInfoDTO getResumeInfoDTO) {
+        return resumeInfoService.getResumeInfo(getResumeInfoDTO.getRid());
     }
 
-    @GetMapping("/get-page-resumes-info/")
+    @GetMapping("/get-page-info/")
     @PreAuthorize("hasAnyAuthority('ROLE_1')")
-    public R get_page_resumes_info(GetPageResumesInfoDTO getPageResumesInfoDTO) {
-        return resumeInfoService.get_page_resumes_info(
+    public R getPageInfo(GetPageResumesInfoDTO getPageResumesInfoDTO) {
+        return resumeInfoService.getPageInfo(
                 getPageResumesInfoDTO.getPage(),
                 getPageResumesInfoDTO.getPageSize(),
                 getPageResumesInfoDTO.getSortOrder()
         );
-    }
-
-    @GetMapping("/get-total-count/")
-    @PreAuthorize("hasAnyAuthority('ROLE_1')")
-    public R get_total_count() {
-        return resumeInfoService.get_total_count();
     }
 }
