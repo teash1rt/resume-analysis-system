@@ -7,6 +7,7 @@ const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 module.exports = defineConfig({
     transpileDependencies: true,
+    productionSourceMap: false,
     devServer: {
         proxy: {
             // 配置跨域
