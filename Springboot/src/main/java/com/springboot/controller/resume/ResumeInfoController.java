@@ -17,7 +17,6 @@ public class ResumeInfoController {
     private final ResumeInfoService resumeInfoService;
 
     @GetMapping("/get-resume-info/")
-    @PreAuthorize("hasAnyAuthority('ROLE_1')")
     public R getResumeInfo(GetResumeInfoDTO getResumeInfoDTO) {
         return resumeInfoService.getResumeInfo(getResumeInfoDTO.getRid());
     }

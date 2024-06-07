@@ -36,7 +36,7 @@ public class ResumeInfoServiceImpl implements ResumeInfoService {
         }
 
         QueryWrapper<Resume> resumeQueryWrapper = new QueryWrapper<>();
-        resumeQueryWrapper.eq("rid", rid).select("rid", "summary_info", "detail_info");
+        resumeQueryWrapper.select("rid", "summary_info", "detail_info").eq("rid", rid);
         Resume resume = resumeMapper.selectOne(resumeQueryWrapper);
         redisTemplate.opsForValue().set(RedisBaseKey.resume_base_name.getValue() + rid, resume, 3, TimeUnit.DAYS);
         return R.success("简历信息查询成功", resume);

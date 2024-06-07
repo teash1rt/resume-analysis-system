@@ -68,8 +68,7 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
     public R getUploadResumes() {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         QueryWrapper<Resume> resumeQueryWrapper = new QueryWrapper<>();
-        resumeQueryWrapper.select("rid", "summary_info", "detail_info", "create_time")
-                .eq("uid", uid);
+        resumeQueryWrapper.select("rid", "summary_info", "create_time").eq("uid", uid);
         List<Resume> resumes = resumeMapper.selectList(resumeQueryWrapper);
         return R.success("查询上传简历成功", resumes);
     }

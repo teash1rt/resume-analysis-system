@@ -112,11 +112,11 @@
                 :hide-on-single-page="true"
                 v-model:current-page="currentPage"
                 v-model:page-size="PAGE_SIZE"
-                @current-change="pageChange" />
+                @current-change="() => getResumes(sortOrder)" />
         </div>
     </el-card>
     <el-dialog v-model="dialogVisible" title="" width="70%" top="2vh" :before-close="closeDialog">
-        <resumeData :resume_data="data" />
+        <resumeData :resume_data="resumeInfo" />
     </el-dialog>
 </template>
 
@@ -126,15 +126,14 @@ import resumeData from '@/components/common/resumeData.vue'
 import { resumeApi } from '@/api'
 import { downloadResume } from '@/utils/download'
 import { getDescription } from '@/utils/getDescription'
+import { useResumePreview } from '@/hooks/useResumePreview'
 
 const currentPage = ref(1)
 const totalPage = ref(0)
 const PAGE_SIZE = 4
 const resumes = shallowRef([])
 
-const pageChange = () => {
-    getResumes(sortOrder)
-}
+const { dialogVisible, resumeInfo, previewResume } = useResumePreview()
 
 onMounted(() => {
     getResumes(0)
@@ -182,15 +181,6 @@ const change_favorite_status = (idx, rid) => {
         lastIdx = idx
         resumeApi.favoriteResume({ rid, isFavorite: resumes.value[idx].isFavorite ? true : false })
     }, 750)
-}
-
-const data = ref('')
-const dialogVisible = ref(false)
-const previewResume = rid => {
-    resumeApi.getOneResumeInfo({ rid }).then(res => {
-        data.value = Object.assign({}, JSON.parse(res.data.summaryInfo), JSON.parse(res.data.detailInfo))
-        dialogVisible.value = true
-    })
 }
 
 const closeDialog = done => {

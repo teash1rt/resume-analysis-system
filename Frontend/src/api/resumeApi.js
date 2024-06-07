@@ -16,8 +16,7 @@ const getPageResumesInfo = ({ page, pageSize, sortOrder }) => {
     return req1.get('/req1/resume/get-page-info/', { params: { page, pageSize, sortOrder } })
 }
 
-const getOneResumeInfo = ({ rid }) => {
-    console.log(rid)
+const getResumeInfo = ({ rid }) => {
     return req1.get('/req1/resume/get-resume-info/', { params: { rid } })
 }
 
@@ -34,7 +33,7 @@ const resumeApi = {
     favoriteResume,
     downloadResume,
     getPageResumesInfo,
-    getOneResumeInfo,
+    getResumeInfo,
     getUploadResumes,
     deleteUploadResume
 }

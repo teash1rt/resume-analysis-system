@@ -1,6 +1,6 @@
 <template>
     <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-        <div class="card" v-for="e in data" :key="e.rid">
+        <div class="card" v-for="e in resumes" :key="e.rid">
             <el-row>
                 <el-col :span="17" class="topic">
                     {{ e.summaryInfo.basic_data.name }}
@@ -29,7 +29,7 @@
         </div>
     </ul>
     <el-dialog v-model="dialogVisible" title="" width="70%" top="2vh">
-        <resumeData :resume_data="infoData" />
+        <resumeData :resume_data="resumeInfo" />
     </el-dialog>
 </template>
 
@@ -41,21 +41,22 @@ import resumeData from '@/components/common/resumeData.vue'
 import { downloadResume } from '@/utils/download'
 import { getDescription } from '@/utils/getDescription'
 import { InfoStore } from '@/stores/InfoStore'
+import { useResumePreview } from '@/hooks/useResumePreview'
 
 const count = ref(0)
-const data = shallowRef([])
-const infoStore = InfoStore()
-const permission = infoStore.type
+const resumes = shallowRef([])
+const permission = InfoStore().type
+
+const { dialogVisible, resumeInfo, previewResume } = useResumePreview()
 
 const getResumes = () => {
     const api = permission == 1 ? resumeApi.getFavoriteResumes : resumeApi.getUploadResumes
     api().then(res => {
         count.value = res.data.length
-        data.value = res.data.map(item => {
+        resumes.value = res.data.map(item => {
             return {
                 ...item,
-                summaryInfo: JSON.parse(item.summaryInfo),
-                detailInfo: JSON.parse(item.detailInfo)
+                summaryInfo: JSON.parse(item.summaryInfo)
             }
         })
     })
@@ -77,14 +78,6 @@ onMounted(() => {
 
 const load = () => {
     count.value += 2
-}
-
-const dialogVisible = ref(false)
-const infoData = shallowRef(null)
-const previewResume = rid => {
-    const item = data.value.find(item => item.rid === rid)
-    infoData.value = { ...item.summaryInfo, ...item.detailInfo }
-    dialogVisible.value = true
 }
 
 const cancelFavorite = rid => {
