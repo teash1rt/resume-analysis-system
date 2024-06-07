@@ -188,7 +188,7 @@ const change_favorite_status = (idx, rid) => {
     }
     timer = setTimeout(() => {
         lastIdx = idx
-        resumes.value[idx].isFavorite ? resumeApi.addFavoriteResume({ rid }) : resumeApi.cancelFavoriteResume({ rid })
+        resumeApi.favoriteResume({ rid, isFavorite: resumes.value[idx].isFavorite ? true : false })
     }, 750)
 }
 

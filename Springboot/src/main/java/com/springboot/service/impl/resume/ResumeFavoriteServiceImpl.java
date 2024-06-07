@@ -19,19 +19,19 @@ public class ResumeFavoriteServiceImpl implements ResumeFavoriteService {
     private final ResumeFavoriteMapper resumeFavoriteMapper;
 
     @Override
-    public R add_favorite(Integer rid) {
-        Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
-        resumeFavoriteMapper.insert(new ResumeFavorite(uid, rid, null));
-        return R.success("添加收藏成功");
-    }
-
-    @Override
-    public R cancel_favorite(Integer rid) {
+    public R favoriteResume(Integer rid, Boolean isFavorite) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
         resumeFavoriteQueryWrapper.eq("uid", uid).eq("rid", rid);
-        resumeFavoriteMapper.delete(resumeFavoriteQueryWrapper);
-        return R.success("取消收藏成功");
+        if (isFavorite) {
+            if (!resumeFavoriteMapper.exists(resumeFavoriteQueryWrapper)) {
+                resumeFavoriteMapper.insert(new ResumeFavorite(uid, rid, null));
+            }
+            return R.success("添加收藏成功");
+        } else {
+            resumeFavoriteMapper.delete(resumeFavoriteQueryWrapper);
+            return R.success("取消收藏成功");
+        }
     }
 
     @Override

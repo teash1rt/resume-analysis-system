@@ -62,7 +62,7 @@ public class ConfirmApplicationServiceImpl implements ConfirmApplicationService 
             queryWrapper.eq("uid", user.getUid());
             List<Resume> resumes = resumeMapper.selectList(queryWrapper);
             for (Resume resume : resumes) {
-                resumeUploadService.del_upload_resume(resume.getRid());
+                resumeUploadService.delUploadResume(resume.getRid());
             }
             updateWrapper.set("type", 1);
             userMapper.update(new User(), updateWrapper);

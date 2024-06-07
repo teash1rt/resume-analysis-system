@@ -1,15 +1,11 @@
 import { req1 } from './request'
 
-const getFavoriteResume = () => {
+const getFavoriteResumes = () => {
     return req1.get('/req1/resume/get-favorite/')
 }
 
-const addFavoriteResume = ({ rid }) => {
-    return req1.post('/req1/resume/add-favorite/', { rid })
-}
-
-const cancelFavoriteResume = ({ rid }) => {
-    return req1.post('/req1/resume/cancel-favorite/', { rid })
+const favoriteResume = ({ rid, isFavorite }) => {
+    return req1.post('/req1/resume/favorite-resume/', { rid, isFavorite })
 }
 
 const downloadResume = ({ rid }) => {
@@ -34,9 +30,8 @@ const deleteUploadResume = ({ rid }) => {
 }
 
 const resumeApi = {
-    getFavoriteResume,
-    addFavoriteResume,
-    cancelFavoriteResume,
+    getFavoriteResumes,
+    favoriteResume,
     downloadResume,
     getPageResumesInfo,
     getOneResumeInfo,

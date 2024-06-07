@@ -39,8 +39,8 @@ import { downloadResume } from '@/utils/download'
 const count = ref(0)
 const data = shallowRef([])
 
-const getFavoriteResume = () => {
-    resumeApi.getFavoriteResume().then(res => {
+const getFavoriteResumes = () => {
+    resumeApi.getFavoriteResumes().then(res => {
         count.value = res.data.length
         data.value = res.data.map(item => {
             return {
@@ -53,7 +53,7 @@ const getFavoriteResume = () => {
 }
 
 onMounted(() => {
-    getFavoriteResume()
+    getFavoriteResumes()
 })
 
 const load = () => {
@@ -70,7 +70,7 @@ const previewResume = rid => {
 
 const cancelFavorite = rid => {
     resumeApi.cancelFavoriteResume({ rid }).then(() => {
-        getFavoriteResume()
+        getFavoriteResumes()
     })
 }
 

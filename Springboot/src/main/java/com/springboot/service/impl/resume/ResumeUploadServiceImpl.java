@@ -35,7 +35,7 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
     private final Environment environment;
 
     @Override
-    public R resume_upload(MultipartFile file, String summary_info, String detail_info, Float score, HttpServletRequest request) {
+    public R resumeUpload(MultipartFile file, String summary_info, String detail_info, Float score, HttpServletRequest request) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         String realPath = Objects.equals(environment.getActiveProfiles()[0], "dev") ?
                 request.getSession().getServletContext().getRealPath("/resume/") :
@@ -66,7 +66,7 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
     }
 
     @Override
-    public R get_upload_resumes() {
+    public R getUploadResumes() {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         QueryWrapper<Resume> resumeQueryWrapper = new QueryWrapper<>();
         resumeQueryWrapper.eq("uid", uid).select("rid", "summary_info", "score", "create_time").orderByDesc("rid");
@@ -95,7 +95,7 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
     }
 
     @Override
-    public R del_upload_resume(Integer rid) {
+    public R delUploadResume(Integer rid) {
         Resume del_resume = resumeMapper.selectById(rid);
         try {
             // 删文件

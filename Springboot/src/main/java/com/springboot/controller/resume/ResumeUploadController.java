@@ -18,20 +18,20 @@ public class ResumeUploadController {
 
     @PostMapping("/upload/")
     @PreAuthorize("hasAnyAuthority('ROLE_0')")
-    public R resume_upload(MultipartFile file, String summary_info, String detail_info, Float score, HttpServletRequest request) {
-        return resumeUploadService.resume_upload(file, summary_info, detail_info, score, request);
+    public R resumeUpload(MultipartFile file, String summary_info, String detail_info, Float score, HttpServletRequest request) {
+        return resumeUploadService.resumeUpload(file, summary_info, detail_info, score, request);
     }
 
     @GetMapping("/get-upload-resumes/")
     @PreAuthorize("hasAnyAuthority('ROLE_0')")
-    public R get_upload_resumes() {
-        return resumeUploadService.get_upload_resumes();
+    public R getUploadResumes() {
+        return resumeUploadService.getUploadResumes();
     }
 
     @PostMapping("/del-upload-resume/")
     @PreAuthorize("hasAnyAuthority('ROLE_0')")
-    public R del_upload_resume(@RequestBody Map<String, Integer> map) {
+    public R delUploadResume(@RequestBody Map<String, Integer> map) {
         Integer rid = map.get("rid");
-        return resumeUploadService.del_upload_resume(rid);
+        return resumeUploadService.delUploadResume(rid);
     }
 }
