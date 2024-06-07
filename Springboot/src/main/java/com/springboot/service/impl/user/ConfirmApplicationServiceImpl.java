@@ -36,7 +36,7 @@ public class ConfirmApplicationServiceImpl implements ConfirmApplicationService 
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public String confirm_permission_application(String email, String status, Model model) throws MessagingException {
+    public String confirmPermissionApplication(String email, String status, Model model) throws MessagingException {
         // 首先检查这个 token 是否被用过了 防止二次操作
         if (redisTemplate.opsForValue().get(RedisBaseKey.confirm_application_base_name.getValue() + email) == null) {
             model.addAttribute("status", "error");

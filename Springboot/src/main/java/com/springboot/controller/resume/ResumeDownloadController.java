@@ -17,7 +17,7 @@ public class ResumeDownloadController {
 
     @GetMapping("/download/")
     @PreAuthorize("hasAnyAuthority('ROLE_1')")
-    public R resume_download(ResumeDownloadDTO resumeDownloadDTO) {
-        return resumeDownloadService.resume_download(resumeDownloadDTO.getRid());
+    public R resumeDownload(ResumeDownloadDTO resumeDownloadDTO) {
+        return resumeDownloadService.resumeDownload(resumeDownloadDTO.getRid());
     }
 }

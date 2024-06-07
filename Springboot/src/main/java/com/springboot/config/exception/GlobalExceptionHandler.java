@@ -14,28 +14,29 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private void logError(Exception e, String error_description, HttpServletRequest request) {
-        log.error(error_description + ":\n" + e.getMessage() + "-- 请求url:" + request.getRequestURL().toString());
+    private void logError(Exception e, String msg, HttpServletRequest request) {
+        String errorMessage = String.format("%s\nerror: %s\nurl: %s", msg, e.getMessage(), request.getRequestURL().toString());
+        log.error(errorMessage);
     }
 
 
     @ExceptionHandler(value = {CustomException.class})
     @ResponseBody
-    public R custom_exception_handler(CustomException e, HttpServletRequest request) {
+    public R exceptionHandler(CustomException e, HttpServletRequest request) {
         logError(e, "自定义错误", request);
         return R.exception(e.getMessage());
     }
 
     @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class})
     @ResponseBody
-    public R custom_exception_handler(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+    public R exceptionHandler(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         logError(e, "请求方法错误", request);
         return R.exception("请求方法错误");
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class})
     @ResponseBody
-    public R custom_exception_handler(AccessDeniedException e, HttpServletRequest request) {
+    public R exceptionHandler(AccessDeniedException e, HttpServletRequest request) {
         logError(e, "权限错误", request);
         return R.permission_error("权限错误");
     }

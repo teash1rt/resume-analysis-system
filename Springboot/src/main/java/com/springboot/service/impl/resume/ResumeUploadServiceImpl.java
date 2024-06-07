@@ -45,17 +45,17 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
         if (!folder.isDirectory()) {
             folder.mkdirs();
         }
-        String old_name = file.getOriginalFilename();
-        String new_name = null;
-        if (old_name != null) {
-            new_name = UUID.randomUUID() + old_name.substring(old_name.lastIndexOf("."));
+        String oldName = file.getOriginalFilename();
+        String newName = null;
+        if (oldName != null) {
+            newName = UUID.randomUUID() + oldName.substring(oldName.lastIndexOf("."));
         }
         try {
-            file.transferTo(new File(folder, new_name));
+            file.transferTo(new File(folder, newName));
             if (detail_info.length() > 2500 || summary_info.length() > 550) {
                 return R.error("信息过多 请删减后上传");
             }
-            Resume resume = new Resume(null, uid, summary_info, detail_info, score, new File(folder, new_name).getAbsolutePath(), null);
+            Resume resume = new Resume(null, uid, summary_info, detail_info, score, new File(folder, newName).getAbsolutePath(), null);
             resumeMapper.insert(resume);
             // 向 mongodb 同步数据
             statisticsInfoService.update_statistics_info(summary_info, 1, resume.getRid());

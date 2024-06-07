@@ -43,7 +43,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public R change_username(String new_username) {
+    public R changeUsername(String new_username) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         if (VerifyArgsUtils.is_empty(new_username)) {
             return R.error("新用户名不能为空");
@@ -55,7 +55,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public R change_email(String new_email) {
+    public R changeEmail(String new_email) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         if (VerifyArgsUtils.is_empty(new_email)) {
             return R.error("新邮箱不能为空");
@@ -74,7 +74,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public R change_password(String old_password, String new_password) {
+    public R changePassword(String old_password, String new_password) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         if (VerifyArgsUtils.is_empty(old_password, new_password)) {
             return R.error("密码不能为空");
@@ -92,11 +92,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public R get_userinfo(HttpServletResponse response) throws Exception {
+    public R getUserinfo(HttpServletResponse response) throws Exception {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         User user = userMapper.selectById(uid);
         String key = RandomKeyUtils.getKey();
-        String key_core = key.substring(2, 20);
+        String llave = key.substring(2, 20);
         String username = user.getName();
         String email = user.getEmail();
         String type = String.valueOf(user.getType());
@@ -107,13 +107,13 @@ public class UserInfoServiceImpl implements UserInfoService {
         CookieManager.setCookie("email", AesUtils.encrypt(email, key), expire_time, response);
         CookieManager.setCookie("type", AesUtils.encrypt(type, key), expire_time, response);
         CookieManager.setCookie("token", AesUtils.encrypt(token, key), expire_time, response);
-        CookieManager.setCookie("llave", key_core, expire_time, response);
+        CookieManager.setCookie("llave", llave, expire_time, response);
 
         return R.success("查询用户信息成功");
     }
 
     @Override
-    public R forget_password(String email, String verify_code, HttpSession httpSession) throws Exception {
+    public R forgetPassword(String email, String verify_code, HttpSession httpSession) throws Exception {
         if (VerifyArgsUtils.is_empty(email)) {
             return R.error("注册邮箱不能为空");
         } else if (!VerifyCodeUtils.checkCode(verify_code, httpSession)) {
@@ -130,7 +130,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public R reset_password(String url_path, String new_password) {
+    public R resetPassword(String url_path, String new_password) {
         redisTemplate.delete(RedisBaseKey.forget_password_token_base_name.getValue() + url_path);
 
         String token = Base64UrlUtils.decoding(url_path);
@@ -146,7 +146,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public R check_application_status() {
+    public R checkApplicationStatus() {
         String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         Boolean status = (Boolean) redisTemplate.opsForValue().get(
                 RedisBaseKey.waiting_permission_application_base_name.getValue() + email
@@ -155,23 +155,23 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public R get_apply_verify_code() throws MessagingException {
+    public R getApplyVerifyCode() throws MessagingException {
         String email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         permissionUpgradeMailService.send_verify_code(email);
         return R.success("申请权限邮箱验证码发送成功！请查看邮件");
     }
 
     @Override
-    public R apply_permission(String email, String purpose, String description, String verify_code) throws MessagingException {
+    public R applyPermission(String email, String purpose, String description, String verify_code) throws MessagingException {
         // 拿到该邮箱对应的验证码
-        String redis_verify_code_key = RedisBaseKey.permission_verify_code_base_name.getValue() + email;
-        String redis_verify_code = (String) redisTemplate.opsForValue().get(redis_verify_code_key);
+        String key = RedisBaseKey.permission_verify_code_base_name.getValue() + email;
+        String verifyCode = (String) redisTemplate.opsForValue().get(key);
         if (VerifyArgsUtils.is_empty(email, purpose, description)) {
             return R.error("申请时各字段不能为空");
-        } else if (redis_verify_code == null || !Objects.equals(redis_verify_code, verify_code)) {
+        } else if (verifyCode == null || !Objects.equals(verifyCode, verify_code)) {
             return R.error("验证码错误");
         }
-        redisTemplate.delete(redis_verify_code_key);
+        redisTemplate.delete(key);
         permissionUpgradeMailService.send_application_email(email, purpose, description);
         // 将该用户的状态变为申请中 避免重复申请
         redisTemplate.opsForValue().set(RedisBaseKey.waiting_permission_application_base_name.getValue() + email, true, 10, TimeUnit.DAYS);

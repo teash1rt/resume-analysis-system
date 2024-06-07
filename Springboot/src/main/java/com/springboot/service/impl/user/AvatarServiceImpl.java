@@ -33,7 +33,7 @@ public class AvatarServiceImpl implements AvatarService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public R set_avatar(MultipartFile file, HttpServletRequest request) {
+    public R setAvatar(MultipartFile file, HttpServletRequest request) {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         String realPath;
         if (Objects.equals(environment.getActiveProfiles()[0], "dev")) {
@@ -45,27 +45,27 @@ public class AvatarServiceImpl implements AvatarService {
         if (!folder.isDirectory()) {
             folder.mkdirs();
         }
-        String old_name = file.getOriginalFilename();
-        String new_name = null;
-        if (old_name != null) {
-            new_name = UUID.randomUUID() + old_name.substring(old_name.lastIndexOf("."));
+        String oldName = file.getOriginalFilename();
+        String newName = null;
+        if (oldName != null) {
+            newName = UUID.randomUUID() + oldName.substring(oldName.lastIndexOf("."));
         }
         try {
-            file.transferTo(new File(folder, new_name));
-            String route = new File(folder, new_name).getAbsolutePath();
+            file.transferTo(new File(folder, newName));
+            String route = new File(folder, newName).getAbsolutePath();
             UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("uid", uid).set("avatar", route);
 
             // 在更新前删除
-            String del_avatar_route = userMapper.selectById(uid).getAvatar();
-            if (del_avatar_route != null) {
-                File del_avatar = new File(del_avatar_route);
-                del_avatar.delete();
+            String path = userMapper.selectById(uid).getAvatar();
+            if (path != null) {
+                File avatar = new File(path);
+                avatar.delete();
             }
             userMapper.update(new User(), updateWrapper);
             // 更新 redis
-            String redis_avatar_key = RedisBaseKey.avatar_base_name.getValue() + uid;
-            redisTemplate.opsForValue().set(redis_avatar_key, Base64.getEncoder().encodeToString(file.getBytes()), 3, TimeUnit.DAYS);
+            String avatarKey = RedisBaseKey.avatar_base_name.getValue() + uid;
+            redisTemplate.opsForValue().set(avatarKey, Base64.getEncoder().encodeToString(file.getBytes()), 3, TimeUnit.DAYS);
             return R.success("头像更新成功");
         } catch (IOException e) {
             return R.error("头像更新失败");
@@ -73,16 +73,16 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     @Override
-    public R get_avatar() {
+    public R getAvatar() {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         String filePath = userMapper.selectById(uid).getAvatar();
         if (filePath == null) {
             return R.success("获取默认头像成功", new byte[0]);
         }
-        String redis_avatar_key = RedisBaseKey.avatar_base_name.getValue() + uid;
-        String redis_avatar = redisTemplate.opsForValue().get(redis_avatar_key);
-        if (redis_avatar != null) {
-            return R.success("头像获取成功", redis_avatar);
+        String avatarKey = RedisBaseKey.avatar_base_name.getValue() + uid;
+        String avatar = redisTemplate.opsForValue().get(avatarKey);
+        if (avatar != null) {
+            return R.success("头像获取成功", avatar);
         }
         try (FileInputStream inputStream = new FileInputStream(filePath);
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
@@ -92,7 +92,7 @@ public class AvatarServiceImpl implements AvatarService {
                 outputStream.write(buffer, 0, bytesRead);
             }
             byte[] byteArr = outputStream.toByteArray();
-            redisTemplate.opsForValue().set(redis_avatar_key, Base64.getEncoder().encodeToString(byteArr), 3, TimeUnit.DAYS);
+            redisTemplate.opsForValue().set(avatarKey, Base64.getEncoder().encodeToString(byteArr), 3, TimeUnit.DAYS);
             return R.success("头像获取成功", byteArr);
         } catch (IOException e) {
             return R.error("头像获取失败");

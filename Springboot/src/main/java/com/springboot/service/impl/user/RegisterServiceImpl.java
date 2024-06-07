@@ -12,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +41,10 @@ public class RegisterServiceImpl implements RegisterService {
         userMapper.insert(user);
         String token = JwtUtils.generateToken(user);
         return R.success("注册成功", token);
+    }
+
+    @Override
+    public void getVerifyCode(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        VerifyCodeUtils.createCode(httpServletRequest, httpServletResponse);
     }
 }

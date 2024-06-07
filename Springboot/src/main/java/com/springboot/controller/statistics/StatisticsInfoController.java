@@ -16,7 +16,7 @@ public class StatisticsInfoController {
 
     @GetMapping("/get-statistics-info/")
     @PreAuthorize("hasAnyAuthority('ROLE_1')")
-    public R get_statistics_info() {
-        return statisticsInfoService.get_statistics_info();
+    public R getStatisticsInfo() {
+        return statisticsInfoService.getStatisticsInfo();
     }
 }

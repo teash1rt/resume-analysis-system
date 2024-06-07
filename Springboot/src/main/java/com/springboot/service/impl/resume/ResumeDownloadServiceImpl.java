@@ -18,7 +18,7 @@ public class ResumeDownloadServiceImpl implements ResumeDownloadService {
     private final ResumeMapper resumeMapper;
 
     @Override
-    public R resume_download(Integer rid) {
+    public R resumeDownload(Integer rid) {
         String route = resumeMapper.selectById(rid).getRoute();
         String type = route.substring(route.lastIndexOf("."));
         try (FileInputStream inputStream = new FileInputStream(route);

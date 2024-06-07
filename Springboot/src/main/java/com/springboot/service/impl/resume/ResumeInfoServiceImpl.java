@@ -30,9 +30,9 @@ public class ResumeInfoServiceImpl implements ResumeInfoService {
 
     @Override
     public R getResumeInfo(Integer rid) {
-        Object redis_resume = redisTemplate.opsForValue().get(RedisBaseKey.resume_base_name.getValue() + rid);
-        if (redis_resume != null) {
-            return R.success("简历信息查询成功", redis_resume);
+        Object resumeInRedis = redisTemplate.opsForValue().get(RedisBaseKey.resume_base_name.getValue() + rid);
+        if (resumeInRedis != null) {
+            return R.success("简历信息查询成功", resumeInRedis);
         }
 
         QueryWrapper<Resume> resumeQueryWrapper = new QueryWrapper<>();

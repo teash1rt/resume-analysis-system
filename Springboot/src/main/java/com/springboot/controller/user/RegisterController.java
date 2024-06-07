@@ -4,12 +4,12 @@ import com.springboot.common.R;
 import com.springboot.dto.RegisterDTO;
 import com.springboot.service.user.RegisterService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +26,10 @@ public class RegisterController {
                 registerDTO.getVerifyCode(),
                 httpSession
         );
+    }
+
+    @GetMapping("/get-verify-code/")
+    public void getVerifyCode(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        registerService.getVerifyCode(httpServletRequest, httpServletResponse);
     }
 }

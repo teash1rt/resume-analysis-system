@@ -18,12 +18,12 @@ public class AvatarController {
     private final AvatarService avatarService;
 
     @PostMapping("/set-avatar/")
-    public R set_avatar(MultipartFile file, HttpServletRequest request) {
-        return avatarService.set_avatar(file, request);
+    public R setAvatar(MultipartFile file, HttpServletRequest request) {
+        return avatarService.setAvatar(file, request);
     }
 
     @GetMapping("/get-avatar/")
-    public R get_avatar() {
-        return avatarService.get_avatar();
+    public R getAvatar() {
+        return avatarService.getAvatar();
     }
 }

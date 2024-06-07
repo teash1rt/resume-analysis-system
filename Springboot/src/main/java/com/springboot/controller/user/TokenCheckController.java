@@ -18,13 +18,13 @@ public class TokenCheckController {
     private final TokenCheckService tokencheckService;
 
     @PostMapping("/visitor-token-check/")
-    public R token_check(@RequestBody TokenCheckDTO tokenCheckDTO) {
-        return tokencheckService.visitor_token_check(tokenCheckDTO.getToken());
+    public R visitorTokenCheck(@RequestBody TokenCheckDTO tokenCheckDTO) {
+        return tokencheckService.visitorTokenCheck(tokenCheckDTO.getToken());
     }
 
     @PostMapping("/url-token-check/")
-    public R url_token_check(@RequestBody Map<String, String> map) {
+    public R urlTokenCheck(@RequestBody Map<String, String> map) {
         String url_path = map.get("url_path");
-        return tokencheckService.url_token_check(url_path);
+        return tokencheckService.urlTokenCheck(url_path);
     }
 }

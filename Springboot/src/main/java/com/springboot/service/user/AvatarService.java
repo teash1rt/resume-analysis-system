@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 public interface AvatarService {
-    R set_avatar(MultipartFile file, HttpServletRequest request);
+    R setAvatar(MultipartFile file, HttpServletRequest request);
 
-    R get_avatar();
+    R getAvatar();
 }

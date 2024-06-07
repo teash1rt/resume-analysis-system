@@ -22,7 +22,7 @@ public class TokenCheckServiceImpl implements TokenCheckService {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public R visitor_token_check(String token) {
+    public R visitorTokenCheck(String token) {
         if (token == null) {
             return R.success("token查验完成", false);
         }
@@ -32,7 +32,7 @@ public class TokenCheckServiceImpl implements TokenCheckService {
     }
 
     @Override
-    public R url_token_check(String url_path) {
+    public R urlTokenCheck(String url_path) {
         String token = Base64UrlUtils.decoding(url_path);
         // 这里使用 redis 的原因是 阻止用户多次访问重置密码的界面 在使用一次后就将其删除:如果 redis 中没有这个 token 就说明已经被使用过了
         // 删除 key 在重置密码的 UserInfoServiceImpl 部分 | 初始插入 key 在发送邮件的 ForgetPasswordMailServiceImpl 部分

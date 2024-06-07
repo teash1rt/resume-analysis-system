@@ -28,10 +28,10 @@ public class ResumeFavoriteServiceImpl implements ResumeFavoriteService {
                 resumeFavoriteMapper.insert(new ResumeFavorite(uid, rid, null));
             }
             return R.success("添加收藏成功");
-        } else {
-            resumeFavoriteMapper.delete(resumeFavoriteQueryWrapper);
-            return R.success("取消收藏成功");
         }
+
+        resumeFavoriteMapper.delete(resumeFavoriteQueryWrapper);
+        return R.success("取消收藏成功");
     }
 
     @Override

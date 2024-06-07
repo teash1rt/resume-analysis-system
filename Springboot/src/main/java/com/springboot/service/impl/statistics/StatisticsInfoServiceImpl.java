@@ -31,7 +31,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public R get_statistics_info() {
+    public R getStatisticsInfo() {
         Object redis_statistics_info = redisTemplate.opsForValue().get(RedisBaseKey.statistics_info_name.getValue());
         if (redis_statistics_info != null) {
             return R.success("查询统计信息成功", redis_statistics_info);
