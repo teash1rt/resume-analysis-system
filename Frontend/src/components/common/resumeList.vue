@@ -10,8 +10,11 @@
                         <el-divider direction="vertical" border-style="solid" v-if="index < getDescription(e).length - 1" />
                     </span>
                 </el-col>
-                <el-col :span="3">
+                <el-col :span="3" v-if="permission == 1">
                     <span class="resume-options" @click="cancelFavorite(e.rid)">取消收藏</span>
+                </el-col>
+                <el-col :span="2" v-if="permission == 0">
+                    <span class="resume-options" @click="deleteUploadResume(e.rid)">删除</span>
                 </el-col>
                 <el-col :span="2">
                     <span class="resume-options" @click="previewResume(e.rid)">摘要</span>
@@ -31,16 +34,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, toRaw, shallowRef } from 'vue'
+import { ref, onMounted, shallowRef } from 'vue'
+import { ElNotification } from 'element-plus'
 import { resumeApi } from '@/api'
 import resumeData from '@/components/common/resumeData.vue'
 import { downloadResume } from '@/utils/download'
+import { getDescription } from '@/utils/getDescription'
+import { InfoStore } from '@/stores/InfoStore'
 
 const count = ref(0)
 const data = shallowRef([])
+const infoStore = InfoStore()
+const permission = infoStore.type
 
-const getFavoriteResumes = () => {
-    resumeApi.getFavoriteResumes().then(res => {
+const getResumes = () => {
+    const api = permission == 1 ? resumeApi.getFavoriteResumes : resumeApi.getUploadResumes
+    api().then(res => {
         count.value = res.data.length
         data.value = res.data.map(item => {
             return {
@@ -52,8 +61,18 @@ const getFavoriteResumes = () => {
     })
 }
 
+const deleteUploadResume = rid => {
+    resumeApi.deleteUploadResume({ rid: rid }).then(res => {
+        ElNotification({
+            title: res.msg,
+            type: 'success'
+        })
+        getResumes()
+    })
+}
+
 onMounted(() => {
-    getFavoriteResumes()
+    getResumes()
 })
 
 const load = () => {
@@ -61,26 +80,21 @@ const load = () => {
 }
 
 const dialogVisible = ref(false)
-const infoData = ref('')
+const infoData = shallowRef(null)
 const previewResume = rid => {
     const item = data.value.find(item => item.rid === rid)
-    infoData.value = Object.assign({}, toRaw(item.summaryInfo), toRaw(item.detailInfo))
+    infoData.value = { ...item.summaryInfo, ...item.detailInfo }
     dialogVisible.value = true
 }
 
 const cancelFavorite = rid => {
-    resumeApi.cancelFavoriteResume({ rid }).then(() => {
-        getFavoriteResumes()
+    resumeApi.favoriteResume({ rid, isFavorite: false }).then(res => {
+        ElNotification({
+            title: res.msg,
+            type: 'success'
+        })
+        getResumes()
     })
-}
-
-const getDescription = e => {
-    const content = []
-    if (e.summaryInfo.job_obj[0] !== undefined) content.push(`求职意向：${e.summaryInfo.job_obj[0]}`)
-    if (e.summaryInfo.tag.total_work_time > 0) content.push(`工作年限：${e.summaryInfo.tag.total_work_time}年`)
-    if (e.summaryInfo.custom_content.money_obj !== '') content.push(`薪资期望：${e.summaryInfo.custom_content.money_obj}`)
-    if (content.length === 0) content.push('收到一份新简历!')
-    return content
 }
 </script>
 

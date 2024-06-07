@@ -31,9 +31,9 @@
                     <el-col :span="18">
                         {{ e.summaryInfo.basic_data.name }}
                         <el-divider direction="vertical" border-style="solid" />
-                        <span v-for="(item, index) in content_show(e)" :key="item">
+                        <span v-for="(item, index) in getDescription(e)" :key="item">
                             {{ item }}
-                            <el-divider direction="vertical" border-style="solid" v-if="index < content_show(e).length - 1" />
+                            <el-divider direction="vertical" border-style="solid" v-if="index < getDescription(e).length - 1" />
                         </span>
                     </el-col>
                     <el-col :span="5" class="create-time"> {{ e.createTime.split('T')[0] }} by {{ e.username }} </el-col>
@@ -125,6 +125,7 @@ import { ref, triggerRef, onMounted, shallowRef } from 'vue'
 import resumeData from '@/components/common/resumeData.vue'
 import { resumeApi } from '@/api'
 import { downloadResume } from '@/utils/download'
+import { getDescription } from '@/utils/getDescription'
 
 const currentPage = ref(1)
 const totalPage = ref(0)
@@ -166,15 +167,6 @@ const getResumes = e => {
                 }
             })
         })
-}
-
-const content_show = e => {
-    const content = []
-    if (e.summaryInfo.job_obj[0] !== undefined) content.push(`求职意向：${e.summaryInfo.job_obj[0]}`)
-    if (e.summaryInfo.tag.total_work_time !== 0) content.push(`工作年限：${e.summaryInfo.tag.total_work_time}`)
-    if (e.summaryInfo.custom_content.money_obj !== '') content.push(`薪资期望：${e.summaryInfo.custom_content.money_obj}`)
-    if (content.length === 0) content.push('收到一份新简历!')
-    return content
 }
 
 // 防抖

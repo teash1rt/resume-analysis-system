@@ -60,7 +60,10 @@ public class AvatarServiceImpl implements AvatarService {
             String path = userMapper.selectById(uid).getAvatar();
             if (path != null) {
                 File avatar = new File(path);
-                avatar.delete();
+                boolean success = avatar.delete();
+                if (!success) {
+                    return R.error("头像更新失败");
+                }
             }
             userMapper.update(new User(), updateWrapper);
             // 更新 redis

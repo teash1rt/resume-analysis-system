@@ -99,7 +99,6 @@ router.beforeEach((to, _, next) => {
                 }
                 next()
             } else {
-                console.log(1)
                 infoStore.clearInfo()
                 showLogin()
             }

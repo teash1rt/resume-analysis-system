@@ -15,11 +15,8 @@
                         <el-tab-pane label="个人信息" name="View1" class="tab">
                             <userInfo />
                         </el-tab-pane>
-                        <el-tab-pane label="上传记录" name="View2" class="tab" v-if="permission == 0">
-                            <uploadResume />
-                        </el-tab-pane>
-                        <el-tab-pane label="简历收藏" name="View3" class="tab" v-else>
-                            <favoriteResume />
+                        <el-tab-pane :label="permission == 0 ? '上传记录' : '简历收藏'" name="View2" class="tab">
+                            <resumeList />
                         </el-tab-pane>
                         <el-tab-pane label="个性化设置" name="View4" class="tab">
                             <userProfile />
@@ -35,8 +32,7 @@
 import { onMounted, ref } from 'vue'
 import userInfo from '@/components/settings/userInfo.vue'
 import userProfile from '@/components/settings/userProfile.vue'
-import uploadResume from '@/components/user/uploadResume.vue'
-import favoriteResume from '@/components/admin/favoriteResume.vue'
+import resumeList from '@/components/common/resumeList.vue'
 import { InfoStore } from '@/stores/InfoStore'
 import { convertToUrl } from '@/utils/base64ToUrl'
 import { userApi } from '@/api'

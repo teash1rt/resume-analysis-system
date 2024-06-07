@@ -9,7 +9,6 @@ import com.springboot.mapper.resume.ResumeFavoriteMapper;
 import com.springboot.mapper.resume.ResumeMapper;
 import com.springboot.service.resume.ResumeUploadService;
 import com.springboot.service.statistics.StatisticsInfoService;
-import com.springboot.utils.CalculateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -69,41 +68,26 @@ public class ResumeUploadServiceImpl implements ResumeUploadService {
     public R getUploadResumes() {
         Integer uid = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUid();
         QueryWrapper<Resume> resumeQueryWrapper = new QueryWrapper<>();
-        resumeQueryWrapper.eq("uid", uid).select("rid", "summary_info", "score", "create_time").orderByDesc("rid");
-        List<Resume> resumeList = resumeMapper.selectList(resumeQueryWrapper);
-        LocalDateTime now = LocalDateTime.now();
-
-        List<Map<String, Object>> upload_resumes = new ArrayList<>();
-        resumeList.forEach(e -> {
-            Map<String, Object> info_map = new HashMap<>();
-            info_map.put("rid", e.getRid());
-            info_map.put("summaryInfo", e.getSummaryInfo());
-            info_map.put("createTime", e.getCreateTime());
-            // TODO 优化这段查询
-            QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
-            resumeFavoriteQueryWrapper.eq("rid", e.getRid());
-            Long favorite_count = resumeFavoriteMapper.selectCount(resumeFavoriteQueryWrapper);
-            LocalDateTime dateTime = e.getCreateTime();
-            Duration duration = Duration.between(dateTime, now);
-            int days = Math.toIntExact(duration.toDays());
-            Double favorite_score = CalculateUtils.getFavoriteScore(days, favorite_count, e.getScore());
-            info_map.put("favorite_score", favorite_score);
-
-            upload_resumes.add(info_map);
-        });
-        return R.success("查询上传的简历数据成功", upload_resumes);
+        resumeQueryWrapper.select("rid", "summary_info", "detail_info", "create_time")
+                .eq("uid", uid);
+        List<Resume> resumes = resumeMapper.selectList(resumeQueryWrapper);
+        return R.success("查询上传简历成功", resumes);
     }
+
 
     @Override
     public R delUploadResume(Integer rid) {
-        Resume del_resume = resumeMapper.selectById(rid);
+        Resume resume = resumeMapper.selectById(rid);
         try {
             // 删文件
-            String del_resume_route = del_resume.getRoute();
-            File del_resume_file = new File(del_resume_route);
-            del_resume_file.delete();
+            String path = resume.getRoute();
+            File file = new File(path);
+            boolean success = file.delete();
+            if (!success) {
+                return R.error("删除简历失败");
+            }
             // 同步 mongodb 数据
-            String del_resume_summary_info = del_resume.getSummaryInfo();
+            String del_resume_summary_info = resume.getSummaryInfo();
             statisticsInfoService.update_statistics_info(del_resume_summary_info, -1, rid);
             // 删除收藏
             QueryWrapper<ResumeFavorite> resumeFavoriteQueryWrapper = new QueryWrapper<>();
