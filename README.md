@@ -5,25 +5,23 @@
 > 有问题看 issues
 >
 > 维护计划目前在重构（主要在做减法和提高代码质量）
->
-> :point_right: feat/be-refactor | feat/fe-refactor
 
 ### 目录说明
 
 ```
-├─Assets	相关图片
-├─Express	后端，用于word转文本
-├─FastApi	 后端，用于封装模型
-├─Frontend	前端
-├─SpringBoot	后端，用于用户和简历数据管理
-├─Sql	数据库建表
-├─Train	模型训练
-│  └─classfication	分类器
-│  └─ner	命名实体识别
-│  └─test	模型测试
-├─Utils	开发依赖工具
-│  └─format	格式转换
-│  └─gather	分类数据采集
+├─Assets	         相关图片
+├─Express	         后端（docx文件转文本）
+├─FastApi	         后端（封装解析模型）
+├─Frontend	         前端
+├─SpringBoot	     后端（用户和简历数据管理）
+├─Sql	             数据库建表
+├─Train	             模型训练
+│  └─classfication	   分类器
+│  └─ner	           命名实体识别
+│  └─test	           模型测试
+├─Utils	             开发依赖工具
+│  └─format	           格式转换
+│  └─gather	           分类数据采集
 ```
 
 ### 项目运行
@@ -58,9 +56,6 @@ python script.py
 
 1. 下载模型到`FastApi/models`目录下
 
-    > 百度网盘隔段时间就会失效，可以通过 issues 解决下
-    > 有木有什么稳定靠谱的方法 :sob:
-
     链接：https://pan.baidu.com/s/1ppkmLlsn4joBOYHH_jsrHg?pwd=w4r9 提取码：w4r9
 
 2. 在`FastApi`目录下建立`secrets.txt`
@@ -75,6 +70,22 @@ python script.py
 ##### Spring Boot
 
 `SpringbootApplication.java`中是通过`@PropertySource("classpath:secrets.txt")`注解进行相关数据的读取，在`Springboot/src/main/resources`下建立`secrets.txt`并填入键值对
+
+比如`application-dev.yml`中有如下配置
+
+```yml
+data:
+    mongodb:
+        host: ${mongodb.host.dev}
+        port: ${mongodb.port.dev}
+```
+
+则在`secrets.txt`中这样声明具体值
+
+```txt
+mongodb.host.dev=127.0.0.1
+mongodb.port.dev=27010
+```
 
 ##### Express
 
