@@ -9,19 +9,19 @@
 ### 目录说明
 
 ```
-├─Assets	             相关图片
-├─Express	             后端（docx文件转文本）
-├─FastApi	             后端（封装解析模型）
-├─Frontend	             前端
+├─Assets	     相关图片
+├─Express	     后端（docx文件转文本）
+├─FastApi	     后端（封装解析模型）
+├─Frontend	     前端
 ├─SpringBoot	     后端（用户和简历数据管理）
-├─Sql	                     数据库建表
-├─Train	                     模型训练
-│  └─classfication     分类器
-│  └─ner	             命名实体识别
-│  └─test	             模型测试
-├─Utils	                     开发依赖工具
-│  └─format	             格式转换
-│  └─gather	             分类数据采集
+├─Sql	             数据库建表
+├─Train	             模型训练
+│  └─classfication   分类器
+│  └─ner	     命名实体识别
+│  └─test	     模型测试
+├─Utils	             开发依赖工具
+│  └─format	     格式转换
+│  └─gather	     分类数据采集数据采集
 ```
 
 ### 项目运行
