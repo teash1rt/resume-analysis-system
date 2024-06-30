@@ -69,12 +69,9 @@ class Model(torch.nn.Module):
 model3 = torch.load('models/Ner.pt', map_location=torch.device('cpu'))
 model3.eval()
 
-
-config = ConfigParser()
-config.read('secrets.txt')
-
 app = FastAPI()
-app.secret_key = config.get('key', 'jwt_key')
+
+app.secret_key = 'CUSTOM_JWT_TOKEN'
 
 # 添加 CORS 中间件
 app.add_middleware(
