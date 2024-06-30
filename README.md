@@ -9,19 +9,19 @@
 ### 目录说明
 
 ```
-├─Assets	         相关图片
-├─Express	         后端（docx文件转文本）
-├─FastApi	         后端（封装解析模型）
-├─Frontend	         前端
+├─Assets	             相关图片
+├─Express	             后端（docx文件转文本）
+├─FastApi	             后端（封装解析模型）
+├─Frontend	             前端
 ├─SpringBoot	     后端（用户和简历数据管理）
-├─Sql	             数据库建表
-├─Train	             模型训练
-│  └─classfication	   分类器
-│  └─ner	           命名实体识别
-│  └─test	           模型测试
-├─Utils	             开发依赖工具
-│  └─format	           格式转换
-│  └─gather	           分类数据采集
+├─Sql	                     数据库建表
+├─Train	                     模型训练
+│  └─classfication     分类器
+│  └─ner	             命名实体识别
+│  └─test	             模型测试
+├─Utils	                     开发依赖工具
+│  └─format	             格式转换
+│  └─gather	             分类数据采集
 ```
 
 ### 项目运行
@@ -38,34 +38,9 @@ pnpm dev
 
 ##### FastAPI
 
--   推荐通过`docker`进行部署（建议使用 x86+ubuntu20.04 配置，其他配置暂未做运行测试）
+本地运行需要下载模型到`FastApi/models`目录下
 
-```shell
-docker pull mariannaaa/resume_fastapi:1.2
-
-docker run -itd -p 8000:8000 mariannaaa/resume_fastapi:1.2
-
-docker exec -it <CONTAINER ID> /bin/bash
-
-cd FastApi
-
-python script.py
-```
-
--   本地运行需要进行如下操作
-
-1. 下载模型到`FastApi/models`目录下
-
-    链接：https://pan.baidu.com/s/1ppkmLlsn4joBOYHH_jsrHg?pwd=w4r9 提取码：w4r9
-
-2. 在`FastApi`目录下建立`secrets.txt`
-
-    ```txt
-    [key]
-    jwt_key=XXX
-    ```
-
-    其中 XXX 为自定义的`jwt`密钥
+> 链接：https://pan.baidu.com/s/1ppkmLlsn4joBOYHH_jsrHg?pwd=w4r9 提取码：w4r9
 
 ##### Spring Boot
 
