@@ -53,10 +53,10 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import { ElNotification } from 'element-plus'
 import { InfoStore } from '@/stores/InfoStore'
 import { SHA256Encrypt } from '@/utils/encrypt'
 import { userApi } from '@/api'
-import { ElNotification } from 'element-plus'
 
 // 状态1显示登录 状态2显示注册 状态3显示忘记密码
 const dialogStatus = ref(1)

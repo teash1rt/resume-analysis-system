@@ -20,7 +20,9 @@ module.exports = {
         ecmaVersion: 'latest',
         sourceType: 'module'
     },
-    plugins: ['vue'],
-    rules: {},
+    plugins: ['vue', 'import'],
+    rules: {
+        'import/order': 'error'
+    },
     ignorePatterns: ['dist/**', 'node_modules/**']
 }
