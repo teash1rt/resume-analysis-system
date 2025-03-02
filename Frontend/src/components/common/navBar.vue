@@ -45,11 +45,11 @@
 
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import loginDialog from '@/components/common/loginDialog.vue'
 import { InfoStore } from '@/stores/InfoStore'
 import { convertToUrl } from '@/utils/base64ToUrl'
 import { userApi } from '@/api'
-import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const isLogin = ref(false)

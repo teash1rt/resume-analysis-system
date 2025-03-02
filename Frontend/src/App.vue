@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import navBar from '@/components/common/navBar.vue'
 import MobileView from './views/MobileView.vue'
+import navBar from '@/components/common/navBar.vue'
 import { EnvStore } from '@/stores/EnvStore'
 
 const envStore = EnvStore()

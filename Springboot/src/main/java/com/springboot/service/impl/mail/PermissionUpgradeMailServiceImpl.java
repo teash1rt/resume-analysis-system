@@ -29,6 +29,11 @@ public class PermissionUpgradeMailServiceImpl implements PermissionUpgradeMailSe
     // 获取yml配置的发送者邮箱
     @Value("${spring.mail.username}")
     private String mainUserName;
+
+    // 获取yml配置的审核者接受邮箱
+    @Value("${spring.mail.receiver.username}")
+    private String receiverUserName;
+
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -66,7 +71,7 @@ public class PermissionUpgradeMailServiceImpl implements PermissionUpgradeMailSe
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setSubject("【收到新的申请】");
         mimeMessageHelper.setFrom("简历解析系统" + '<' + mainUserName + '>');
-        mimeMessageHelper.setTo("1223696764@qq.com");
+        mimeMessageHelper.setTo(receiverUserName);
         Context ctx = new Context();
         ctx.setVariable("email", email);
         ctx.setVariable("purpose", purpose);

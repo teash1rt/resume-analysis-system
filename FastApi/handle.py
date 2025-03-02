@@ -4,6 +4,7 @@ import numpy as np
 import predict
 from collections import OrderedDict
 import utils
+from datetime import datetime
 
 
 def re_basedata(basic_data, data):
@@ -26,7 +27,7 @@ def re_basedata(basic_data, data):
         birth = re.search(info.birth_pattern(), data)
         if birth:
             basic_data['birth'] = birth.group()
-            basic_data['age'] = 2023 - int(basic_data['birth'][:4])+1
+            basic_data['age'] = datetime.now().year - int(basic_data['birth'][:4])+1
     edu = re.findall(info.edu_pattern(), data)
     if edu:
         for e in edu:
@@ -123,7 +124,7 @@ def handle_experience(total_data, tokenizer3, model3):
         if matches:
             for match in matches:
                 date1 = utils.re_date(match[0])
-                date2 = '2023.04' if match[1] == '今' or match[1] == '至今' else utils.re_date(
+                date2 = datetime.now().strftime("%Y.%m") if match[1] == '今' or match[1] == '至今' else utils.re_date(
                     match[1])
                 try:
                     years, months = utils.calculate_date_interval(date1, date2)
